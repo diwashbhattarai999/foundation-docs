@@ -1,0 +1,9 @@
+echo "🔍 Running commit message checks..."
+
+# Run lint-staged with stricter settings
+npx --no -- commitlint --edit "$1" || {
+  echo "❌ commitlint failed. Please fix the issues above and try committing again."
+  exit 1
+}
+
+echo "✅ Commit message checks passed!"
