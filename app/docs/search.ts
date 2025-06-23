@@ -1,7 +1,7 @@
-import type { Route } from './+types/search';
+import { structure } from 'fumadocs-core/mdx-plugins';
 import { createSearchAPI } from 'fumadocs-core/search/server';
 import { source } from '@/source';
-import { structure } from 'fumadocs-core/mdx-plugins';
+import type { Route } from './+types/search';
 
 const server = createSearchAPI('advanced', {
   indexes: source.getPages().map((page) => ({

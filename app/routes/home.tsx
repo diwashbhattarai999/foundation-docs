@@ -1,15 +1,14 @@
-import React from "react";
-import { Link } from "react-router";
-import { HomeLayout } from "fumadocs-ui/layouts/home";
-import { BookOpen, ArrowRight, ChevronRightIcon, ChevronRight } from "lucide-react";
+import { HomeLayout } from 'fumadocs-ui/layouts/home';
+import { BookOpen, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router';
 
-export function meta({}) {
+export function meta() {
   return [
-    { title: "Foundation Docs - Internal Developer Wiki" },
+    { title: 'Foundation Docs - Internal Developer Wiki' },
     {
-      name: "description",
+      name: 'description',
       content:
-        "Foundation is our internal team knowledge base to document and share Git, GitHub, Node.js, Frontend, Backend, and more.",
+        'Foundation is our internal team knowledge base to document and share Git, GitHub, Node.js, Frontend, Backend, and more.',
     },
   ];
 }
@@ -25,8 +24,7 @@ export default function Home() {
             <span className="font-bold text-lg">Foundation</span>
           </div>
         ),
-      }}
-    >
+      }}>
       <div className="max-w-4xl mx-auto mt-20">
         <h1 className="text-4xl font-bold mb-4">Welcome to Foundation 📚</h1>
 
@@ -44,8 +42,7 @@ export default function Home() {
 
         <Link
           className="text-sm flex w-fit items-center gap-2 mx-auto bg-fd-primary text-fd-primary-foreground rounded-full font-medium px-6 py-3 transition hover:opacity-90 group"
-          to="/docs"
-        >
+          to="/docs">
           <BookOpen className="size-5" />
           Explore Docs
           <ChevronRight className="ml-2 size-5 mt-px group-hover:translate-x-2 transition ease-in-out" />

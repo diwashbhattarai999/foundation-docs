@@ -1,20 +1,20 @@
-import type { Route } from "./+types/page";
-import { DocsLayout } from "fumadocs-ui/layouts/docs";
-import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
-import { source } from "@/source";
-import defaultMdxComponents from "fumadocs-ui/mdx";
-import { executeMdxSync } from "@fumadocs/mdx-remote/client";
-import type { PageTree } from "fumadocs-core/server";
-import { createCompiler } from "@fumadocs/mdx-remote";
-import * as path from "node:path";
+import * as path from 'node:path';
+import { createCompiler } from '@fumadocs/mdx-remote';
+import { executeMdxSync } from '@fumadocs/mdx-remote/client';
+import type { PageTree } from 'fumadocs-core/server';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import defaultMdxComponents from 'fumadocs-ui/mdx';
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
+import { source } from '@/source';
+import type { Route } from './+types/page';
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
-    { title: "Foundation Docs" },
+    { title: 'Foundation Docs' },
     {
-      name: "description",
+      name: 'description',
       content:
-        "Foundation is your all-in-one guide to mastering Git, GitHub, Node.js, Frontend, Backend, and more.",
+        'Foundation is your all-in-one guide to mastering Git, GitHub, Node.js, Frontend, Backend, and more.',
     },
   ];
 }
@@ -24,12 +24,12 @@ const compiler = createCompiler({
 });
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const slugs = params["*"].split("/").filter((v) => v.length > 0);
+  const slugs = params['*'].split('/').filter((v) => v.length > 0);
   const page = source.getPage(slugs);
-  if (!page) throw new Error("Not found");
+  if (!page) throw new Error('Not found');
 
   const compiled = await compiler.compileFile({
-    path: path.resolve("content/docs", page.file.path),
+    path: path.resolve('content/docs', page.file.path),
     value: page.data.content,
   });
 
@@ -60,8 +60,7 @@ export default function Page(props: Route.ComponentProps) {
           </div>
         ),
       }}
-      tree={tree as PageTree.Root}
-    >
+      tree={tree as PageTree.Root}>
       <DocsPage toc={toc}>
         <DocsTitle>{page.data.title}</DocsTitle>
         <DocsDescription>{page.data.description}</DocsDescription>
