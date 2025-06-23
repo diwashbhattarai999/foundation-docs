@@ -47,7 +47,18 @@ export default function Page(props: Route.ComponentProps) {
   return (
     <DocsLayout
       nav={{
-        title: "Foundation",
+        title: (
+          <div className="flex items-center gap-2">
+            <div className="size-6">
+              <img
+                src="/favicon-96x96.png"
+                alt="Foundation Logo"
+                className="mr-2 size-full object-cover rounded-md"
+              />
+            </div>
+            Foundation
+          </div>
+        ),
       }}
       tree={tree as PageTree.Root}
     >
