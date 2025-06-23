@@ -1,0 +1,144 @@
+---
+title: Generics
+---
+
+**Generics** allow you to create reusable, type-safe code by parameterizing types, like functions or classes.
+
+---
+
+## Why Use Generics?
+
+Without generics:
+
+```ts
+function identity(value: any): any {
+  return value;
+}
+```
+
+- Loses type information.
+- Not type-safe.
+
+With generics:
+
+```ts
+function identity<T>(value: T): T {
+  return value;
+}
+
+identity<number>(5); // T = number
+identity<string>("hello"); // T = string
+```
+
+---
+
+## Generic Function
+
+```ts
+function wrapInArray<T>(value: T): T[] {
+  return [value];
+}
+
+const result = wrapInArray("Diwash"); // string[]
+```
+
+---
+
+## Generic Interface
+
+```ts
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
+const userResponse: ApiResponse<{ id: string; name: string }> = {
+  success: true,
+  data: { id: "123", name: "Diwash" },
+};
+```
+
+---
+
+## Generic Class
+
+```ts
+class DataStore<T> {
+  private data: T[] = [];
+
+  add(item: T) {
+    this.data.push(item);
+  }
+
+  getAll(): T[] {
+    return this.data;
+  }
+}
+
+const stringStore = new DataStore<string>();
+stringStore.add("React");
+```
+
+---
+
+## Generic Constraints
+
+Use `extends` to restrict generic types.
+
+```ts
+function getLength<T extends { length: number }>(item: T): number {
+  return item.length;
+}
+
+getLength("hello"); // ✅
+getLength([1, 2, 3]); // ✅
+```
+
+---
+
+## Default Generic Type
+
+```ts
+type ApiResponse<T = any> = {
+  data: T;
+  error?: string;
+};
+```
+
+---
+
+## Generic Utility Example: `merge`
+
+```ts
+function merge<T extends object, U extends object>(a: T, b: U): T & U {
+  return { ...a, ...b };
+}
+
+const merged = merge({ name: "Diwash" }, { age: 22 });
+```
+
+---
+
+## Common Gotchas
+
+- Overusing generics makes code harder to read.
+- Use when type is reusable or unknown.
+- Avoid `T` if a concrete type is better.
+
+---
+
+## Task 8 – Practice
+
+In `generics.ts`:
+
+1. Write a generic function `identity<T>(val: T): T`.
+2. Create a `wrapInArray<T>(item: T): T[]`.
+3. Build a generic `Result<T>` interface with `{ success: boolean; data: T }`.
+4. Create a generic class `Storage<T>` with `.add()` and `.getAll()` methods.
+5. Use constraints to ensure `T` has a `.length` property.
+
+---
+
+## Bonus Challenge
+
+Write a generic function `pluck<T, K extends keyof T>(obj: T, key: K): T[K]` that retrieves a property from an object safely.

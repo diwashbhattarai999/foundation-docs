@@ -1,0 +1,243 @@
+---
+title: Git Basics
+description: Understand how Git works under the hood and how to use it effectively.
+---
+
+## 1. What is Git?
+
+### Definition:
+
+Git is a **Distributed Version Control System (DVCS)** created by **Linus Torvalds** in 2005. It helps developers **track changes in source code**, collaborate with others, and **maintain history** of every version.
+
+### Key Concepts:
+
+| Term         | Meaning                                                           |
+| ------------ | ----------------------------------------------------------------- |
+| VCS          | Version Control System                                            |
+| Distributed  | Every developer has a **full copy** of the repo (history + files) |
+| Snapshot     | Git stores project data as **snapshots**, not differences         |
+| SHA (Hash)   | Each commit is identified by a **40-character SHA-1 hash**        |
+| Staging Area | A place where changes are **prepared** before committing          |
+| Repository   | A collection of project files and their entire history            |
+
+---
+
+## 2. How Git Works Internally (Conceptual)
+
+Git has **3 main areas**:
+
+```
++--------------------+     git add     +------------------+    git commit     +-----------------+
+|   Working Directory|  ----------->   |  Staging Area    |  ------------->   |   Git Repository|
+|   (your project)   |                 | (index/cache)    |                   |   (.git folder) |
++--------------------+                 +------------------+                   +-----------------+
+```
+
+---
+
+## 3. Setting Up Git
+
+### Step-by-step:
+
+```bash
+# Install Git
+sudo apt install git            # Linux
+brew install git                # macOS
+choco install git               # Windows
+
+# Set your identity
+git config --global user.name "Diwash Bhattarai"
+git config --global user.email "diwash@example.com"
+
+# Check config
+git config --list
+```
+
+**Best Practice:** Always configure user name and email globally before making commits.
+
+---
+
+## 4. Creating a Local Repository
+
+### Step-by-step:
+
+```bash
+mkdir my-portfolio
+cd my-portfolio
+git init
+```
+
+### What happens on `git init`:
+
+- A `.git/` directory is created
+- It stores:
+
+  - Commits
+  - Branches
+  - Configuration
+  - Staging index
+
+---
+
+## 5. Staging & Committing
+
+### Workflow:
+
+```bash
+# Check the status
+git status
+
+# Stage a file
+git add index.html
+
+# Commit it
+git commit -m "Add home page layout"
+```
+
+### Internally:
+
+- `git add` adds content to **index (staging area)**.
+- `git commit` stores a snapshot in `.git/objects` and points to it from `HEAD`.
+
+---
+
+## 6. Git Object Model
+
+Git has 4 object types:
+
+| Type   | Description                             |
+| ------ | --------------------------------------- |
+| Blob   | Stores file data (binary large object)  |
+| Tree   | Stores directory structure              |
+| Commit | Stores metadata and reference to a tree |
+| Tag    | Points to a commit                      |
+
+```bash
+git cat-file -p HEAD       # View commit object
+git cat-file -p <hash>     # View any object
+```
+
+---
+
+## 7. Branching Explained
+
+### What is a branch?
+
+A **pointer** to a commit. When you create a new branch, you’re creating a new pointer.
+
+```bash
+git branch feature/contact
+git checkout feature/contact
+```
+
+- `HEAD` is the pointer to the current branch.
+- Commits add history to that branch.
+- Merging joins changes.
+
+```bash
+git checkout main
+git merge feature/contact
+```
+
+### Fast-forward vs 3-way Merge
+
+| Merge Type   | When Used          | Visual |
+| ------------ | ------------------ | ------ |
+| Fast-forward | Linear history     | →→→→→  |
+| 3-way merge  | Diverged histories | ↘→↗    |
+
+---
+
+## 8. Merge Conflicts
+
+### When it happens:
+
+Two branches change the **same lines** in the same file.
+
+```bash
+git merge feature/header
+```
+
+Git will mark conflict:
+
+```plaintext
+<<<<<<< HEAD
+main branch changes
+=======
+feature branch changes
+>>>>>>> feature/header
+```
+
+You resolve manually and commit.
+
+---
+
+## 9. Git Log, Diff, and Reset
+
+### View commit history:
+
+```bash
+git log --oneline --graph --all
+```
+
+### View what changed:
+
+```bash
+git diff               # unstaged
+git diff --staged      # staged
+```
+
+### Undo changes:
+
+```bash
+git restore file.js                # unstaged changes
+git reset HEAD file.js             # unstage a file
+git reset --hard <commit-hash>     # dangerous: full reset
+```
+
+---
+
+## 10. Ignoring Files
+
+### Create `.gitignore`:
+
+```
+node_modules/
+dist/
+.env
+```
+
+---
+
+## 11. Stashing Changes
+
+When switching branches but don't want to commit yet:
+
+```bash
+git stash
+git checkout main
+git stash pop
+```
+
+---
+
+## 12. Cherry-pick a Commit
+
+Pick specific commits from another branch:
+
+```bash
+git cherry-pick <commit-hash>
+```
+
+Useful in hotfixes or when not merging full branches.
+
+---
+
+## 13. Git Tags
+
+Used for marking **releases or milestones**:
+
+```bash
+git tag v1.0
+git push origin v1.0
+```

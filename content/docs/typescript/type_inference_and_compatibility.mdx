@@ -1,0 +1,130 @@
+---
+title: Type Inference and Compatibility
+---
+
+TypeScript is smart. It can **infer types** without explicit annotations, and it checks whether types are **structurally compatible**.
+
+---
+
+## Type Inference
+
+TypeScript guesses the type based on the value assigned.
+
+```ts
+let age = 25; // inferred as number
+let name = "Diwash"; // inferred as string
+```
+
+```ts
+function greet(name = "Guest") {
+  return `Hello, ${name}`;
+}
+// name: inferred as string
+```
+
+---
+
+## Type Inference Fails When...
+
+```ts
+let data; // inferred as 'any' ❌
+data = "hello"; // still any, no safety
+```
+
+**Fix:**
+
+```ts
+let data: string;
+```
+
+Or assign immediately:
+
+```ts
+let data = "hello"; // now it's string ✅
+```
+
+---
+
+## Best Practice
+
+Always **initialize variables** or **explicitly declare types** to avoid `any`.
+
+---
+
+## Structural Typing (Duck Typing)
+
+TypeScript uses **structural typing**, not nominal typing.
+
+```ts
+type Point = { x: number; y: number };
+
+const printPoint = (p: Point) => {
+  console.log(p.x, p.y);
+};
+
+const coord = { x: 10, y: 20, z: 30 };
+
+printPoint(coord); // ✅ z is extra, but x and y match
+```
+
+---
+
+## Type Compatibility
+
+Two types are **compatible** if their structure matches.
+
+```ts
+type Person = { name: string };
+type User = { name: string };
+
+const user: User = { name: "Diwash" };
+const person: Person = user; // ✅ compatible
+```
+
+---
+
+## Function Compatibility
+
+Functions are compatible if:
+
+- Parameter count & types are compatible
+- Return types are compatible
+
+```ts
+type FuncA = (a: number) => void;
+type FuncB = (a: number, b: string) => void;
+
+const fn: FuncB = (a, b) => console.log(a, b);
+const fn2: FuncA = fn; // ✅ okay
+// const fn3: FuncB = fn2; ❌
+```
+
+---
+
+## Excess Property Check (Only on Object Literals)
+
+```ts
+type Animal = { name: string };
+
+const tiger = { name: "Tiger", age: 4 };
+
+const a1: Animal = tiger; // ✅ okay
+const a2: Animal = { name: "Tiger", age: 4 }; // ❌ Error: excess property
+```
+
+**Fix:**
+
+```ts
+const a2: Animal = { name: "Tiger" };
+```
+
+---
+
+## Task 10 – Practice
+
+In `inference.ts`:
+
+1. Create a variable `city = "Kathmandu"` and let TypeScript infer the type.
+2. Write a function `square(n)` that returns `n * n`. Let TypeScript infer return type.
+3. Create two types with same shape. Assign one to the other.
+4. Pass an object with extra fields to a function expecting fewer fields. Explain why it works.

@@ -1,0 +1,187 @@
+---
+title: GitHub
+description: Learn how to use GitHub for version control, collaboration, and project management.
+---
+
+## What is GitHub?
+
+**GitHub** is a cloud-based platform built on top of Git that allows:
+
+- **Remote hosting** of repositories
+- **Collaboration** between developers
+- **Code reviews**, **issue tracking**, **CI/CD**, **documentation**, and more
+
+> Git manages code **locally**. GitHub allows teams to **collaborate remotely** using Git.
+
+---
+
+## 1. Setting Up a GitHub Account
+
+### Steps:
+
+1. Go to [https://github.com](https://github.com)
+2. Sign up with email and password
+3. Set username & verify email
+4. Create your first repository (manual or via CLI)
+
+---
+
+## 2. Creating and Connecting a Remote Repository
+
+### On GitHub:
+
+- Click **New repository**
+- Add name: `my-portfolio`
+- Choose **public/private**
+- Don’t initialize with README if pushing local repo
+
+### In Terminal (connect local repo):
+
+```bash
+git init
+git remote add origin https://github.com/yourname/my-portfolio.git
+git branch -M main
+git push -u origin main
+```
+
+`-u` sets upstream so future `git push` works without `origin main`
+
+---
+
+## 3. GitHub Workflow (GitHub Flow)
+
+> This is the recommended way for collaboration.
+
+### GitHub Flow:
+
+```plaintext
+main → branch → commit → push → pull request → review → merge → delete branch
+```
+
+### Best Practice:
+
+Each feature/fix = 1 branch
+Every contribution = Pull Request
+
+---
+
+## 4. Branching & Pull Requests
+
+### Step-by-step:
+
+1. **Create a branch**:
+
+   ```bash
+   git checkout -b feature/navbar
+   ```
+
+2. **Push it to GitHub**:
+
+   ```bash
+   git push -u origin feature/navbar
+   ```
+
+3. **Create Pull Request (PR)**:
+
+   - Go to repo on GitHub
+   - Click “Compare & pull request”
+   - Add title and description
+   - Click “Create Pull Request”
+
+4. **Review & Merge**:
+
+   - Use “Files changed” tab
+   - Review and comment
+   - Merge → Delete branch
+
+---
+
+## 5. Forking & Cloning
+
+### Forking:
+
+Used for **open-source contributions**.
+
+- Click “Fork” button on a public repo
+- Make changes in your fork
+- Submit **Pull Request** to original repo
+
+### Cloning:
+
+Copy any repo locally:
+
+```bash
+git clone https://github.com/user/repo.git
+cd repo
+```
+
+---
+
+## 6. Issues, Discussions & Projects
+
+### GitHub Issues:
+
+Used for bug tracking, feature requests, and documentation improvements.
+
+- Use labels: `bug`, `enhancement`, `documentation`
+- Use Markdown to format content
+
+### GitHub Discussions:
+
+For long-form Q\&A and community interaction
+
+### GitHub Projects (Kanban):
+
+- Helps manage roadmap
+- Columns: `To Do`, `In Progress`, `Done`
+
+---
+
+## 7. Access Management (Private Repos)
+
+- Repo → Settings → Manage access
+- Add team members as **Collaborators**
+- Assign roles: Admin, Maintainer, Read/Write
+
+---
+
+## 8. GitHub Actions (CI/CD) – Brief Introduction
+
+You can automate:
+
+- Linting
+- Testing
+- Deployment
+
+Example: Run ESLint on push
+
+```yaml
+# .github/workflows/lint.yml
+name: Lint Code
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install
+      - run: npm run lint
+```
+
+---
+
+## 9. Summary Table
+
+| Feature        | Purpose                           | Example                             |
+| -------------- | --------------------------------- | ----------------------------------- |
+| `git remote`   | Connect local repo to GitHub      | `git remote add origin URL`         |
+| PR             | Merge code via review             | Create via GitHub UI                |
+| Fork           | Contribute to someone else's repo | `Fork > Clone > PR`                 |
+| Clone          | Copy a repo locally               | `git clone URL`                     |
+| Issues         | Track bugs/tasks                  | `New Issue > Assign > Label`        |
+| GitHub Actions | Automate build/test/deploy        | Workflow YAML files                 |
+| Project Board  | Track task progress               | Columns: To Do → In Progress → Done |

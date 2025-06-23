@@ -1,0 +1,103 @@
+---
+title: Unions & Literal Types
+description: Learn how to use union types in TypeScript to handle multiple data types effectively.
+---
+
+### What is a Union Type?
+
+A **union type** allows a variable to take on **multiple types**.
+
+### Syntax:
+
+```ts
+type Variable = Type1 | Type2 | Type3;
+```
+
+### Example:
+
+```ts
+let value: string | number;
+
+value = "hello"; // ✅ OK
+value = 42; // ✅ OK
+value = true; // ❌ Error
+```
+
+### Use Case:
+
+Useful when a function accepts different input types:
+
+```ts
+function printId(id: string | number) {
+  console.log("Your ID is: " + id);
+}
+```
+
+If you want to do operations specific to a type:
+
+```ts
+function handleInput(input: string | number) {
+  if (typeof input === "string") {
+    return input.toUpperCase();
+  }
+  return input.toFixed(2);
+}
+```
+
+---
+
+## 2. Literal Types
+
+### What is a Literal Type?
+
+Literal types let you specify the **exact value** a variable can have.
+
+### Syntax:
+
+```ts
+type Direction = "left" | "right" | "up" | "down";
+```
+
+### Example:
+
+```ts
+let direction: "left" | "right";
+
+direction = "left"; // ✅ OK
+direction = "right"; // ✅ OK
+direction = "up"; // ❌ Error
+```
+
+### Use Case:
+
+You can restrict function arguments to specific values:
+
+```ts
+function move(dir: "left" | "right" | "up" | "down") {
+  console.log(`Moving ${dir}`);
+}
+
+move("left"); // ✅
+move("upward"); // ❌
+```
+
+---
+
+## Combining Union & Literal Types
+
+You can combine both to define reusable patterns:
+
+```ts
+type Status = "success" | "error" | "loading";
+type Result = string | number | boolean;
+```
+
+---
+
+## Task 2 – Practice
+
+In a file `union-literal.ts`:
+
+1. Create a function `logStatus(status: "success" | "error" | "loading")`.
+2. Create a variable `response: string | number` and print a message based on its type.
+3. Use `typeof` guard to perform different actions.

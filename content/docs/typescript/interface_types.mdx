@@ -1,0 +1,141 @@
+---
+title: Interfaces vs Types
+description: Understand the differences between interfaces and types in TypeScript, including when to use each and best practices.
+---
+
+Both `interface` and `type` are used to define **custom types** in TypeScript. They are similar but have key differences.
+
+---
+
+## `interface` – Defining Object Shapes
+
+```ts
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+```
+
+### Usage
+
+```ts
+const user: User = {
+  id: "u1",
+  name: "Diwash",
+  email: "diwash@example.com",
+};
+```
+
+---
+
+## `type` – Alias for Any Type
+
+```ts
+type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+```
+
+You can also alias **primitive**, **union**, **tuple**, etc.
+
+```ts
+type ID = string | number;
+type Point = [number, number];
+```
+
+---
+
+## Interface vs Type – Side-by-Side
+
+| Feature                    | `interface`                 | `type`                               |
+| -------------------------- | --------------------------- | ------------------------------------ |
+| Object Type                | ✅ Yes                      | ✅ Yes                               |
+| Primitives, Unions, Tuples | ❌ No                       | ✅ Yes                               |
+| Extension                  | ✅ Extends other interfaces | ✅ Extends other types or interfaces |
+| Declaration Merging        | ✅ Yes                      | ❌ No                                |
+| Performance (internal)     | Slightly better             | Slightly heavier                     |
+
+---
+
+## Interface Extension
+
+```ts
+interface Person {
+  name: string;
+}
+
+interface Employee extends Person {
+  employeeId: number;
+}
+
+const emp: Employee = {
+  name: "Diwash",
+  employeeId: 123,
+};
+```
+
+---
+
+## Type Composition
+
+```ts
+type Person = {
+  name: string;
+};
+
+type Employee = Person & {
+  employeeId: number;
+};
+
+const emp: Employee = {
+  name: "Diwash",
+  employeeId: 123,
+};
+```
+
+---
+
+## Declaration Merging (Only with Interfaces)
+
+```ts
+interface Box {
+  width: number;
+}
+
+interface Box {
+  height: number;
+}
+
+// Merged: { width: number; height: number; }
+const box: Box = {
+  width: 100,
+  height: 200,
+};
+```
+
+`type` cannot do this.
+
+---
+
+## Best Practices
+
+| Use Case               | Recommendation     |
+| ---------------------- | ------------------ |
+| Object structure (OOP) | `interface`        |
+| Union/tuple/primitive  | `type`             |
+| Complex composition    | `type`             |
+| Public library typings | Prefer `interface` |
+
+---
+
+## Task 5 – Practice
+
+In `interface-vs-type.ts`:
+
+1. Define a `Person` using `interface`.
+2. Extend it into `Developer` with `skills: string[]`.
+3. Do the same using `type` composition.
+4. Create a union `type Theme = "light" | "dark"` and log it.

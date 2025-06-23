@@ -1,0 +1,139 @@
+---
+title: Type Narrowing
+---
+
+Type narrowing is **refining a variable’s type** from a union to a more specific one using logic. Type guards help TypeScript **understand which type you're working with** inside conditionals.
+
+---
+
+## Example Problem
+
+```ts
+function printId(id: number | string) {
+  console.log(id.toUpperCase()); // ❌ Error: number has no `toUpperCase`
+}
+```
+
+TypeScript doesn’t know if `id` is a `number` or `string`, so we must **narrow** the type.
+
+---
+
+## Type Narrowing using `typeof`
+
+```ts
+function printId(id: number | string) {
+  if (typeof id === "string") {
+    console.log(id.toUpperCase()); // ✅ narrowed to string
+  } else {
+    console.log(id.toFixed(2)); // ✅ narrowed to number
+  }
+}
+```
+
+---
+
+## Type Narrowing using `in` Operator
+
+```ts
+type User = { name: string };
+type Admin = { name: string; role: string };
+
+function logPerson(person: User | Admin) {
+  if ("role" in person) {
+    console.log(`Admin Role: ${person.role}`);
+  } else {
+    console.log(`User Name: ${person.name}`);
+  }
+}
+```
+
+---
+
+## Type Narrowing using `instanceof`
+
+```ts
+class Dog {
+  bark() {
+    console.log("Woof!");
+  }
+}
+
+class Cat {
+  meow() {
+    console.log("Meow!");
+  }
+}
+
+function speak(pet: Dog | Cat) {
+  if (pet instanceof Dog) {
+    pet.bark();
+  } else {
+    pet.meow();
+  }
+}
+```
+
+---
+
+## Custom Type Guards
+
+You can define your own **type guard functions** using a return type predicate:
+
+```ts
+type Fish = { swim: () => void };
+type Bird = { fly: () => void };
+
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+
+function move(pet: Fish | Bird) {
+  if (isFish(pet)) {
+    pet.swim();
+  } else {
+    pet.fly();
+  }
+}
+```
+
+---
+
+## Discriminated Unions (Recommended Pattern)
+
+```ts
+type Circle = { kind: "circle"; radius: number };
+type Square = { kind: "square"; side: number };
+
+type Shape = Circle | Square;
+
+function getArea(shape: Shape): number {
+  switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2;
+    case "square":
+      return shape.side ** 2;
+  }
+}
+```
+
+The `kind` field makes narrowing much easier and safer.
+
+---
+
+## Best Practice
+
+- Always narrow before accessing a method/property.
+- Prefer `typeof`, `in`, and discriminated unions.
+- Use custom guards for complex objects.
+
+---
+
+## Task 7 – Practice
+
+In `narrowing.ts`:
+
+1. Create a `printId` function with string | number.
+2. Use `in` operator to detect if an object is an Admin.
+3. Use `instanceof` to differentiate `Date` and `string`.
+4. Write a custom type guard `isString()` to check if a value is a string.
+5. Create a `Shape` union with `kind` and write an `area()` function.

@@ -1,0 +1,142 @@
+---
+title: Utility Types
+description: Learn about TypeScript's built-in utility types for type transformations, such as Partial, Required, Pick, Omit, Record, and Readonly.
+---
+
+These are great for **DRY code**, **type reuse**, and **type-safe object manipulation**.
+
+---
+
+## 1. `Partial<T>`
+
+Makes all properties of a type optional.
+
+```ts
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+type UpdateUserInput = Partial<User>;
+
+const updateUser = (data: UpdateUserInput) => {
+  console.log(data);
+};
+
+updateUser({ name: "Diwash" }); // ✅ works even if other fields are missing
+```
+
+---
+
+## 2. `Required<T>`
+
+Makes all properties required (opposite of `Partial`).
+
+```ts
+type OptionalUser = {
+  id?: number;
+  name?: string;
+};
+
+type FullUser = Required<OptionalUser>;
+```
+
+---
+
+## 3. `Pick<T, K>`
+
+Creates a new type by picking a **subset** of properties from another type.
+
+```ts
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+type UserPreview = Pick<User, "id" | "name">;
+```
+
+---
+
+## 4. `Omit<T, K>`
+
+Removes specified keys from a type.
+
+```ts
+type UserWithoutEmail = Omit<User, "email">;
+```
+
+---
+
+## 5. `Record<K, T>`
+
+Creates a new type with a set of keys `K`, and values of type `T`.
+
+```ts
+type Roles = "admin" | "doctor" | "patient";
+
+const access: Record<Roles, boolean> = {
+  admin: true,
+  doctor: true,
+  patient: false,
+};
+```
+
+---
+
+## 6. `Readonly<T>`
+
+Makes all properties **immutable**.
+
+```ts
+type Config = {
+  url: string;
+};
+
+const config: Readonly<Config> = {
+  url: "https://api.example.com",
+};
+
+// config.url = "https://new.com"; ❌ Error: cannot assign to readonly property
+```
+
+---
+
+## Advanced Utilities (Bonus)
+
+| Utility          | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `Exclude<T, U>`  | Exclude from `T` those types that are assignable to `U` |
+| `Extract<T, U>`  | Extract from `T` those types that are assignable to `U` |
+| `NonNullable<T>` | Removes `null` and `undefined` from `T`                 |
+
+Example:
+
+```ts
+type A = Exclude<"a" | "b" | "c", "a">; // "b" | "c"
+type B = Extract<"a" | "b", "a" | "c">; // "a"
+type C = NonNullable<string | null | undefined>; // string
+```
+
+---
+
+## Best Practices
+
+- Use `Pick`/`Omit` for controlling data exposure (e.g., hiding `password`, `token`).
+- Use `Partial` for form updates and PATCH requests.
+- Use `Record` for permission mapping or static dictionaries.
+
+---
+
+## Task 11 – Practice
+
+In `utility-types.ts`:
+
+1. Create a `User` type.
+2. Use `Pick` to create `PublicUser` type with only `name` and `email`.
+3. Use `Omit` to create a type without `password`.
+4. Use `Partial` to define an `updateUser()` function.
+5. Use `Record` to define user access control map.
+6. Try `Readonly` on config object and try modifying it.

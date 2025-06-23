@@ -1,0 +1,109 @@
+---
+title: Arrays and Tuples
+description: Learn how to work with arrays and tuples in TypeScript, including syntax, examples, and best practices.
+---
+
+## Arrays in TypeScript
+
+### Syntax:
+
+```ts
+let names: string[] = ["Diwash", "Alex"];
+let scores: number[] = [90, 85, 100];
+```
+
+You can also use a generic form:
+
+```ts
+let flags: Array<boolean> = [true, false];
+```
+
+---
+
+### Example:
+
+```ts
+let fruits: string[] = ["apple", "banana", "orange"];
+
+function printFruits(fruits: string[]): void {
+  fruits.forEach((fruit) => {
+    console.log(fruit.toUpperCase());
+  });
+}
+
+printFruits(fruits);
+```
+
+### Invalid Case:
+
+```ts
+let numbers: number[] = [1, "2"]; // ❌ Error: "2" is a string
+```
+
+---
+
+## Multidimensional Arrays
+
+```ts
+let matrix: number[][] = [
+  [1, 2],
+  [3, 4],
+];
+```
+
+---
+
+## Tuples in TypeScript
+
+Tuples are **fixed-length**, **ordered arrays** with known types for each element.
+
+### Syntax:
+
+```ts
+let user: [string, number] = ["Diwash", 24];
+```
+
+Each index must match the specified type:
+
+```ts
+let point: [number, number] = [10, 20]; // ✅
+let wrong: [number, string] = [10, 20]; // ❌ Error
+```
+
+---
+
+### Example:
+
+```ts
+type Response = [string, number];
+
+function getUserInfo(): Response {
+  return ["Success", 200];
+}
+
+const [msg, code] = getUserInfo();
+console.log(msg, code); // "Success", 200
+```
+
+---
+
+### Tuples with Optional and Rest Elements
+
+You can use optional and rest elements:
+
+```ts
+type Log = [string, Date?, ...string[]];
+
+const errorLog: Log = ["Error", new Date(), "DB error", "Stacktrace"];
+const simpleLog: Log = ["Info"];
+```
+
+---
+
+## Task 3 – Practice
+
+In a file `arrays-tuples.ts`:
+
+1. Create an array `skills` of strings.
+2. Write a function `logScores(scores: number[]): void` that logs each score.
+3. Define a tuple `user: [string, number]` and log its contents.

@@ -1,0 +1,15 @@
+{
+  "title": "Typescript",
+  "pages": [
+    "basics",
+    "unions",
+    "arrays_tuples",
+    "enums",
+    "interface_types",
+    "function_parameters_signature",
+    "type_narrowing",
+    "generics",
+    "type_inference_and_compatibility",
+    "utility_types"
+  ]
+}

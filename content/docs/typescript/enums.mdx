@@ -1,0 +1,129 @@
+---
+title: Enums
+description: Learn how to use enums in TypeScript, including syntax, examples, and best practices.
+---
+
+## What is an Enum?
+
+An **enum** (short for _enumerations_) is a way to define a **set of named constants**. It’s useful when you want to represent a fixed number of related values with readable names.
+
+---
+
+## Basic Syntax
+
+```ts
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+```
+
+By default, enum members are assigned values starting from `0`.
+
+```ts
+Direction.Up; // 0
+Direction.Down; // 1
+```
+
+You can also assign **custom values**:
+
+```ts
+enum StatusCode {
+  OK = 200,
+  BadRequest = 400,
+  Unauthorized = 401,
+  NotFound = 404,
+}
+```
+
+---
+
+## Reverse Mapping (Only for Numeric Enums)
+
+```ts
+enum Color {
+  Red = 1,
+  Green,
+  Blue,
+}
+
+console.log(Color.Red); // 1
+console.log(Color[2]); // Green
+```
+
+---
+
+## String Enums (Recommended for Readability)
+
+```ts
+enum Role {
+  Admin = "ADMIN",
+  Doctor = "DOCTOR",
+  Patient = "PATIENT",
+}
+```
+
+Safer and clearer for logs, debugging, and APIs.
+
+---
+
+## Example: Using Enums in Functions
+
+```ts
+enum LogLevel {
+  Info = "INFO",
+  Warning = "WARNING",
+  Error = "ERROR",
+}
+
+function log(message: string, level: LogLevel): void {
+  console.log(`[${level}] ${message}`);
+}
+
+log("Server started", LogLevel.Info);
+log("Low disk space", LogLevel.Warning);
+log("Service crashed", LogLevel.Error);
+```
+
+---
+
+## Const Enums (Compile-Time Optimization)
+
+```ts
+const enum Size {
+  Small,
+  Medium,
+  Large,
+}
+
+let mySize: Size = Size.Medium;
+```
+
+> `const enum` gets inlined during compilation. No runtime object is generated. Must be used cautiously.
+
+---
+
+## Use Cases
+
+- API status codes
+- Roles & permissions
+- Log levels
+- Config states (e.g., ThemeMode.Light/Dark)
+
+---
+
+## Best Practices
+
+- Prefer **string enums** or **union types** for clarity and safety.
+- Avoid **heterogeneous enums**.
+- Use **const enums** only when you want **zero runtime cost** and know the values will never change.
+
+## Task 4 – Practice
+
+In a file `enums.ts`:
+
+1. Define a `ThemeMode` enum: `"LIGHT" | "DARK"`.
+2. Create a function `applyTheme(mode: ThemeMode)` that logs the mode.
+3. Create a `UserRole` enum: `Admin`, `Editor`, `Viewer`, and log their values.

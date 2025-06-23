@@ -1,0 +1,123 @@
+---
+title: Function Parameters & Signatures
+---
+
+Understanding function parameter types is essential in TypeScript to write safe and predictable code.
+
+---
+
+## Basic Function Typing
+
+```ts
+function greet(name: string): string {
+  return `Hello, ${name}`;
+}
+```
+
+### Explicit Type Annotation
+
+```ts
+const add = (a: number, b: number): number => {
+  return a + b;
+};
+```
+
+---
+
+## Optional Parameters
+
+```ts
+function logMessage(message: string, user?: string) {
+  console.log(`${user ? user + ": " : ""}${message}`);
+}
+
+logMessage("System started"); // ✅
+logMessage("System error", "Admin"); // ✅
+```
+
+> Parameters with `?` are `undefined` if not provided.
+
+---
+
+## Default Parameters
+
+```ts
+function welcome(name: string = "Guest") {
+  console.log(`Welcome, ${name}`);
+}
+
+welcome(); // Welcome, Guest
+welcome("Diwash"); // Welcome, Diwash
+```
+
+---
+
+## Rest Parameters
+
+Use rest params when you don’t know how many arguments will be passed.
+
+```ts
+function sum(...numbers: number[]): number {
+  return numbers.reduce((total, n) => total + n, 0);
+}
+
+sum(1, 2, 3, 4); // 10
+```
+
+---
+
+## Named Function Signatures (Type Aliases)
+
+```ts
+type AddFn = (x: number, y: number) => number;
+
+const add: AddFn = (a, b) => a + b;
+```
+
+---
+
+## Return Type Inference
+
+TypeScript usually infers the return type:
+
+```ts
+function multiply(x: number, y: number) {
+  return x * y; // inferred as number
+}
+```
+
+But you can specify it explicitly:
+
+```ts
+function multiply(x: number, y: number): number {
+  return x * y;
+}
+```
+
+---
+
+## Void & Never
+
+```ts
+function logError(msg: string): void {
+  console.error(msg);
+}
+
+function throwError(): never {
+  throw new Error("Unexpected error");
+}
+```
+
+- `void`: no return value
+- `never`: never returns (throws or infinite loop)
+
+---
+
+## Task 6 – Practice
+
+In `functions.ts`:
+
+1. Create a `greetUser` function with an optional `title`.
+2. Write a `sum` function using rest parameters.
+3. Create a type alias `MathFn` and implement `multiply` using it.
+4. Add a `logEvent` function with a default user of `"system"`.

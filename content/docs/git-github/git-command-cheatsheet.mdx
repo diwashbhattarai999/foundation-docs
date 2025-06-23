@@ -1,0 +1,156 @@
+---
+title: Git Command Cheatsheet
+description: A quick reference for essential Git commands and workflows.
+---
+
+## Part 1: Git Setup
+
+| Command                                    | Description                                                | Example                                                 |
+| ------------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------- |
+| `git config --global user.name "<name>"`   | Sets your global Git username (used in commits).           | `git config --global user.name "Diwash Bhattarai"`      |
+| `git config --global user.email "<email>"` | Sets your global Git email (used in commits).              | `git config --global user.email "diwashb999@gmail.com"` |
+| `git config --list`                        | Lists all Git configurations (user info, editor, aliases). | `git config --list`                                     |
+
+> 🔹 Always set your name and email before committing, especially if pushing to GitHub.
+
+---
+
+## Part 2: Starting a Project
+
+| Command           | Description                                                              | Example                                         |
+| ----------------- | ------------------------------------------------------------------------ | ----------------------------------------------- |
+| `git init`        | Initializes a new Git repo in the current folder.                        | `git init`                                      |
+| `git clone <url>` | Copies an existing Git repo (from GitHub, GitLab, etc.) to your machine. | `git clone https://github.com/user/project.git` |
+
+> 🔹 `init` is used for new projects. `clone` is used for downloading existing ones.
+
+---
+
+## Part 3: Tracking Changes
+
+| Command                 | Description                                                            | Example                                |
+| ----------------------- | ---------------------------------------------------------------------- | -------------------------------------- |
+| `git status`            | Shows the current status of your working directory and staged changes. | `git status`                           |
+| `git add <file>`        | Stages a single file.                                                  | `git add index.tsx`                    |
+| `git add .`             | Stages all modified and new files.                                     | `git add .`                            |
+| `git reset <file>`      | Unstages a file (but keeps your local changes).                        | `git reset index.tsx`                  |
+| `git commit -m "<msg>"` | Records a snapshot of staged changes with a message.                   | `git commit -m "feat: add login form"` |
+| `git commit --amend`    | Modifies the last commit (used to change message or add files).        | `git commit --amend`                   |
+
+> Use `add` to stage changes, `commit` to save a snapshot. Use `--amend` to correct mistakes.
+
+---
+
+## Part 4: Branching & Isolated Workflows
+
+| Command                    | Description                                       | Example                        |
+| -------------------------- | ------------------------------------------------- | ------------------------------ |
+| `git branch`               | Lists all local branches.                         | `git branch`                   |
+| `git branch <name>`        | Creates a new branch.                             | `git branch feature/cart-ui`   |
+| `git checkout <branch>`    | Switches to another branch.                       | `git checkout dev`             |
+| `git checkout -b <branch>` | Creates and switches to a new branch in one step. | `git checkout -b feature/auth` |
+| `git switch <branch>`      | A modern alternative to `checkout` for switching. | `git switch main`              |
+
+> 🔹 Use branches to isolate features, fixes, or experiments. Never commit directly to `main` in teams.
+
+---
+
+## Part 5: Merging & Syncing Work
+
+| Command                       | Description                                              | Example                     |
+| ----------------------------- | -------------------------------------------------------- | --------------------------- |
+| `git merge <branch>`          | Merges changes from `<branch>` into your current branch. | `git merge feature/profile` |
+| `git pull`                    | Fetches and merges changes from a remote repo.           | `git pull origin main`      |
+| `git fetch`                   | Downloads remote updates **without merging**.            | `git fetch origin`          |
+| `git push`                    | Uploads your commits to a remote repo.                   | `git push origin main`      |
+| `git push -u origin <branch>` | Pushes a new branch and sets it to track upstream.       | `git push -u origin dev`    |
+
+> Use `pull` before pushing to prevent conflicts. Use `merge` to bring another branch’s changes into your own.
+
+---
+
+## Part 6: Undoing Mistakes
+
+| Command                  | Description                                           | Example                     |
+| ------------------------ | ----------------------------------------------------- | --------------------------- |
+| `git revert <commit>`    | Creates a new commit that reverses a specific commit. | `git revert 6f3a112`        |
+| `git reset <file>`       | Unstages the file (doesn’t delete changes).           | `git reset App.tsx`         |
+| `git reset --hard`       | Wipes all local changes to match the latest commit.   | `git reset --hard HEAD`     |
+| `git checkout -- <file>` | Restores a file to its last committed state.          | `git checkout -- index.tsx` |
+
+> Use `revert` on public branches; `reset`/`checkout` are for local-only corrections.
+
+---
+
+## Part 7: Stashing & Cleanup
+
+| Command           | Description                                           | Example           |
+| ----------------- | ----------------------------------------------------- | ----------------- |
+| `git stash`       | Temporarily saves your working changes (clean slate). | `git stash`       |
+| `git stash list`  | Lists all stashed changes.                            | `git stash list`  |
+| `git stash apply` | Reapplies the most recent stashed changes.            | `git stash apply` |
+| `git stash pop`   | Reapplies the most recently stashed changes.          | `git stash pop`   |
+| `git clean -fd`   | Deletes untracked files and directories.              | `git clean -fd`   |
+
+> Use stash when switching tasks mid-way. Be cautious with `clean` – it permanently deletes files.
+
+---
+
+## Part 8: Viewing History
+
+| Command             | Description                                                    | Example                           |
+| ------------------- | -------------------------------------------------------------- | --------------------------------- |
+| `git log`           | Shows commit history (most recent at top).                     | `git log --oneline --graph --all` |
+| `git show <commit>` | Displays details of a specific commit.                         | `git show a1b2c3`                 |
+| `git reflog`        | Shows recent changes to `HEAD` (including rebases and resets). | `git reflog`                      |
+| `git blame <file>`  | Shows who last changed each line of a file.                    | `git blame index.tsx`             |
+
+> These commands help debug code history, authorship, and find regressions.
+
+---
+
+## Part 9: Comparing Changes
+
+| Command                        | Description                                             | Example                |
+| ------------------------------ | ------------------------------------------------------- | ---------------------- |
+| `git diff`                     | Shows differences between your files and staging area.  | `git diff`             |
+| `git diff --cached`            | Shows differences between staging area and last commit. | `git diff --cached`    |
+| `git diff <commit1> <commit2>` | Compares two commits.                                   | `git diff HEAD~1 HEAD` |
+
+> Use `diff` before staging/committing to double-check what you're about to save.
+
+---
+
+## Part 10: Tags
+
+| Command                 | Description                   | Example                  |
+| ----------------------- | ----------------------------- | ------------------------ |
+| `git tag`               | Lists all tags in the repo.   | `git tag`                |
+| `git tag <name>`        | Adds a tag to current commit. | `git tag v1.0.0`         |
+| `git push origin <tag>` | Pushes a tag to the remote.   | `git push origin v1.0.0` |
+
+> Tags are useful for marking versions/releases (e.g., `v1.0`, `v2.0`).
+
+---
+
+## Part 11: Advanced Commands
+
+| Command                    | Description                                                | Example                  |
+| -------------------------- | ---------------------------------------------------------- | ------------------------ |
+| `git cherry-pick <commit>` | Apply a commit from another branch.                        | `git cherry-pick 3d2e1f` |
+| `git rebase <branch>`      | Reapply commits on top of another base.                    | `git rebase main`        |
+| `git bisect`               | Find the commit that introduced a bug using binary search. | `git bisect start`       |
+
+---
+
+## Part 12: Git Aliases (Productivity Boost)
+
+| Alias    | Maps To              | Setup                                                        |
+| -------- | -------------------- | ------------------------------------------------------------ |
+| `git co` | `git checkout`       | `git config --global alias.co checkout`                      |
+| `git br` | `git branch`         | `git config --global alias.br branch`                        |
+| `git st` | `git status`         | `git config --global alias.st status`                        |
+| `git cm` | `git commit -m`      | `git config --global alias.cm "commit -m"`                   |
+| `git ac` | `add . && commit -m` | `git config --global alias.ac '!git add . && git commit -m'` |
+
+> Aliases save time. Create your own for repeated commands.

@@ -1,0 +1,126 @@
+---
+title: Typescript Basics
+description: Learn TypeScript fundamentals, advanced features, and best practices for building robust applications.
+---
+
+## What is TypeScript?
+
+**TypeScript** is a _superset_ of JavaScript that adds **static typing** to the language. It helps catch errors during development instead of at runtime.
+
+Think of it like this:
+
+```
+JavaScript + Type Checking + Modern Features = TypeScript
+```
+
+---
+
+## Why Use TypeScript?
+
+| Feature           | Benefit                                            |
+| ----------------- | -------------------------------------------------- |
+| Static Typing     | Catches bugs early                                 |
+| IDE Support       | Better autocomplete, inline docs, refactoring      |
+| Code Scalability  | More maintainable for large apps                   |
+| Rich Ecosystem    | Integrates with React, Node, Express, etc.         |
+| Future JavaScript | Supports ES6+ features with backward compatibility |
+
+---
+
+## TypeScript Setup
+
+### 1. Install TypeScript globally:
+
+```bash
+npm install -g typescript
+```
+
+### 2. Create a project:
+
+```bash
+mkdir ts-basics
+cd ts-basics
+npm init -y
+tsc --init
+```
+
+### 3. Add a `.ts` file:
+
+```bash
+touch index.ts
+```
+
+### 4. Compile:
+
+```bash
+tsc
+```
+
+---
+
+## Basic Types in TypeScript
+
+| Type in JS  | Type in TS |
+| ----------- | ---------- |
+| `string`    | `any`      |
+| `number`    | `unknown`  |
+| `boolean`   | `never`    |
+| `null`      | `enum`     |
+| `undefined` | `tuple`    |
+| `object`    |
+
+---
+
+## Basic Types in TypeScript
+
+| Type                 | Example                        |
+| -------------------- | ------------------------------ |
+| `string`             | `let name: string = "Diwash"`  |
+| `number`             | `let age: number = 24`         |
+| `boolean`            | `let isAdmin: boolean = false` |
+| `any`                | `let x: any = "hello"`         |
+| `unknown`            | Safer version of `any`         |
+| `null` / `undefined` | Special JS values              |
+
+### Example:
+
+```ts
+let fullName: string = "Diwash Bhattarai";
+let age: number = 24;
+let isDeveloper: boolean = true;
+```
+
+---
+
+## Type Inference
+
+TypeScript can **infer** the type even if you don’t write it explicitly:
+
+```ts
+let city = "Kathmandu"; // inferred as string
+```
+
+But always prefer **explicit types** for clarity and long-term maintainability.
+
+---
+
+## Functions with Types
+
+```ts
+function greet(name: string): string {
+  return `Hello, ${name}`;
+}
+
+const message = greet("Diwash");
+console.log(message); // Hello, Diwash
+```
+
+---
+
+## Task 1 – Practice
+
+Create a file `basics.ts` and write:
+
+1. Your full name, age, and location with types.
+2. A function `isAdult(age: number): boolean` that returns `true` if age >= 18.
+3. Use the function to check your age.
