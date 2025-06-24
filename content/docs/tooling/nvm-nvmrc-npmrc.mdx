@@ -170,6 +170,55 @@ nvm install     # Installs version defined in .nvmrc
 
 ---
 
+## NVM Command Reference
+
+### 📦 **Node.js Installation & Use**
+
+| Command                        | Description                                              |
+| ------------------------------ | -------------------------------------------------------- |
+| `nvm install node`             | Install the latest version of Node.js                    |
+| `nvm install --lts`            | Install the latest LTS (Long-Term Support) version       |
+| `nvm install <version>`        | Install a specific version (e.g., `nvm install 18.17.1`) |
+| `nvm uninstall <version>`      | Remove a specific Node.js version                        |
+| `nvm use <version>`            | Switch to a specific Node.js version                     |
+| `nvm run <version> <file.js>`  | Run a file using a specific version of Node              |
+| `nvm exec <version> <command>` | Run any command using a specific Node version            |
+
+---
+
+### 📜 **Listing Versions**
+
+| Command                | Description                                    |
+| ---------------------- | ---------------------------------------------- |
+| `nvm list` or `nvm ls` | List installed versions                        |
+| `nvm ls-remote`        | List all Node.js versions available to install |
+| `nvm ls-remote --lts`  | List all available LTS versions                |
+
+---
+
+### 📍 **Aliases & Defaults**
+
+| Command                       | Description                                  |
+| ----------------------------- | -------------------------------------------- |
+| `nvm alias default <version>` | Set a default version for all shells         |
+| `nvm alias`                   | Show all aliases                             |
+| `nvm unalias <name>`          | Remove an alias                              |
+| `nvm current`                 | Show the currently active version            |
+| `nvm which <version>`         | Show the path to a specific version's binary |
+
+---
+
+### 🛠️ **Misc & Maintenance**
+
+| Command                            | Description                                          |
+| ---------------------------------- | ---------------------------------------------------- |
+| `nvm reinstall-packages <version>` | Reinstall global `npm` packages from another version |
+| `nvm clear-cache`                  | Clear the cache used to download Node versions       |
+| `nvm version`                      | Show the current `nvm` version                       |
+| `nvm ls default`                   | Show the default version set by `nvm`                |
+
+---
+
 ## Summary Table
 
 | File     | Tool | Purpose                           | Example Use Case                        |
