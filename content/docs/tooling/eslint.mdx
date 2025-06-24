@@ -1,0 +1,199 @@
+---
+title: Eslint
+description: Learn how to set up and use ESLint for linting JavaScript/TypeScript code, including configuration, rules, and best practices.
+---
+
+## What is ESLint?
+
+**ESLint** is a pluggable and configurable static code analysis tool used to **identify and fix problems in JavaScript or TypeScript code**. It helps developers write clean, consistent, and error-free code.
+
+Think of ESLint as a spellchecker for your codebase, but instead of spelling, it checks:
+
+- Syntax errors
+- Bad practices
+- Style violations
+- Unused variables
+- Violations of coding standards or rules
+
+---
+
+## Why Use ESLint?
+
+| Benefit                        | Explanation                                                                |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| **Catches bugs early**         | Warns about things like `==` vs `===`, undefined variables, etc.           |
+| **Maintains code consistency** | Ensures every developer follows the same conventions                       |
+| **Improves code quality**      | Encourages better practices (like avoiding `var` or too many nested loops) |
+| **Supports auto-fixing**       | Many errors can be automatically corrected using `eslint --fix`            |
+| **Highly configurable**        | You can use recommended rules, or write your own                           |
+| **Supports plugins**           | Extendable for frameworks like React, Next.js, TypeScript, etc.            |
+
+---
+
+## How ESLint Works
+
+1. **Parses** your code into an Abstract Syntax Tree (AST)
+2. **Applies rules** to traverse the tree and detect issues
+3. **Reports** any issues it finds (warnings or errors)
+4. **Optionally fixes** certain issues automatically
+
+---
+
+## Installing ESLint
+
+### 1. Install ESLint locally (recommended)
+
+```bash
+npm install eslint --save-dev
+```
+
+### 2. Initialize configuration
+
+```bash
+npx eslint --init
+```
+
+This will ask questions like:
+
+- Are you using TypeScript or JavaScript?
+- Are you using a framework like React?
+- Do you prefer tab or space indentation?
+
+### 3. Example ESLint configuration (`.eslintrc.json`)
+
+```json
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "@typescript-eslint"],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "eqeqeq": "error",
+    "react/react-in-jsx-scope": "off"
+  }
+}
+```
+
+---
+
+## Project Folder Integration
+
+Usually, you keep ESLint config in one of these files:
+
+| File                    | Description                                                         |
+| ----------------------- | ------------------------------------------------------------------- |
+| `.eslintrc.js/json/yml` | ESLint configuration                                                |
+| `.eslintignore`         | Files/folders to exclude from linting (not-required after eslint 9) |
+| `eslint.config.js`      | New flat config file (latest/recommended)                           |
+
+---
+
+## Commonly Used ESLint Rules
+
+| Rule             | Description                                               |
+| ---------------- | --------------------------------------------------------- |
+| `eqeqeq`         | Enforce `===` and `!==` over `==` and `!=`                |
+| `no-unused-vars` | Warn about variables declared but never used              |
+| `no-console`     | Disallow `console.log()` in production code               |
+| `prefer-const`   | Suggest using `const` over `let` when value never changes |
+| `curly`          | Enforce braces for all control statements                 |
+| `max-lines`      | Limit the number of lines in a file                       |
+
+---
+
+## Using ESLint with TypeScript
+
+Install the required dependencies:
+
+```bash
+npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+```
+
+Update `.eslintrc` as shown earlier to use:
+
+- `parser: @typescript-eslint/parser`
+- `plugin: @typescript-eslint/recommended`
+
+---
+
+## Run ESLint
+
+```bash
+npx eslint .             # Lint all files in the current folder
+npx eslint src/          # Lint only `src/` folder
+npx eslint . --fix       # Auto-fix fixable issues
+```
+
+---
+
+## ESLint + Prettier Integration
+
+- ESLint focuses on **code correctness** and best practices
+- Prettier focuses on **code formatting**
+
+Install integration tools:
+
+```bash
+npm install --save-dev prettier eslint-config-prettier eslint-plugin-prettier
+```
+
+Update `.eslintrc`:
+
+```json
+"extends": [
+  "eslint:recommended",
+  "plugin:@typescript-eslint/recommended",
+  "plugin:prettier/recommended"
+]
+```
+
+This setup avoids conflicts between ESLint and Prettier by:
+
+- Letting Prettier handle formatting
+- Disabling conflicting ESLint formatting rules
+
+---
+
+## Best Practices for Using ESLint
+
+| Tip                           | Why it matters                                  |
+| ----------------------------- | ----------------------------------------------- |
+| Use ESLint with Prettier      | Separates formatting and logic rules            |
+| Integrate ESLint into CI/CD   | Prevents bad code from being merged             |
+| Use `lint-staged` and `husky` | Automatically lint code before committing       |
+| Start with recommended rules  | Then tweak based on your team's preferences     |
+
+---
+
+## Sample Project Script Setup (`package.json`)
+
+```json
+"scripts": {
+  "lint": "eslint . --ext .js,.ts,.tsx",
+  "lint:fix": "eslint . --ext .js,.ts,.tsx --fix"
+}
+```
+
+---
+
+## Conclusion
+
+ESLint is **essential** for writing maintainable, secure, and consistent frontend code. It fits beautifully in a modern TypeScript + React project and is often used with tools like Prettier, Husky, and lint-staged to enforce coding standards and reduce code review burden.

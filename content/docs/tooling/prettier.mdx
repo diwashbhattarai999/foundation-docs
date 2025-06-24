@@ -1,0 +1,204 @@
+---
+title: Prettier
+description: Learn how to use Prettier for consistent code formatting in your projects.
+---
+
+## What is Prettier?
+
+**Prettier** is an **opinionated code formatter** that enforces a consistent code style across your codebase by parsing and reprinting your code with its own rules — taking the style decisions out of your hands.
+
+Instead of manually formatting code or debating over code style in code reviews, Prettier formats your code automatically.
+
+---
+
+## Why Use Prettier?
+
+| Benefit                     | Description                                                   |
+| --------------------------- | ------------------------------------------------------------- |
+| **Consistency**             | Ensures all team members follow the same style                |
+| **Saves time**              | Reduces time spent on formatting in PRs                       |
+| **Editor integration**      | Works with VSCode, WebStorm, etc. for real-time formatting    |
+| **Supports many languages** | JavaScript, TypeScript, CSS, JSON, HTML, YAML, Markdown, etc. |
+| **Auto-fixes formatting**   | Run `prettier --write` to fix all files in one command        |
+
+---
+
+## Installing Prettier
+
+```bash
+npm install --save-dev prettier
+```
+
+---
+
+## Prettier Setup (Recommended)
+
+### 1. Create a `.prettierrc` file
+
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "bracketSpacing": true,
+  "arrowParens": "avoid"
+}
+```
+
+**Explanation of options:**
+
+| Option           | Description                                              |
+| ---------------- | -------------------------------------------------------- |
+| `semi`           | Print semicolons (`true` = with semicolon)               |
+| `singleQuote`    | Use single quotes instead of double quotes               |
+| `tabWidth`       | Number of spaces per indentation level                   |
+| `trailingComma`  | Add trailing commas wherever possible                    |
+| `printWidth`     | Max line length (e.g., wrap at 100 characters)           |
+| `bracketSpacing` | Controls spacing inside object literals                  |
+| `arrowParens`    | Whether to include parentheses in single-arg arrow funcs |
+| `endOfLine`      | Set line endings (`lf - Unix`, `crlf - Windows`, `auto`) |
+
+### 2. Ignore files with `.prettierignore`
+
+```plaintext
+node_modules
+build
+dist
+coverage
+*.lock
+```
+
+---
+
+## Using Prettier
+
+### Manually format all files:
+
+```bash
+npx prettier --write .
+```
+
+### Check (without modifying):
+
+```bash
+npx prettier --check .
+```
+
+### Format a single file:
+
+```bash
+npx prettier --write src/index.ts
+```
+
+---
+
+## Scripts in `package.json`
+
+```json
+"scripts": {
+  "format": "prettier --write .",
+  "format:check": "prettier --check ."
+}
+```
+
+---
+
+## Prettier vs ESLint
+
+| Feature                | ESLint                          | Prettier                          |
+| ---------------------- | ------------------------------- | --------------------------------- |
+| **Purpose**            | Code quality & best practices   | Code formatting                   |
+| **Auto-fixable rules** | Some                            | Most (all are formatting-related) |
+| **Extensible**         | Yes (via plugins/rules)         | No (opinionated by design)        |
+| **Integration**        | Prettier can run through ESLint | Via `eslint-plugin-prettier`      |
+
+---
+
+## ESLint + Prettier Integration
+
+To avoid conflicts:
+
+```bash
+npm install --save-dev eslint-config-prettier eslint-plugin-prettier
+```
+
+Update your `.eslintrc.json`:
+
+```json
+{
+  "extends": ["plugin:prettier/recommended"]
+}
+```
+
+This setup:
+
+- Disables ESLint formatting rules that conflict with Prettier
+- Runs Prettier as an ESLint rule (`prettier/prettier`)
+
+---
+
+## Prettier with VS Code (Recommended)
+
+Install the **Prettier - Code Formatter** extension.
+
+Then in `settings.json`:
+
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
+```
+
+Now your files will auto-format when you hit **Save**.
+
+---
+
+## Prettier with Husky + lint-staged
+
+### Step 1: Install tools
+
+```bash
+npm install --save-dev husky lint-staged
+```
+
+### Step 2: Add config to `package.json`
+
+```json
+"lint-staged": {
+  "**/*.{js,ts,tsx,json,css,md}": "prettier --write"
+}
+```
+
+### Step 3: Add Husky hook
+
+```bash
+npx husky install
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+This ensures all staged files are prettified before every commit.
+
+---
+
+## Best Practices
+
+| Practice                                | Why it’s helpful                                     |
+| --------------------------------------- | ---------------------------------------------------- |
+| Use `.prettierrc` for team consistency  | Avoid personal overrides or conflicts                |
+| Use `format` script in CI               | Prevent unformatted code from merging                |
+| Use `format:check` to enforce in builds | Fail builds with incorrectly formatted code          |
+| Combine with ESLint                     | Formatting + best practices enforcement = clean code |
+| Use with Husky and lint-staged          | Auto-format only staged files on commit              |
+
+---
+
+## Conclusion
+
+Prettier is **essential** in modern frontend/backend development. When paired with ESLint and Git hooks, it creates a robust, automated environment that:
+
+- Ensures consistent formatting
+- Reduces cognitive load
+- Keeps PRs clean and focused on logic, not styling

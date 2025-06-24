@@ -1,0 +1,194 @@
+---
+title: Package Managers
+description: Learn about package managers in JavaScript/Node.js, how they work, and why
+---
+
+## What is a Package Manager?
+
+A **package manager** is a tool that automates:
+
+- **Installing** software packages (like libraries/frameworks)
+- **Managing dependencies** (other packages required by your project)
+- **Version control** (ensuring specific versions are used)
+- **Updating** packages to newer versions
+
+In JavaScript (Node.js), the most popular package managers are:
+
+| Package Manager | Description                                       |
+| --------------- | ------------------------------------------------- |
+| `npm`           | Node Package Manager (official)                   |
+| `yarn`          | Developed by Facebook (performance + security)    |
+| `pnpm`          | Fast and disk-efficient alternative               |
+| `bun`           | Newer, fast runtime with built-in package manager |
+
+---
+
+## What is a "Package"?
+
+A **package** is a folder with:
+
+- Code (usually JavaScript or TypeScript)
+- A `package.json` file containing metadata like name, version, dependencies
+
+For example:
+
+```json
+{
+  "name": "express",
+  "version": "4.18.2",
+  "dependencies": { ... }
+}
+```
+
+---
+
+## What is `package.json`?
+
+This is the **manifest** of your project. It defines:
+
+- Project metadata (`name`, `version`, `description`)
+- Scripts (e.g., `start`, `build`, `test`)
+- Dependencies (libraries your code needs)
+- Dev dependencies (tools needed only during development)
+- Peer dependencies (packages that your package expects to be installed by the consumer)
+- Author (name, email, url, etc.)
+- License (e.g., MIT, Apache, etc.)
+- Repository (where the code is hosted, e.g., GitHub)
+- Keywords (tags to help discover the package)
+- Engines (Node.js version compatibility)
+- type (`module` or `commonjs` for module system)
+- private (if true, prevents accidental publishing)
+
+Example:
+
+```json
+{
+  "name": "my-api",
+  "description": "A simple API built with Express",
+  "main": "src/server.js",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "keywords": ["api", "express", "node"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/my-api.git"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
+  }
+}
+```
+
+---
+
+## What is `node_modules`?
+
+After you run `npm install`, all the packages your app needs are downloaded into a `node_modules/` folder. This is where the actual code of your libraries lives.
+
+Each module can also have its own dependencies inside.
+
+---
+
+## Common Commands
+
+### npm (default in Node.js)
+
+| Command                | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| `npm init -y`          | Generate `package.json` with default values  |
+| `npm install <pkg>`    | Install a package                            |
+| `npm install`          | Install all dependencies from `package.json` |
+| `npm install -D <pkg>` | Install as dev dependency                    |
+| `npm uninstall <pkg>`  | Remove a package                             |
+| `npm update`           | Update all packages to latest versions       |
+| `npm outdated`         | Show outdated packages                       |
+| `npm run <script>`     | Run a script from `package.json`             |
+
+### yarn (alternative)
+
+```bash
+yarn init -y
+yarn add express
+yarn remove express
+yarn upgrade
+```
+
+### pnpm (faster, disk-saving alternative)
+
+```bash
+pnpm init
+pnpm add express
+pnpm remove express
+```
+
+---
+
+## Semantic Versioning (SemVer)
+
+Package versions follow: `MAJOR.MINOR.PATCH`
+
+For example: `1.3.2`
+
+- `^1.3.2` = any compatible version up to `2.0.0` (recommended)
+- `~1.3.2` = patch updates only (up to `1.3.x`)
+- `1.3.2` = fixed version
+
+---
+
+## How Does It Work Internally?
+
+1. You run `npm install express`
+2. npm:
+
+   - Downloads the latest compatible version from the **npm registry**
+   - Caches it locally
+   - Adds it to `node_modules`
+   - Updates `package.json` and `package-lock.json`
+
+> **npm Registry:** A large public database of packages ([https://registry.npmjs.org/](https://registry.npmjs.org/))
+
+---
+
+## What is `package-lock.json`?
+
+It records the **exact version** of every installed dependency to:
+
+- Ensure consistent installs across machines
+- Speed up installs (it’s a cache)
+
+---
+
+## Global vs Local Packages
+
+| Type   | Installed Using        | Example                                          |
+| ------ | ---------------------- | ------------------------------------------------ |
+| Local  | `npm install <pkg>`    | `express`, `axios`, etc.                         |
+| Global | `npm install -g <pkg>` | CLI tools like `nodemon`, `typescript`, `eslint` |
+
+---
+
+## Summary
+
+| Concept             | Explanation                                 |
+| ------------------- | ------------------------------------------- |
+| `package.json`      | Project's dependency and config manifest    |
+| `node_modules`      | Folder where installed packages live        |
+| `package-lock.json` | Lockfile for exact version control          |
+| Package Manager     | Tool to install and manage packages         |
+| Common Tools        | `npm`, `yarn`, `pnpm`                       |
+| Registry            | Where packages are fetched from (npmjs.org) |
