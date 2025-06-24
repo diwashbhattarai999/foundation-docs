@@ -1,0 +1,104 @@
+---
+title: Git Branches
+description: Best practices for managing Git branches in your projects.
+---
+
+## 1. Standard Branching Structure
+
+### Common Base Branches:
+
+| Branch            | Purpose                                     |
+| ----------------- | ------------------------------------------- |
+| `main` / `master` | Production-ready stable code                |
+| `develop`         | Active development base (if using Git Flow) |
+
+> If you're using trunk-based development, you may only have `main`.
+
+> Here, the term `main` is preferred over `master` to avoid connotations of slavery and oppression.
+
+---
+
+## 2. Branch Naming Conventions
+
+Use **kebab-case** (e.g., `add-login-form`) and include:
+
+- **Type of work** (`feat`, `fix`, `chore`, `docs`, etc.)
+- **Ticket ID / Issue number** (if available)
+- **Short description** of the work
+
+### Format:
+
+```
+<type>/<short-description>
+<type>/<issue-id>-<short-description>
+```
+
+### Examples:
+
+- `feat/add-user-authentication`
+- `fix/112-login-error`
+- `chore/update-dependencies`
+- `docs/git-guidelines`
+
+---
+
+## 3. Recommended Types
+
+| Type        | Use when...                              |
+| ----------- | ---------------------------------------- |
+| `feat/`     | You're adding a new feature              |
+| `fix/`      | You're fixing a bug                      |
+| `chore/`    | Non-code or maintenance tasks            |
+| `docs/`     | Writing or updating documentation        |
+| `test/`     | Adding or fixing tests                   |
+| `refactor/` | Improving code without changing behavior |
+| `hotfix/`   | Urgent fixes for production              |
+| `ci/`       | Continuous integration changes           |
+
+---
+
+## 4. Popular Branching Strategies
+
+### 🔹 GitHub Flow (Simple & Popular):
+
+- Base: `main`
+- Create branch: `feat/...`, `fix/...`, etc.
+- Open pull request into `main`
+- Review → Merge → Deploy
+
+### 🔹 Git Flow (More Structured):
+
+- Long-lived: `main`, `develop`
+- Supporting:
+
+  - `feature/*` → branch off `develop` for new features and merge into `develop`
+  - `release/*` → branch off `develop` for preparing releases, merge into `main` and `develop`
+  - `hotfix/*` → branch off `main` for urgent fixes, merge into `main` and `develop`
+
+**Use Git Flow only when release cycles are long and complex.**
+
+---
+
+## 5. Tips for Branching
+
+- **Always branch off the right base** (`main`, `develop`, etc.)
+- **Use short but descriptive names**
+- **Never push directly to `main`**
+- **Pull before branching** to get latest changes
+- **Delete merged branches** to keep the repo clean
+- Use **Draft PRs** if your work is still in progress
+- **Prefix with team or scope** if collaborating:
+
+  - `ui/feat-navbar`, `api/fix-auth-header`
+
+---
+
+## Summary
+
+| Practice              | Why it matters                   |
+| --------------------- | -------------------------------- |
+| Consistent naming     | Easier to read, sort, and filter |
+| Scoped prefixes       | Clarifies branch purpose         |
+| Short-lived branches  | Reduces merge conflicts          |
+| Merge via PRs         | Enables review, CI, discussion   |
+| Clean up old branches | Keeps repo neat and performant   |
