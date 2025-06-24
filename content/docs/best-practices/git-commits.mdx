@@ -1,0 +1,204 @@
+---
+title: Git Commits
+description: Guidelines for writing effective Git commit messages to improve collaboration and project management.
+---
+
+Writing **clear, consistent, and meaningful Git commit messages** is a crucial practice for maintaining a high-quality codebase, especially in team environments. Here's a detailed guide to the **best practices for writing Git commits**, including **why they matter**, **how to write them well**, and **examples**.
+
+---
+
+### 1. Use the **Imperative Mood** in the Subject
+
+Think of the subject as **a command that applies the change**.
+
+✅ Correct:
+
+```
+Add login button to navbar
+Fix issue with user logout
+Refactor authentication middleware
+```
+
+❌ Avoid:
+
+```
+Added login button to navbar
+Fixed bug with logout
+Refactored the auth code
+```
+
+This aligns with Git's internal commands.
+
+Imagine Git is reading the commit message like a script:
+
+> "If this commit is applied, it will: **Fix login bug**"
+> "If this commit is applied, it will: **Add reset password functionality**"
+
+This is why **writing in imperative mood** fits naturally. It describes **what the commit will do when applied**, not what has been done in the past.
+
+---
+
+### 2. Limit the Subject Line
+
+- Keep the **subject line under 50 characters**.
+- Use a **capitalized first word**.
+- **No period** (`.`) at the end.
+
+✅ Good:
+
+```
+Update email regex for validation
+```
+
+❌ Avoid:
+
+```
+This commit updates the regex for validating emails.
+```
+
+---
+
+### 3. Separate the Subject and Body with a Blank Line
+
+Git interprets the first line as the subject and the rest as the body. You must **add a blank line between them** if you include a body.
+
+Example:
+
+```
+feat(navbar): add login button
+
+Add a login button to the main navigation bar for easy access.
+This improves user experience by allowing quick login.
+```
+
+---
+
+### 4. Write a Descriptive Body (Optional but Helpful)
+
+If a commit is not self-explanatory, use the body to describe:
+
+- **What** changed
+- **Why** it changed
+- **Any trade-offs or implications**
+
+Example:
+
+```
+feat(api): add token expiry validation
+
+Token expiry validation was missing in the middleware. This commit ensures
+that expired tokens are rejected, and users receive a 401 response. This
+improves the app’s overall security.
+```
+
+---
+
+### 5. Use Conventional Commit Types for Structure
+
+If you follow [Conventional Commits](https://www.conventionalcommits.org/), you can use standard types:
+
+| Type       | Purpose                                    |
+| ---------- | ------------------------------------------ |
+| `feat`     | A new feature                              |
+| `fix`      | A bug fix                                  |
+| `docs`     | Documentation only changes                 |
+| `style`    | Changes that don’t affect code behavior    |
+| `refactor` | Code restructuring without behavior change |
+| `test`     | Adding or fixing tests                     |
+| `chore`    | Tooling, build changes, dependencies       |
+| `ci`       | CI/CD related changes                      |
+| `build`    | Changes to build tools or dependencies     |
+| `perf`     | Performance improvements                   |
+
+Example:
+
+```
+feat(auth): implement 2FA setup for users
+```
+
+---
+
+### 6. Reference Issues/PRs in the Footer
+
+Linking issues helps auto-close them and improve traceability.
+
+Example:
+
+```
+fix(auth): prevent session hijacking
+
+We now store session tokens in HttpOnly cookies.
+
+Closes #342
+```
+
+---
+
+### 7. Make Atomic Commits
+
+Each commit should be a **single logical change**. Don't mix multiple unrelated changes in one commit.
+
+✅ Better:
+
+```
+fix(form): resolve validation error on blur
+style(form): improve input spacing
+```
+
+❌ Worse:
+
+```
+fix: resolve form validation and spacing issues
+```
+
+---
+
+## Tools to Help Enforce Good Commits
+
+- **Husky**: Git hooks to run checks before commit/push
+- **Commitlint**: Lint commit messages
+- **Commitizen**: Interactive commit message tool
+- **Semantic Release**: Automatically version your app based on commit messages
+
+---
+
+## Good vs. Bad Examples
+
+### ✅ Good Commit
+
+```
+feat(profile): allow users to update profile image
+
+Added a file upload component that saves images to S3.
+Users can now change their avatars from the settings page.
+
+Closes #101
+```
+
+### ❌ Bad Commit
+
+```
+final commit
+```
+
+```
+update stuff
+```
+
+```
+added new features and fixed some bugs
+```
+
+---
+
+## 🧠 Summary Cheat Sheet
+
+| Rule                                | Why It Matters                      |
+| ----------------------------------- | ----------------------------------- |
+| Use imperative mood                 | Consistent, matches Git style       |
+| Keep subject ≤ 50 characters        | Improves readability in logs        |
+| Separate subject from body          | Git interprets structure correctly  |
+| Explain what/why in body            | Provides context for future readers |
+| Use structured types (feat, fix...) | Enables tooling, clarity, SemVer    |
+| Reference issues                    | Traceability and automation         |
+| One logical change per commit       | Easier to review and revert         |
