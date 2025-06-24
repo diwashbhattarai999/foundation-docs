@@ -10,6 +10,7 @@
     "format": "pnpm exec biome format --write",
     "lint": "pnpm exec biome lint --write",
     "check": "pnpm exec biome check --write",
+    "commit": "git cz",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -36,6 +37,8 @@
     "@types/node": "24.0.3",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "react-router-devtools": "^5.0.6",
