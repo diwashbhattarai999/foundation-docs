@@ -1,4 +1,4 @@
 {
   "title": "Toolings",
-  "pages": ["package-managers", "eslint", "prettier"]
+  "pages": ["package-managers", "eslint", "prettier", "editorconfig", "nvm-nvmrc-npmrc"]
 }

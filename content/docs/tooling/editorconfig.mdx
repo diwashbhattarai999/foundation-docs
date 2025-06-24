@@ -1,0 +1,52 @@
+---
+title: Editorconfig
+description: Learn how to use EditorConfig for consistent coding styles across different editors and IDEs.
+---
+
+## `.editorconfig` – Editor-Level Formatting
+
+### What is it?
+
+`.editorconfig` is a shared config file that helps **maintain consistent coding styles** across different editors and IDEs.
+
+### How it’s different from Prettier
+
+| Feature           | `.editorconfig`                       | Prettier                                   |
+| ----------------- | ------------------------------------- | ------------------------------------------ |
+| **Scope**         | Whitespace, line endings, indentation | Full code formatting (quotes, semis, etc.) |
+| **Tooling**       | Editor built-in plugins               | Code formatter tool                        |
+| **Enforcement**   | Editor-based                          | CLI, pre-commit hooks                      |
+| **Complex rules** | Not supported                         | Yes (e.g., trailing commas, quote style)   |
+
+### Example `.editorconfig`
+
+```ini
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+```
+
+### What it does:
+
+- Ensures 2-space indentation
+- Uses LF (`\n`) line endings
+- Removes extra trailing spaces
+- Enforces UTF-8 encoding
+
+---
+
+## Summary Table
+
+| File            | Tool                             | Purpose                                           | Example Use Case                               |
+| --------------- | -------------------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `.editorconfig` | Editors (VSCode, IntelliJ, etc.) | Set base formatting rules (indent, newline, etc.) | Cross-editor consistency for team coding style |
+| `prettier`      | Prettier CLI                     | Enforce full formatting (quotes, commas, width)   | Auto-format code on save or commit             |

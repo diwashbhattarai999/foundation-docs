@@ -1,0 +1,178 @@
+---
+title: NVM, .nvmrc, and .npmrc
+description: Learn how to use NVM (Node Version Manager) and configuration files like `.nvmrc` and `.npmrc` to manage Node.js versions and NPM settings effectively.
+---
+
+## `.npmrc` – NPM Configuration File
+
+### What is it?
+
+`.npmrc` is a config file for **NPM (Node Package Manager)**. It lets you configure **how npm behaves** on a per-project or global basis.
+
+### Locations
+
+- `~/.npmrc` → **Global** config (affects all projects)
+- `<project>/.npmrc` → **Project-level** config (local to repo)
+
+### Common Settings
+
+| Setting                 | Description                                             |
+| ----------------------- | ------------------------------------------------------- |
+| `save-exact=true`       | Save exact versions (`1.2.3` instead of `^1.2.3`)       |
+| `registry=https://...`  | Use a custom package registry (e.g., private or GitHub) |
+| `strict-ssl=false`      | Allow insecure SSL (not recommended)                    |
+| `legacy-peer-deps=true` | Avoid peer dep conflict errors (especially in npm v7+)  |
+| `package-lock=false`    | Avoid generating lock files (not recommended)           |
+| `always-auth=true`      | Always send credentials when accessing registry         |
+
+### Example `.npmrc`
+
+```ini
+save-exact=true
+legacy-peer-deps=true
+registry=https://registry.npmjs.org/
+```
+
+---
+
+## `.nvmrc` – Node Version Manager Config
+
+### What is it?
+
+`.nvmrc` is a simple file used with **NVM (Node Version Manager)** that specifies the **Node.js version** to use for the project.
+
+### Purpose
+
+Ensure everyone on the team (and CI/CD) uses the **same Node version**.
+
+### Example
+
+```
+18.17.1
+```
+
+or use `lts/*`, `node`, `v16`, etc.
+
+Here’s a complete guide for installing **NVM (Node Version Manager)** on **Linux**, **macOS**, and **Windows**, covering everything from basic installation to verification.
+
+---
+
+## What is NVM?
+
+**NVM** is a version manager for Node.js. It lets you **install and switch between multiple versions of Node.js easily**.
+
+---
+
+## Installing NVM on Linux/macOS (Unix-like systems)
+
+> Recommended if you're using Ubuntu, Debian, Fedora, Arch, macOS, WSL, etc.
+
+### Step 1: Install NVM via curl or wget
+
+```bash
+# With curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# OR with wget
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+> This script will:
+>
+> - Clone the `nvm` repo to `~/.nvm`
+> - Add the necessary lines to your shell config (`~/.bashrc`, `~/.zshrc`, or `~/.profile`)
+
+### Step 2: Activate NVM
+
+After installation, restart the terminal or run:
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+```
+
+Add that snippet to your shell file (`~/.bashrc` or `~/.zshrc`) to persist it.
+
+---
+
+### Step 3: Verify Installation
+
+```bash
+nvm --version
+```
+
+---
+
+## Installing NVM on Windows
+
+On Windows, the **official `nvm` doesn't work** directly. Use the **community-maintained version**:
+
+### Step 1: Download `nvm-windows`
+
+- Go to: [https://github.com/coreybutler/nvm-windows/releases](https://github.com/coreybutler/nvm-windows/releases)
+- Download the latest `.exe` (e.g., `nvm-setup.exe`)
+
+### Step 2: Run the Installer
+
+- Follow the setup wizard.
+- Choose an install directory (default is fine).
+- It will automatically update your PATH.
+
+### Step 3: Verify Installation
+
+Open Command Prompt or PowerShell:
+
+```bash
+nvm version
+```
+
+---
+
+## Installing Node.js using NVM
+
+Once NVM is installed:
+
+```bash
+nvm install 18.17.1        # Installs a specific Node version
+nvm use 18.17.1            # Switches to that version
+nvm alias default 18.17.1  # Sets it as default for new terminals
+```
+
+---
+
+## Tips: Create `.nvmrc` File
+
+Inside your project root:
+
+```bash
+echo "18.17.1" > .nvmrc
+```
+
+Then just run:
+
+```bash
+nvm use
+```
+
+It’ll read the version from `.nvmrc` and switch automatically.
+
+### Usage
+
+```bash
+nvm use         # Reads version from .nvmrc
+nvm install     # Installs version defined in .nvmrc
+```
+
+### Best Practice
+
+- Always commit `.nvmrc` to version control.
+- Sync with your CI tool and Dockerfile (if any).
+
+---
+
+## Summary Table
+
+| File     | Tool | Purpose                           | Example Use Case                        |
+| -------- | ---- | --------------------------------- | --------------------------------------- |
+| `.npmrc` | NPM  | Control how npm installs packages | Enforce exact versions                  |
+| `.nvmrc` | NVM  | Define the Node.js version        | Sync dev & CI environment Node versions |

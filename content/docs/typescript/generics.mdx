@@ -136,9 +136,3 @@ In `generics.ts`:
 3. Build a generic `Result<T>` interface with `{ success: boolean; data: T }`.
 4. Create a generic class `Storage<T>` with `.add()` and `.getAll()` methods.
 5. Use constraints to ensure `T` has a `.length` property.
-
----
-
-## Bonus Challenge
-
-Write a generic function `pluck<T, K extends keyof T>(obj: T, key: K): T[K]` that retrieves a property from an object safely.
