@@ -1,0 +1,4 @@
+{
+  "title": "Linting and Formatting",
+  "pages": ["eslint", "prettier", "husky", "lint-staged", "commitlint"]
+}

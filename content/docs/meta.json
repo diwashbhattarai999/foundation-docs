@@ -1,0 +1,15 @@
+{
+  "title": "Foundation",
+  "pages": [
+    "git-github",
+    "tooling",
+    "package-management",
+    "linting-formatting",
+    "best-practices",
+    "frontend",
+    "backend",
+    "typescript",
+    "testing",
+    "ci-cd"
+  ]
+}
