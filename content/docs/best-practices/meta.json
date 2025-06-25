@@ -1,4 +1,4 @@
 {
   "title": "Best Practices & Configurations",
-  "pages": ["git-commits", "git-branches"]
+  "pages": ["git-commits", "git-branches", "prettier-config"]
 }

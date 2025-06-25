@@ -1,0 +1,122 @@
+---
+title: Prettier Configuration
+description: How to configure Prettier for your project.
+---
+
+## Prettier Configuration for Frontend (React + TypeScript)
+
+**File:** `.prettierrc.json`
+
+```json
+{
+  "semi": true, // Use semicolons at the end of statements
+  "singleQuote": true, // Use single quotes instead of double quotes
+  "printWidth": 100, // Maximum line length before wrapping
+  "tabWidth": 2, // Number of spaces per indentation level
+  "useTabs": false, // Use spaces instead of tabs
+  "trailingComma": "es5", // Include trailing commas wherever possible
+  "bracketSpacing": true, // Include spaces between brackets
+  "arrowParens": "avoid", // Omit parentheses when possible for arrow functions
+  "endOfLine": "lf", // Use LF line endings (Line Feed, Unix style)
+  "jsxSingleQuote": false, // Use double quotes in JSX
+  "quoteProps": "as-needed", // Only quote object properties when necessary
+  "embeddedLanguageFormatting": "auto", // Format embedded code (e.g., HTML in JSX)
+  "plugins": ["prettier-plugin-tailwindcss"], // Optional: If using Tailwind CSS, include the plugin
+  "tailwindPreserveWhitespace": true, // Optional: Preserve whitespace in Tailwind CSS classes
+  "tailwindConfig": "./tailwind.config.ts", // Optional: Path to your Tailwind CSS config file
+  "bracketSameLine": false // Put `>` of a multi-line JSX element at the end of the last line
+}
+```
+
+---
+
+## Prettier Configuration for Backend (Node.js + TypeScript)
+
+**File:** `.prettierrc.json`
+
+```json
+{
+  "semi": true, // Use semicolons at the end of statements
+  "singleQuote": true, // Use single quotes instead of double quotes
+  "printWidth": 80, // Maximum line length before wrapping
+  "tabWidth": 2, // Number of spaces per indentation level
+  "useTabs": false, // Use spaces instead of tabs
+  "trailingComma": "es5", // Include trailing commas wherever possible
+  "bracketSpacing": true, // Include spaces between brackets
+  "arrowParens": "avoid", // Omit parentheses when possible for arrow functions
+  "endOfLine": "lf", // Use LF line endings (Line Feed, Unix style)
+  "quoteProps": "consistent" // Quote object properties consistently
+}
+```
+
+---
+
+## Prettier Ignore File
+
+**File:** `.prettierignore`
+
+```bash
+node_modules
+dist
+build
+coverage
+.next
+.env
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.vscode
+.DS_Store
+*.log
+```
+
+---
+
+## Format Script in `package.json`
+
+```json
+{
+  "scripts": {
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  }
+}
+```
+
+> Now you can run `npm run format` or `pnpm format` to auto-format your codebase.
+
+---
+
+## Optional VSCode Settings
+
+To **auto-format on save** in VSCode, add this to `.vscode/settings.json`:
+
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true
+}
+```
+
+---
+
+## Integrate with ESLint (Recommended)
+
+Install the plugin:
+
+```bash
+npm install --save-dev eslint-config-prettier
+```
+
+Then extend it in `.eslintrc`:
+
+```json
+{
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier" // 💥 This disables ESLint rules that conflict with Prettier
+  ]
+}
+```
