@@ -76,7 +76,7 @@ tsc
 | Type                 | Example                        |
 | -------------------- | ------------------------------ |
 | `string`             | `let name: string = "Diwash"`  |
-| `number`             | `let age: number = 24`         |
+| `number`             | `let age: number = 23`         |
 | `boolean`            | `let isAdmin: boolean = false` |
 | `any`                | `let x: any = "hello"`         |
 | `unknown`            | Safer version of `any`         |
@@ -86,7 +86,7 @@ tsc
 
 ```ts
 let fullName: string = "Diwash Bhattarai";
-let age: number = 24;
+let age: number = 23;
 let isDeveloper: boolean = true;
 ```
 
@@ -114,6 +114,92 @@ function greet(name: string): string {
 const message = greet("Diwash");
 console.log(message); // Hello, Diwash
 ```
+
+---
+
+## `any` vs `unknown` vs `never`
+
+### `any` – Turn Off Type Checking
+
+### Purpose:
+
+Allows **any type of value** and disables type checking.
+
+### Use Case:
+
+- Used when you're migrating JavaScript or dealing with dynamic input.
+- But **not recommended** in general because it bypasses the type system.
+
+### Example:
+
+```ts
+let value: any;
+
+value = "hello";
+value = 123;
+value = { foo: "bar" };
+
+value.doSomething(); // ❌ No error at compile time, but might crash at runtime
+```
+
+---
+
+## `unknown` – Safe Alternative to `any`
+
+### Purpose:
+
+Like `any`, can hold any type, but **you must narrow it** before using it.
+
+### Use Case:
+
+- Use it when you want to accept any type but still enforce type safety before use.
+- Common in APIs, validation libraries, and `JSON.parse()`.
+
+### Example:
+
+```ts
+let value: unknown;
+
+value = "hello";
+value = 123;
+
+// value.toUpperCase(); ❌ Error: Object is of type 'unknown'
+
+if (typeof value === "string") {
+  console.log(value.toUpperCase()); // ✅ Safe now
+}
+```
+
+---
+
+## `never` – Represents _Nothing_
+
+### Purpose:
+
+Represents a value that **never occurs**.
+
+### Use Case:
+
+- A function that throws an error or runs infinitely.
+- Exhaustiveness checking in switch or if/else chains.
+
+### Example 1 – Function that never returns:
+
+```ts
+function throwError(message: string): never {
+  throw new Error(message);
+}
+```
+
+---
+
+## Summary Table
+
+| Type      | Accepts Any Value? | Can Be Used Directly? | Type-Safe? | Common Use Case            |
+| --------- | ------------------ | --------------------- | ---------- | -------------------------- |
+| `any`     | ✅ Yes             | ✅ Yes                | ❌ No      | Quick fixes, legacy code   |
+| `unknown` | ✅ Yes             | ❌ No (must narrow)   | ✅ Yes     | API inputs, `JSON.parse()` |
+| `never`   | ❌ No              | ❌ No                 | ✅ Yes     | Functions that throw       |
 
 ---
 
