@@ -1,0 +1,161 @@
+---
+title: "Let & Const"
+description: "Understand the behavior of let and const, how the Temporal Dead Zone works, and the differences between SyntaxError, TypeError, and ReferenceError."
+---
+
+## `let` and `const` – Block Scoped Declarations
+
+### `let`
+
+- Introduced in ES6 (2015).
+- Block-scoped (`{}`).
+- Can be reassigned.
+- **Not hoisted** like `var` (technically hoisted but uninitialized).
+
+```js
+let count = 5;
+count = 10; // ✅ valid
+```
+
+---
+
+### `const`
+
+- Block-scoped (`{}`).
+- Must be **initialized during declaration**.
+- Cannot be reassigned (though objects/arrays it references _can_ be mutated).
+
+```js
+const PI = 3.14;
+// PI = 3.1415; ❌ TypeError
+
+const user = { name: "Diwash" };
+user.name = "Bhattarai"; // ✅ allowed (mutation, not reassignment)
+```
+
+---
+
+## Temporal Dead Zone (TDZ)
+
+The **Temporal Dead Zone** is the period between entering a block and the variable being declared. During this time, the variable is **hoisted** but **not initialized**, leading to a **ReferenceError** if accessed.
+
+### Example:
+
+```js
+console.log(x); // ❌ ReferenceError
+let x = 10;
+```
+
+- `x` is **hoisted**, but **not initialized** — it’s in the **TDZ**.
+- Accessing it before initialization causes a **ReferenceError**.
+
+Same with `const`:
+
+```js
+{
+  console.log(msg); // ❌ ReferenceError
+  const msg = "Hello";
+}
+```
+
+---
+
+### TDZ Timeline
+
+```txt
+Entering block →
+  TDZ starts →
+    Variable declared (still in TDZ) →
+      Variable initialized →
+        Now safe to use ✅
+```
+
+---
+
+## JavaScript Error Types
+
+JavaScript provides specific error types to help debug code. Here's how they differ:
+
+---
+
+### 1. SyntaxError
+
+- Happens when the code structure/grammar is invalid.
+- Caught during **parsing**, before execution begins.
+
+```js
+if (true {
+  console.log("Missing bracket");
+}
+// ❌ SyntaxError: Unexpected token '{'
+```
+
+- Also occurs if you use `let` or `const` in invalid places:
+
+```js
+const; // ❌ SyntaxError: Missing initializer in const declaration
+```
+
+- Redeclaring a variable with `let` or `const` in the same scope:
+
+```js
+let x = 5;
+let x = 10; // ❌ SyntaxError: Identifier 'x' has already been declared
+```
+
+---
+
+### 2. TypeError
+
+- Happens when a **value is not the expected type**.
+- Often occurs during execution.
+
+```js
+const x = undefined;
+x(); // ❌ TypeError: x is not a function
+
+null.foo; // ❌ TypeError: Cannot read property 'foo' of null
+```
+
+---
+
+### 3. ReferenceError
+
+- Occurs when referencing a **non-existent or uninitialized variable**.
+
+```js
+console.log(a); // ❌ ReferenceError: a is not defined
+
+console.log(x); // ❌ ReferenceError due to TDZ
+let x = 5;
+```
+
+---
+
+## Quick Comparison
+
+| Error Type         | When It Occurs                   | Example                            |
+| ------------------ | -------------------------------- | ---------------------------------- |
+| **SyntaxError**    | During parsing (code is invalid) | Missing `)` or `{`                 |
+| **TypeError**      | Wrong operation on a value type  | Calling a number as a function     |
+| **ReferenceError** | Variable doesn’t exist or TDZ    | Accessing variable before declared |
+
+---
+
+## Best Practices
+
+- Always **declare variables at the top** of the block to avoid TDZ issues.
+- Use `const` by default — switch to `let` only if reassignment is required.
+- Avoid `var` — it’s function-scoped and hoisted to `undefined`.
+- Understand and catch errors early using tools like **ESLint** or TypeScript.
+
+---
+
+### Summary
+
+| Feature       | `let`               | `const`         |
+| ------------- | ------------------- | --------------- |
+| Reassignable  | ✅ Yes              | ❌ No           |
+| Block-scoped  | ✅ Yes              | ✅ Yes          |
+| Hoisted       | ✅ (but in TDZ)     | ✅ (but in TDZ) |
+| Default usage | For changing values | For constants   |

@@ -1,0 +1,181 @@
+---
+title: Callback Functions
+description: Understanding callback functions in JavaScript.
+---
+
+## What is a Callback Function?
+
+A **callback function** is:
+
+> A function that is **passed as an argument** to another function and is **executed later** — usually after some operation completes.
+
+It enables **reusability**, **asynchronous programming**, and **flexibility**.
+
+---
+
+### Basic Example
+
+```js
+function greet(name, callback) {
+  console.log("Hello, " + name);
+  callback();
+}
+
+function sayBye() {
+  console.log("Goodbye!");
+}
+
+greet("Diwash", sayBye);
+// Output:
+// Hello, Diwash
+// Goodbye!
+```
+
+Here, `sayBye` is passed as a **callback** to `greet`, and executed inside it.
+
+---
+
+## Why Use Callbacks?
+
+### 1. **Reusability**:
+
+Functions become more flexible when they delegate part of their behavior to a callback.
+
+### 2. **Asynchronous Programming**:
+
+Callbacks allow execution **after** tasks like I/O, database access, or API calls complete.
+
+### 3. **Functional Programming**:
+
+They’re heavily used in `map`, `filter`, `reduce`, and higher-order functions.
+
+---
+
+## Synchronous vs Asynchronous Callbacks
+
+### **Synchronous Callback**
+
+```js
+function calculate(a, b, operation) {
+  return operation(a, b);
+}
+
+function add(x, y) {
+  return x + y;
+}
+
+console.log(calculate(5, 3, add)); // 8
+```
+
+Here, `add` runs **immediately**.
+
+---
+
+### **Asynchronous Callback**
+
+```js
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Async callback after 1 second");
+}, 1000);
+
+console.log("End");
+
+// Output:
+// Start
+// End
+// Async callback after 1 second
+```
+
+The callback in `setTimeout` runs **after a delay**, asynchronously.
+
+---
+
+## Common Built-in Callback Examples
+
+### `setTimeout` and `setInterval`
+
+```js
+setTimeout(() => {
+  console.log("This runs later");
+}, 2000);
+```
+
+### Array Methods
+
+```js
+const numbers = [1, 2, 3];
+
+numbers.forEach((num) => {
+  console.log(num * 2);
+});
+
+const even = numbers.filter((num) => num % 2 === 0);
+```
+
+---
+
+## Callback Hell
+
+When callbacks are nested inside callbacks in a deeply hierarchical manner, it leads to **"callback hell"** or the **pyramid of doom**.
+
+### Example:
+
+```js
+loginUser("diwash", () => {
+  getUserData((data) => {
+    getPermissions(data.id, () => {
+      console.log("Access granted!");
+    });
+  });
+});
+```
+
+This is hard to read and maintain.
+
+> This is why **Promises** and **async/await** were introduced.
+
+---
+
+## 🔧 Custom Callback Function Example
+
+```js
+function fetchData(url, callback) {
+  console.log("Fetching from", url);
+  setTimeout(() => {
+    const data = { name: "Diwash" };
+    callback(data);
+  }, 1000);
+}
+
+fetchData("https://api.example.com/user", (user) => {
+  console.log("User:", user.name);
+});
+```
+
+---
+
+## Blocking Main Thread
+
+- Every operations in JavaScript runs through call stack.
+- If any operations blocks this call stack, it will block the main thread.
+- Callbacks help avoid blocking by allowing asynchronous execution.
+- For example, `setTimeout` allows the main thread to continue while waiting for the callback.
+
+---
+
+## Best Practices
+
+Use **named functions** for complex callbacks — improves readability.
+Handle **errors** gracefully (or use Promises).
+Avoid deeply nested callbacks → prefer Promises or async/await.
+
+---
+
+## Summary
+
+- A **callback function** is passed to another function and executed later.
+- Used in both **sync** and **async** contexts.
+- Powers **event listeners**, **timers**, **HTTP requests**, etc.
+- Too many nested callbacks cause **callback hell** → use Promises/async/await instead.

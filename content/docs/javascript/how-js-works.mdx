@@ -1,0 +1,162 @@
+---
+title: "How JavaScript Works"
+description: "Learn how JavaScript executes code, the concept of execution contexts, and the call stack. Understand hoisting, the execution phases, and how functions are managed in JavaScript."
+---
+
+## JavaScript Overview
+
+JavaScript is:
+
+- **Single-threaded** – it executes one command at a time.
+- **Synchronous by default**, but supports asynchronous operations via:
+  - `setTimeout`, `Promises`, `async/await`
+- **Interpreted and compiled** – modern JS engines like V8 use **JIT (Just-in-Time) compilation** for speed.
+- Runs inside a **JavaScript Engine** such as:
+  - Chrome → V8
+  - Firefox → SpiderMonkey
+  - Safari → JavaScriptCore
+  - Node.js → V8
+- **Event-driven** – responds to user actions, timers, etc.
+
+---
+
+## What is an Execution Context?
+
+An **Execution Context (EC)** is the **environment** where JavaScript code is evaluated and executed.
+
+You can think of it as a **box** that contains everything JS needs to run a piece of code: variables, functions, and the value of `this`.
+
+> Every time a JS program runs, or a function is called, a new Execution Context is created.
+
+---
+
+## Types of Execution Contexts
+
+1. **Global Execution Context (GEC)**
+
+   - Created when your JS file is first run.
+   - Creates a global object:
+
+     - In browser: `window`
+     - In Node.js: `global`
+
+   - `this` refers to the global object.
+   - Only **one** global context per program.
+
+2. **Function Execution Context (FEC)**
+
+   - Created whenever a function is invoked.
+   - Each function gets its own execution context.
+   - It has its own scope, variables, and `this` binding.
+
+3. **Eval Execution Context** (rare, using `eval()` function)
+
+   - Not recommended for security/performance reasons.
+
+---
+
+## What Happens Inside an Execution Context?
+
+When an Execution Context is created, it goes through two main phases: **Creation Phase** and **Execution Phase**.
+
+### 1. Creation Phase (a.k.a. Memory Allocation Phase)
+
+- JS **allocates memory** for:
+  - Variables (initialized with `undefined` if declared with `var`)
+  - Function declarations (stored entirely)
+  - Sets up scope and the `this` value
+
+> `let` and `const` are also hoisted but **not initialized** — they live in the **Temporal Dead Zone (TDZ)** until declared.
+
+**Important detail**:
+
+- Variables declared with `var` are **hoisted** and initialized with `undefined`.
+- Functions are **hoisted** with their definition.
+- `let` and `const` are hoisted too, but are not initialized (in a _temporal dead zone_ until assigned).
+
+### 2. **Execution Phase**
+
+- JS code is executed **line by line**.
+- Variables are assigned real values.
+- Functions are invoked and new execution contexts are created.
+
+---
+
+## The **Call Stack**
+
+The **Call Stack** is a data structure that tracks **which function is currently being run**, and what should happen after it finishes.
+
+- Think of it like a stack of books — the last one added is the first to be removed (**LIFO: Last In, First Out**).
+
+Example:
+
+```js
+function greet() {
+  console.log("Hello!");
+}
+
+function main() {
+  greet();
+}
+
+main();
+```
+
+Call Stack:
+
+1. Global Execution Context is created.
+2. `main()` is called → `main` Execution Context pushed.
+3. Inside `main`, `greet()` is called → `greet` Execution Context pushed.
+4. After `greet()` finishes → its context is popped.
+5. Then `main()` finishes → its context is popped.
+
+---
+
+### Visualization
+
+```
+Call Stack:
+| greet EC       |
+| main EC        |
+| Global EC      |
+```
+
+- Call stack maintains the order of execution of
+  execution contexts.
+
+- Call Stack is also called :
+  - Execution Context Stack
+  - Program Stack
+  - Control Stack
+  - Runtime Stack
+  - Machine Stack
+
+When a function finishes, it's removed from the stack.
+
+---
+
+### What Happens on Stack Overflow?
+
+If a function keeps calling itself **without an exit**, it keeps stacking up until memory is full:
+
+```js
+function crash() {
+  crash();
+}
+
+crash(); // ❌ RangeError: Maximum call stack size exceeded
+```
+
+This error means the call stack grew too large and JS stopped it to avoid crashing the system.
+
+---
+
+### Summary
+
+- JavaScript runs in an **Execution Context**, starting with Global.
+- Each function call creates a new **Function Execution Context**.
+- The **Call Stack** keeps track of what function is running.
+- Each EC goes through **Creation Phase** and **Execution Phase**.
+- Variables & functions are hoisted during creation.
+- Too much recursion leads to **stack overflow**.
+- The stack operates in a **Last In, First Out (LIFO)** manner.

@@ -1,0 +1,200 @@
+---
+title: Lexical Scoping
+description: Understand how JavaScript handles variable accessibility using scope, the scope chain, and lexical
+---
+
+# Scope, Scope Chain & Lexical Environment
+
+---
+
+## What is Scope?
+
+**Scope** refers to the current context of execution — the area in code where a variable is accessible.
+
+JavaScript has **lexical (static) scoping**, meaning scope is determined by **where variables and blocks of code are written**, not by where they are called from.
+
+---
+
+## Types of Scope
+
+1. ### **Global Scope**
+
+   - Variables declared outside any function/block.
+   - Accessible **everywhere** in the file.
+
+   ```js
+   const name = "Diwash";
+
+   function greet() {
+     console.log(name); // ✅ Accessible
+   }
+   ```
+
+2. ### **Function (Local) Scope**
+
+   - Variables declared inside a function.
+   - Accessible only **inside that function**.
+
+   ```js
+   function sayHi() {
+     const msg = "Hi!";
+     console.log(msg);
+   }
+
+   // console.log(msg); ❌ ReferenceError
+   ```
+
+3. ### **Block Scope (ES6+)**
+
+   - Applies to `let` and `const` (not `var`).
+   - Accessible **only inside the `{}` block**.
+
+   ```js
+   if (true) {
+     let a = 10;
+     const b = 20;
+   }
+
+   // console.log(a); ❌ ReferenceError
+   ```
+
+4. ### **Module Scope (ES6 Modules)**
+
+   - Variables declared in a module are **scoped to that module**.
+
+---
+
+## Lexical Environment
+
+A **Lexical Environment** is a structure that holds:
+
+- All the variable/function declarations **in that scope**.
+- A reference to the **outer environment** (parent).
+
+Every time a function is executed, a new **lexical environment** is created.
+
+---
+
+### Structure of Lexical Environment:
+
+```js
+function outer() {
+  const outerVar = "I’m outer";
+
+  function inner() {
+    const innerVar = "I’m inner";
+    console.log(outerVar); // ✅ Access outer variable
+  }
+
+  inner();
+}
+```
+
+Here:
+
+- `inner()` has access to `innerVar` and `outerVar` because of the lexical environment chain.
+
+---
+
+## Scope Chain
+
+If a variable is **not found in the current scope**, JS **looks up the scope chain** — parent → grandparent → global — until it finds the variable or throws a ReferenceError.
+
+```js
+const globalVar = "I’m global";
+
+function outer() {
+  const outerVar = "I’m outer";
+
+  function inner() {
+    const innerVar = "I’m inner";
+    console.log(innerVar); // I’m inner
+    console.log(outerVar); // I’m outer
+    console.log(globalVar); // I’m global
+  }
+
+  console.log(innerVar); // ❌ ReferenceError: innerVar is not defined
+  console.log(outerVar); // I’m outer
+  console.log(globalVar); // I’m global
+
+  inner();
+}
+
+console.log(innerVar); // ❌ ReferenceError: innerVar is not defined
+console.log(outerVar); // ❌ ReferenceError: outerVar is not defined
+console.log(globalVar); // I’m global
+
+outer();
+```
+
+Here, the **scope chain** is:
+
+`inner → outer → global`
+
+---
+
+## Scope Lookup (Read-Only)
+
+> JavaScript **reads up** the chain when accessing a variable — but **writes to the current scope**.
+
+```js
+let x = 1;
+
+function foo() {
+  let x = 2;
+
+  function bar() {
+    console.log(x); // 2 (from nearest scope)
+  }
+
+  bar();
+}
+
+foo();
+```
+
+Even though there’s a global `x`, `bar()` uses the closest available `x` — from `foo()`.
+
+---
+
+## Common Mistake
+
+```js
+let x = 1;
+
+function outer() {
+  function inner() {
+    x = 5; // Modifies global `x`
+  }
+
+  inner();
+}
+
+outer();
+console.log(x); // 5 ❗
+```
+
+Even though `x` wasn’t declared inside `inner()`, JS climbs the scope chain and **modifies the global `x`**.
+
+---
+
+## Summary
+
+| Concept             | Description                             |
+| ------------------- | --------------------------------------- |
+| Scope               | Region where a variable is accessible   |
+| Global Scope        | Declared outside functions/blocks       |
+| Function Scope      | Declared inside functions               |
+| Block Scope         | `let` & `const` inside `{}`             |
+| Lexical Environment | Scope + reference to parent scope       |
+| Scope Chain         | Chain used for variable resolution      |
+| Lexical Scope       | Scope is determined by position in code |
+
+---
+
+## Best Practices
+
+- Always **use `let` or `const`** to avoid scope leaks.
+- Avoid `var` — it ignores block scope.
+- Keep variables in **the smallest scope possible**.
+- Understand how closures form from lexical scope (next topic!).

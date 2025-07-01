@@ -1,0 +1,180 @@
+---
+title: Closures
+description: Deep dive into closures — how they work, how they preserve data, and real-world use cases. Understand lexical scoping, inner functions, and memory references.
+---
+
+## What is a Closure?
+
+A **closure** is created when a **function remembers** its **lexical scope**, even when that function is executed **outside** of that scope.
+
+### In simple terms:
+
+> A **closure is a function that has access to its outer function's variables**, even after the outer function has finished executing.
+
+---
+
+### Basic Example
+
+```js
+function outer() {
+  let name = "Diwash";
+
+  function inner() {
+    console.log(name); //  Can still access `name`
+  }
+
+  return inner;
+}
+
+const fn = outer();
+fn(); // Logs: Diwash
+```
+
+Even though `outer()` has finished executing, the returned function `inner` still **remembers** the variable `name`.
+
+---
+
+## Why Closures Work?
+
+- Because **JavaScript functions are first-class citizens**.
+- They **remember** the scope in which they were created, not where they're called.
+- **Lexical scope** + **function object** = Closure.
+
+---
+
+## Common Use Cases
+
+### 1. **Data Privacy / Encapsulation**
+
+Closures allow you to "hide" variables from the global scope.
+
+```js
+function secretHolder() {
+  let secret = "I am Batman";
+
+  return {
+    getSecret: () => secret,
+    setSecret: (newSecret) => (secret = newSecret),
+  };
+}
+
+const mySecret = secretHolder();
+console.log(mySecret.getSecret()); // I am Batman
+mySecret.setSecret("I am Diwash");
+console.log(mySecret.getSecret()); // I am Diwash
+```
+
+---
+
+### 2. **Function Factories**
+
+Create functions dynamically:
+
+```js
+function multiplyBy(n) {
+  return function (x) {
+    return x * n;
+  };
+}
+
+const double = multiplyBy(2);
+const triple = multiplyBy(3);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+```
+
+---
+
+### 3. **setTimeout Inside Loops**
+
+Closures help preserve values in async code:
+
+```js
+for (var i = 1; i <= 3; i++) {
+  setTimeout(function () {
+    console.log(i); // prints 4 three times
+  }, i * 1000);
+}
+```
+
+Fix with closure:
+
+```js
+for (var i = 1; i <= 3; i++) {
+  (function (j) {
+    setTimeout(() => console.log(j), j * 1000);
+  })(i);
+}
+```
+
+Or with `let` (block-scoped):
+
+```js
+for (let i = 1; i <= 3; i++) {
+  setTimeout(() => console.log(i), i * 1000);
+}
+```
+
+---
+
+### 4. **Currying with Closures**
+
+```js
+function greet(greeting) {
+  return function (name) {
+    return `${greeting}, ${name}`;
+  };
+}
+
+const sayHello = greet("Hello");
+console.log(sayHello("Diwash")); // Hello, Diwash
+```
+
+---
+
+## Important Things to Remember
+
+- **Closures retain memory** — they keep a reference to their lexical scope.
+- **Variables aren't copied**, they are **referenced**.
+- Can lead to **memory leaks** if not managed properly.
+- Used heavily in **React hooks**, **callbacks**, **event handlers**, **stateful logic**.
+
+---
+
+## Closures and Memory
+
+```js
+function counter() {
+  let count = 0;
+  return function () {
+    count++;
+    return count;
+  };
+}
+
+const inc = counter();
+console.log(inc()); // 1
+console.log(inc()); // 2
+```
+
+- The `count` variable stays **alive** in memory because it's referenced by the closure.
+- Closures **can retain state** across multiple calls.
+
+---
+
+## Closures vs Scope
+
+| Concept       | Description                                |
+| ------------- | ------------------------------------------ |
+| Scope         | Area where a variable can be accessed      |
+| Closure       | Function + lexical scope it was defined in |
+| Lexical Scope | Scope defined during function creation     |
+
+---
+
+## Summary
+
+- Closures occur when **a function accesses variables outside its immediate scope**.
+- Closures allow **private state**, **function factories**, **preserved values**, and **async value handling**.
+- Be mindful of **memory**, especially in loops, timeouts, and large apps.

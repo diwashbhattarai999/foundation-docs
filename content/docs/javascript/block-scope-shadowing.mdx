@@ -1,0 +1,190 @@
+---
+title: Block, Scope & Shadowing
+description: Learn how block, scope, and shadowing work in JavaScript, with examples on variable access, lifetimes, and best practices.
+---
+
+## What is a Block?
+
+A **block** in JavaScript is a piece of code wrapped in `{}` curly braces.
+
+```js
+{
+  // This is a block
+}
+```
+
+- Also called a **compound statement**.
+- We group multiple statements together in a block so that we can use it where JavaScript expects a single statement.
+- Blocks are the reason why the `if`, `for`, and `while` statements can contain multiple lines of code.
+
+### Common uses of blocks:
+
+- **if/else**, **for**, **while**, **function bodies**, etc.
+
+```js
+if (true) {
+  let x = 10;
+  console.log(x); // 10 ✅
+}
+console.log(x); // ❌ ReferenceError
+```
+
+---
+
+## What is Scope?
+
+**Scope** determines where variables and functions are **accessible**.
+
+### Types of Scope in JavaScript:
+
+1. **Global Scope**
+
+   - Accessible **everywhere**.
+
+2. **Function/Local Scope**
+
+   - Variables declared inside a function are scoped to that function.
+
+3. **Block Scope** (ES6+)
+
+   - Variables declared with `let` and `const` inside a block `{}` are only available within that block.
+
+### But `var` is not block-scoped:
+
+```js
+{
+  var a = 5;
+}
+console.log(a); // ✅ 5 (accessible outside the block)
+```
+
+Compare with `let`:
+
+```js
+{
+  let b = 10;
+}
+console.log(b); // ❌ ReferenceError
+```
+
+---
+
+## Scope Example Breakdown
+
+```js
+let a = 1;
+
+function outer() {
+  let b = 2;
+
+  {
+    let c = 3;
+    console.log(a, b, c); // ✅ 1 2 3
+  }
+
+  console.log(c); // ❌ ReferenceError
+}
+```
+
+- `a` is global
+- `b` is function-scoped
+- `c` is block-scoped
+
+---
+
+## What is Shadowing?
+
+**Shadowing** occurs when a variable declared in an inner scope **has the same name** as one in an outer scope.
+
+```js
+var x = 10;
+
+{
+  var x = 20; // This shadows the outer x
+  console.log(x); // ✅ 20 (inner x)
+}
+
+console.log(x); // ✅ 20 (outer x)
+```
+
+```js
+let x = 10;
+
+{
+  let x = 20; // This shadows the outer x
+  console.log(x); // ✅ 20 (inner x)
+}
+
+console.log(x); // ✅ 10 (outer x)
+```
+
+---
+
+## Illegal Shadowing
+
+You **can’t** shadow a `let` or `const` with a `var` in the same scope:
+
+```js
+let x = 10;
+{
+  var x = 20; // ❌ SyntaxError: Identifier 'x' has already been declared
+}
+```
+
+But the reverse is legal:
+
+```js
+var y = 10;
+{
+  let y = 20; // ✅ legal shadowing
+}
+```
+
+---
+
+## Best Practices
+
+- Prefer **`let` and `const`** over `var` to avoid unexpected scope leaks.
+- Avoid variable names that **shadow outer variables** unless intentional.
+- Use **consistent naming** to avoid confusion in nested scopes.
+
+---
+
+## Code Practice
+
+```js
+let message = "Global";
+
+function outer() {
+  let message = "Outer";
+
+  {
+    let message = "Block";
+    console.log(message); // ?
+  }
+
+  console.log(message); // ?
+}
+
+outer();
+console.log(message); // ?
+```
+
+### Expected Output:
+
+```
+Block
+Outer
+Global
+```
+
+---
+
+## Summary Table
+
+| Concept       | Meaning                                              |
+| ------------- | ---------------------------------------------------- |
+| Block         | Code wrapped inside `{}`                             |
+| Scope         | Access level of variables/functions                  |
+| Lexical Scope | Scope is determined at code-writing time             |
+| Shadowing     | Inner variable hides an outer one with the same name |

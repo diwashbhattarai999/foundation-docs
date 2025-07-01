@@ -1,0 +1,220 @@
+---
+title: First-Class Functions
+description: Learn about first-class functions, function declarations, expressions, arrow functions, and more in JavaScript.
+---
+
+## 1. **First-Class Functions**
+
+**Definition**:
+In JavaScript, **functions are first-class citizens**, meaning:
+
+> Functions can be:
+>
+> - Assigned to variables
+> - Passed as arguments to other functions
+> - Returned from other functions
+> - Stored in data structures (e.g., arrays, objects)
+
+This is what powers **callbacks**, **higher-order functions**, and **closures**.
+
+### Example:
+
+```js
+function greet(name) {
+  return `Hello, ${name}`;
+}
+
+// Assigned to a variable
+const sayHello = greet;
+
+// Passed as argument
+function processGreeting(fn, name) {
+  console.log(fn(name));
+}
+processGreeting(sayHello, "Diwash"); // Hello, Diwash
+
+// Returned from another function
+function outer() {
+  return function inner() {
+    console.log("Returned function!");
+  };
+}
+
+const fn = outer();
+fn(); // Returned function!
+```
+
+---
+
+## 2. **Function Declaration (Function Statement)**
+
+A **function declaration** is the traditional way to define a function using the `function` keyword at the top level.
+
+### Syntax:
+
+```js
+function add(a, b) {
+  return a + b;
+}
+```
+
+- It’s **hoisted** — you can call it before it's defined in the code.
+
+```js
+sayHi();
+
+function sayHi() {
+  console.log("Hi");
+}
+```
+
+---
+
+## 3. **Function Expression**
+
+A **function expression** involves assigning a function (can be named or anonymous) to a variable.
+
+### Syntax:
+
+```js
+const add = function (a, b) {
+  return a + b;
+};
+```
+
+- **Not hoisted** — you **cannot** call it before the definition.
+
+```js
+sayHi(); // ❌ TypeError: sayHi is not a function
+
+const sayHi = function () {
+  console.log("Hi");
+};
+```
+
+---
+
+## 4. **Anonymous Function**
+
+An **anonymous function** is simply a function **without a name**.
+
+### Example:
+
+```js
+const greet = function () {
+  console.log("Hello");
+};
+
+setTimeout(function () {
+  console.log("Delayed Hello");
+}, 1000);
+```
+
+Used commonly in:
+
+- **Callbacks**
+- **IIFEs (Immediately Invoked Function Expressions)**
+- **Function expressions**
+
+---
+
+## 5. **Named Function Expression**
+
+Unlike anonymous ones, **named function expressions** have a name.
+
+### Example:
+
+```js
+const multiply = function mul(x, y) {
+  return x * y;
+};
+```
+
+- The name `mul` is only accessible **inside the function itself**, useful for recursion:
+
+```js
+const factorial = function fact(n) {
+  if (n <= 1) return 1;
+  return n * fact(n - 1);
+};
+```
+
+---
+
+## 6. **Arrow Functions (ES6)**
+
+Arrow functions provide a **shorter syntax**, and they **do not bind their own `this`**.
+
+### Example:
+
+```js
+const greet = (name) => `Hello, ${name}`;
+```
+
+**Features**:
+
+- Shorter syntax
+- Do not have their own `this`, `arguments`, or `super`
+- Not suitable for object methods or constructors
+
+---
+
+## 7. **Immediately Invoked Function Expression (IIFE)**
+
+IIFEs are functions that run **immediately** after they are defined.
+
+### Syntax:
+
+```js
+(function () {
+  console.log("IIFE runs!");
+})();
+```
+
+Useful for:
+
+- Avoiding polluting the global namespace
+- Creating local/private scopes
+
+---
+
+## Comparison Summary Table
+
+| Concept                   | Hoisted | Can Be Anonymous | Has its own `this` | Used for                             |
+| ------------------------- | ------- | ---------------- | ------------------ | ------------------------------------ |
+| Function Declaration      | ✅ Yes  | ❌ No            | ✅ Yes             | Traditional funcs                    |
+| Function Expression       | ❌ No   | ✅ Yes           | ✅ Yes             | Variables, callbacks                 |
+| Arrow Function            | ❌ No   | ✅ Yes           | ❌ No              | Short syntax, functional programming |
+| IIFE                      | ❌ No   | ✅ Yes           | Depends            | Isolation, scoping                   |
+| Named Function Expression | ❌ No   | ❌ No            | ✅ Yes             | Self-recursion, stack trace naming   |
+
+---
+
+## Real-world Use Case
+
+```js
+// Higher-order function with callback
+function repeat(n, callback) {
+  for (let i = 0; i < n; i++) {
+    callback(i);
+  }
+}
+
+repeat(3, function (index) {
+  console.log("Iteration:", index);
+});
+```
+
+- `repeat` takes a function as input → demonstrates **first-class functions**
+- The anonymous function is a **function expression**
+
+---
+
+## Summary
+
+- **First-class functions**: Can be passed around like variables.
+- **Function declaration**: Hoisted, defined with `function` at top level.
+- **Function expression**: Stored in variables; not hoisted.
+- **Anonymous functions**: No name; used in expressions and callbacks.
+- **Arrow functions**: Shorter syntax, no own `this`.
+- **IIFE**: Immediate invocation for scope isolation.

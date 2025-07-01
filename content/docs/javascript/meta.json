@@ -1,0 +1,22 @@
+{
+  "title": "Javascript",
+  "pages": [
+    "how-js-works",
+    "hoisting",
+    "lexical-scoping",
+    "let-const",
+    "block-scope-shadowing",
+    "closures",
+    "first-class-functions",
+    "callback-functions",
+    "event-loop",
+    "js-engine",
+    "higher-order-functions",
+    "map-filter-reduce",
+    "callback-hell",
+    "promises",
+    "promise-chaining",
+    "async-await",
+    "this-keyword"
+  ]
+}
