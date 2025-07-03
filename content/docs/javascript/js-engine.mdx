@@ -2,4 +2,207 @@
 title: JS Engine
 ---
 
-# Coming Soon
+## JavaScript Runtime Environment
+
+- A **JavaScript Runtime Environment** is a platform that allows JavaScript code to run.
+- It provides the necessary components for executing JavaScript, including the JavaScript engine, APIs, and other features.
+
+#### Examples of JavaScript Runtime Environments:
+
+- **Web Browsers**: Chrome, Firefox, Safari, etc.
+- **Node.js**: A server-side runtime environment for executing JavaScript outside of a browser.
+- **Deno**: A secure runtime for JavaScript and TypeScript, built on V8, similar to Node.js but with a focus on security and modern features.
+
+#### Common features of JavaScript Runtime Environments:
+
+- **JavaScript Engine**: The core component that executes JavaScript code.
+- **Web APIs**: Browser-provided APIs for tasks like DOM manipulation, AJAX, etc.
+- **Event Loop**: Manages asynchronous operations and callbacks.
+- **Call Stack**: Keeps track of function calls.
+- **Memory Heap**: Where objects and variables are stored.
+
+## Web APIs
+
+- **Web APIs** are interfaces provided by browsers or Node.js that allow JavaScript to interact with the environment.
+- They provide functionalities like DOM manipulation, network requests, timers, and more.
+- It can be similar in both browsers and Node.js, but there are differences in implementation and available APIs.
+- E.g. `setTimeout`, `fetch`, `XMLHttpRequest`, etc.
+
+## What is a JavaScript Engine?
+
+A **JavaScript Engine** is a program that **executes JavaScript code**.
+
+- It is not a physical machine but a software component that interprets and runs JavaScript code, converting it into low-level machine code that the CPU can understand.
+- E.g. `V8`, `SpiderMonkey`, `JavaScriptCore`, etc.
+- `V8` is written in C/C++.
+
+Every modern browser has its own JS engine:
+
+| Browser         | JavaScript Engine                         |
+| --------------- | ----------------------------------------- |
+| Chrome, Node.js | **V8**                                    |
+| Firefox         | **SpiderMonkey**                          |
+| Safari          | **JavaScriptCore** (a.k.a. Nitro)         |
+| Edge            | **Chakra** (before switching to Chromium) |
+
+> The most famous JS engine is **V8**, used in **Google Chrome** and **Node.js**.
+
+> First JS engine was created by Brendan Eich, the creator of JavaScript, and is known as **SpiderMonkey**.
+
+---
+
+## What Does the JS Engine Do?
+
+The JS engine:
+
+1. **Parses** JavaScript code.
+2. **Compiles** it into machine code (using JIT).
+3. **Executes** the machine code.
+4. Manages **memory** (allocation, garbage collection).
+5. Handles **asynchronous operations** with the help of the environment (browser/Node.js).
+
+---
+
+## JS Engine Components (e.g., V8)
+
+### 1. **Parser**
+
+- Converts JS code into tokens
+- Creates an **Abstract Syntax Tree (AST)** using Syntax Parser.
+- It checks for syntax errors.
+
+```js
+let a = 10;
+```
+
+→ becomes an AST tree like:
+
+```
+VariableDeclaration
+  ├─ Identifier: a
+  └─ Literal: 10
+```
+
+> Visit [AST Explorer](https://astexplorer.net/) to visualize ASTs.
+
+---
+
+### 2. **Interpreter** (e.g. `Ignition` in V8)
+
+- Quickly **converts AST to bytecode** (a low-level intermediate representation).
+- This bytecode is executed **immediately**, ensuring fast startup.
+
+---
+
+### 3. **Compiler (JIT)** – (e.g. `TurboFan` in V8)
+
+- **Just-In-Time (JIT)** compiler takes the bytecode and **optimizes** frequently used code paths into **machine code**.
+- Optimization is **based on runtime behavior** (hot functions).
+
+> Hot functions = frequently executed functions
+
+---
+
+### 4. **Profiler + Optimizer**
+
+- The profiler watches which functions run most often.
+- TurboFan optimizes those using **inline caching**, **type feedback**, and **hidden classes**.
+
+---
+
+### 5. **Garbage Collector**
+
+- Automatically **cleans up memory** by removing objects no longer referenced.
+- V8 uses:
+
+  - **Mark-and-sweep**
+  - **Generational GC** (splitting memory into new/old spaces)
+  - **Incremental GC** (to avoid freezing)
+
+---
+
+## Execution Pipeline in V8
+
+1. JS Source Code
+2. Parsed → AST
+3. AST → Bytecode (via Interpreter: Ignition)
+4. Optimized into Machine Code (via JIT Compiler: TurboFan)
+5. Executed on CPU
+6. Memory managed via GC
+
+---
+
+## Optimization Techniques in V8
+
+| Technique             | Description                                               |
+| --------------------- | --------------------------------------------------------- |
+| Hidden Classes        | Internally assigns shape to objects (like classes in C++) |
+| Inline Caching        | Optimizes repeated property access                        |
+| Function Inlining     | Embeds the body of a function in caller’s code            |
+| Dead Code Elimination | Removes code never executed                               |
+| Constant Folding      | Pre-computes constant expressions                         |
+
+---
+
+## Example
+
+```js
+function add(a, b) {
+  return a + b;
+}
+
+for (let i = 0; i < 100000; i++) {
+  add(5, 10); // JIT compiler sees this pattern and optimizes
+}
+```
+
+- Initially interpreted.
+- After several iterations, V8 sees it's a **hot function** and compiles it to optimized machine code.
+
+---
+
+## Garbage Collection in V8
+
+V8 uses two memory spaces:
+
+- **New space** (young generation) – for short-lived objects.
+- **Old space** (old generation) – for long-lived objects.
+
+GC Process:
+
+- **Mark** reachable objects
+- **Sweep** unreferenced memory
+- **Compact** and move live data together to avoid memory fragmentation
+
+---
+
+## JS Engine vs Runtime
+
+| JavaScript Engine     | JavaScript Runtime                            |
+| --------------------- | --------------------------------------------- |
+| Parses & runs JS code | Provides environment (like DOM, timers, APIs) |
+| Example: V8           | Example: Browser (Chrome), Node.js            |
+| Pure JS logic         | Adds I/O, file system, etc.                   |
+
+> The engine doesn't handle `setTimeout`, `fetch`, or the DOM — **the runtime does**.
+
+---
+
+## Fun Fact
+
+- `console.log()` is **not part of JavaScript or V8**, but added by the browser (or Node.js) which is the Web API.
+- The phrase **"Maximum call stack size exceeded"** is an error caused by recursion in the **Call Stack** managed by the engine.
+
+---
+
+## Summary
+
+| Concept        | Description                                         |
+| -------------- | --------------------------------------------------- |
+| JS Engine      | Runs and optimizes JS code                          |
+| Parser         | Converts code to AST                                |
+| Interpreter    | Converts AST to bytecode                            |
+| Compiler (JIT) | Converts bytecode to fast machine code              |
+| GC             | Cleans up unused memory                             |
+| V8 Components  | Ignition (interpreter) + TurboFan (JIT)             |
+| Environment    | Provided by browser/Node.js runtime, not the engine |

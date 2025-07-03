@@ -3,4 +3,171 @@ title: Event Loop
 description: Understanding the event loop in JavaScript.
 ---
 
-# Coming Soon
+## What is the Event Loop?
+
+> The **Event Loop** is the mechanism in JavaScript that handles **asynchronous callbacks** and ensures **non-blocking I/O** in a **single-threaded** environment.
+
+It constantly checks the **call stack** and **task queues** to determine what to execute next.
+
+---
+
+## Why is it Needed?
+
+JavaScript is **single-threaded** (it can only do one thing at a time), but it also needs to handle:
+
+- Delayed actions (`setTimeout`, `setInterval`)
+- Network calls (`fetch`, `XMLHttpRequest`)
+- Events (`click`, `keydown`)
+- Promises
+
+If everything blocked the main thread, JavaScript would become **unusable**. That’s where the **Event Loop** comes in.
+
+---
+
+## Components of the Event Loop
+
+### 1. **Call Stack** (Execution Stack)
+
+- All synchronous code is pushed here.
+- Follows **LIFO** (Last In, First Out).
+- Only one function executes at a time.
+
+### 2. **Web APIs / Background APIs**
+
+- Provided by browser or Node.js (not part of JS engine).
+- Handles things like:
+
+  - `setTimeout`
+  - DOM events
+  - `fetch`
+  - `localStorage`
+  - `console`
+  - `location`
+
+- These are wrapped inside the window object in browsers or global object in Node.js.
+
+### 3. **Task Queues**
+
+There are **two primary queues**:
+
+- **Callback Queue (a.k.a. Macrotask Queue)**:
+
+  - `setTimeout`, `setInterval`, `DOM events`
+
+- **Microtask Queue**:
+
+  - `Promises`,`MutationObserver`
+  - Always has **higher priority** than the callback queue.
+
+### 4. **Event Loop**
+
+- Continuously runs and checks:
+
+  1. Is the **call stack** empty?
+  2. If yes, it:
+
+     - **First processes** all **microtasks**
+     - Then processes **macrotasks** (callbacks)
+
+---
+
+## How It Works (Step by Step)
+
+```js
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Timeout");
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log("Promise");
+});
+
+console.log("End");
+```
+
+### Output:
+
+```
+Start
+End
+Promise
+Timeout
+```
+
+### Why?
+
+1. `console.log("Start")` → immediate → Call Stack → logs
+2. `setTimeout(..., 0)` → goes to Web APIs → after delay → Macrotask Queue
+3. `Promise.resolve().then(...)` → goes to Microtask Queue
+4. `console.log("End")` → immediate → Call Stack → logs
+5. **Call stack now empty**
+6. Event Loop checks **Microtask Queue** → logs `"Promise"`
+7. Then checks **Macrotask Queue** → logs `"Timeout"`
+
+---
+
+## Example with Delayed Stack
+
+```js
+setTimeout(() => console.log("Timer 1"), 0);
+
+for (let i = 0; i < 1e9; i++) {} // Blocks for some time
+
+console.log("After loop");
+```
+
+Even though timeout is 0 ms, it only runs **after** the blocking code.
+
+---
+
+## Microtask vs Macrotask
+
+| Type      | Examples                                         | Priority |
+| --------- | ------------------------------------------------ | -------- |
+| Microtask | `Promise.then`, `queueMicrotask`                 | 🥇 High  |
+| Macrotask | `setTimeout`, `setInterval`, `setImmediate`, I/O | 🥈 Low   |
+
+> Microtasks **always run before** the next macrotask.
+
+---
+
+## Real Life Analogy
+
+> Imagine a call stack as a **chef** working on one dish at a time.
+> The Web APIs are **assistants** helping in the background.
+> Once the chef is free, the **event loop** tells him to:
+>
+> 1. First finish all **quick prep tasks (microtasks)**
+> 2. Then go back to **cooking new orders (macrotasks)**
+
+---
+
+## Stack Overflow with Event Loop?
+
+No! Event loop prevents this by **not stacking** async code.
+But deep **sync recursion** can still cause:
+
+```js
+function loop() {
+  loop();
+}
+loop(); // ❌ RangeError: Maximum call stack size exceeded
+```
+
+---
+
+## Visual Tool
+
+Check out [**Loupe**](https://latentflip.com/loupe/) — a great interactive visualization of the Event Loop.
+
+---
+
+## Summary
+
+- JS is **single-threaded**, but the Event Loop makes async possible.
+- **Call Stack** handles sync code.
+- **Web APIs** handle async tasks.
+- **Microtask queue** (Promises) is processed **before** macrotasks (`setTimeout`).
+- The Event Loop coordinates everything.
