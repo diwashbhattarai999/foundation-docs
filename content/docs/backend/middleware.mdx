@@ -1,0 +1,155 @@
+# 🧱 Middleware System in Express (with TypeScript)
+
+## ✅ What is Middleware?
+
+Middleware is a **function** that has access to the request and response lifecycle and can:
+
+- Modify the `req` or `res`
+- End the request-response cycle
+- Pass control to the next middleware using `next()`
+
+```ts
+(req: Request, res: Response, next: NextFunction) => void
+```
+
+---
+
+## 🧭 Middleware Execution Flow
+
+Middlewares are **executed in order** — top-down.
+
+```ts
+app.use(middleware1);
+app.use(middleware2);
+app.get('/route', middleware3, controllerHandler);
+```
+
+If one of them doesn't call `next()`, the flow **stops there**.
+
+---
+
+## 🧱 Types of Middleware
+
+| Type              | Use Case                             |
+| ----------------- | ------------------------------------ |
+| Global middleware | Logging, CORS, body parser, security |
+| Route-specific    | Auth checks, input validation        |
+| Error-handling    | Centralized error response           |
+| Custom reusable   | Rate limiter, IP filter, request ID  |
+
+---
+
+## 🗂️ Recommended Folder Structure
+
+```
+src/
+├── middlewares/
+│   ├── auth.middleware.ts
+│   ├── logger.middleware.ts
+│   └── rateLimit.middleware.ts
+```
+
+---
+
+## 📦 Setting Up a Middleware (Example: Logger)
+
+```ts
+// src/middlewares/logger.middleware.ts
+import { Request, Response, NextFunction } from 'express';
+
+export const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
+};
+```
+
+Usage:
+
+```ts
+import express from 'express';
+import { loggerMiddleware } from './middlewares/logger.middleware';
+
+const app = express();
+app.use(loggerMiddleware);
+```
+
+---
+
+## 🚀 Route-Specific Middleware
+
+```ts
+app.get('/admin', isAdminMiddleware, adminController);
+```
+
+---
+
+## 🚨 Error-Handling Middleware
+
+Special format with **4 args**:
+
+```ts
+(err: Error, req: Request, res: Response, next: NextFunction) => void
+```
+
+---
+
+## Middleware Composition Utility
+
+Create a utility to group and reuse middleware chains across your app:
+
+```ts
+// src/utils/compose.ts
+
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+
+/**
+ * Compose multiple middleware functions into a single RequestHandler.
+ *
+ * @param middlewares - An array of Express middleware functions
+ * @returns A single middleware that runs them in sequence
+ */
+export function compose(...middlewares: RequestHandler[]): RequestHandler {
+  return function (req: Request, res: Response, next: NextFunction): void {
+    /**
+     * Loop through middlewares
+     */
+    (function run(i: number): void {
+      /**
+       * Assign middlewares one by one
+       * Return next if no middleware is found or end is reached
+       */
+      const middleware = middlewares[i];
+      if (!middleware) return next();
+
+      /**
+       * Return error inside next to trigger global error handler
+       */
+      middleware(req, res, function (err?: any): void {
+        if (err) return next(err);
+        run(i + 1);
+      });
+    })(0); // Immediately invoke to start from first middleware
+  };
+}
+```
+
+---
+
+## 🛡️ Common Middleware You Should Implement
+
+| Middleware            | Description                             |
+| --------------------- | --------------------------------------- |
+| `loggerMiddleware`    | Logs each request to console or file    |
+| `authMiddleware`      | Checks for auth token / session         |
+| `rateLimitMiddleware` | Prevents API abuse via IP-based limits  |
+| `requestIdMiddleware` | Adds `req.id` to track logs per request |
+| `validateMiddleware`  | Validates input using Zod or Joi        |
+
+---
+
+## ✅ Best Practices
+
+- Keep middlewares **pure** (no side effects unless intended)
+- Always call `next()` unless you’re sending a response
+- Group middleware into separate files
+- Reuse custom middlewares across services (e.g., auth)

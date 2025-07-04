@@ -1,0 +1,121 @@
+## 📦 Installation
+
+```bash
+npm install zod
+```
+
+---
+
+## 🧠 Why Use Zod?
+
+| Feature         | Benefit                                                      |
+| --------------- | ------------------------------------------------------------ |
+| 🔒 Type-safe    | Inferred static types directly from schema                   |
+| 🔁 Reusable     | Define once, use for validation + type definition            |
+| ⚙️ Chainable    | Declarative API with `.min()`, `.email()`, `.refine()`, etc. |
+| 🧹 Clean errors | Easy to intercept and format validation feedback             |
+| 🧩 Integrated   | Works with Express, env loaders, CLI, and more               |
+
+---
+
+## 📁 Folder Structure Suggestion
+
+```
+src/
+├── validators/
+│   ├── user.schema.ts
+│   ├── booking.schema.ts
+│   └── validateSchema.ts
+```
+
+---
+
+## 🧾 Sample Schema – `user.schema.ts`
+
+```ts
+import { z } from 'zod';
+
+export const createUserSchema = z.object({
+  body: z.object({
+    name: z.string().min(3),
+    email: z.string().email(),
+    password: z.string().min(6),
+  }),
+  query: z.object({}).optional(),
+  params: z.object({}).optional(),
+  headers: z.object({}).optional(),
+});
+
+export type CreateUserDTO = z.infer<typeof createUserSchema.shape.body>;
+```
+
+> Zod schemas are composable and allow for full request object validation.
+
+---
+
+## 🛡 Middleware – `validateSchema.ts`
+
+```ts
+import { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
+
+import { ERROR_CODES } from '@/constant/error.codes';
+import { STATUS_CODES } from '@/constant/status.codes';
+import { ApiError } from '@/error/ApiError';
+import logger from '@/logger/winston.logger';
+
+export default function validateSchema(schema: z.AnyZodObject) {
+  return function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const parsedSchema = schema.parse({
+        body: req.body,
+        query: req.query,
+        params: req.params,
+        headers: req.headers,
+      });
+
+      req.body = parsedSchema.body;
+      req.query = parsedSchema.query;
+      req.params = parsedSchema.params;
+      req.headers = parsedSchema.headers;
+
+      return next();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).send({
+          statusCode: STATUS_CODES.INVALID_JSON_CONFIG,
+          message: 'Schema validation failed',
+          errorList: error.errors.map((e) => ({
+            code: e.code,
+            message: e.message,
+            field: e.path[1],
+          })),
+        });
+
+        logger.error('Schema validation failed');
+        return;
+      }
+
+      logger.error('Unexpected validation error');
+
+      throw new ApiError(
+        STATUS_CODES.INVALID_JSON_CONFIG,
+        ERROR_CODES.INVALID_JSON_CONFIG,
+        'An unexpected error occurred during validation.',
+        'There was a problem validating the request structure.',
+        'Check your input or contact support.'
+      );
+    }
+  };
+}
+```
+
+---
+
+## ✅ Advantages of Central Schema Validation
+
+- ✅ Validation is enforced before entering controller logic
+- ✅ TypeScript type inference guarantees contract compliance
+- ✅ Error output is standardized and clean
+- ✅ Simplifies logic within services/controllers
+- ✅ Middleware pattern keeps everything isolated and testable
