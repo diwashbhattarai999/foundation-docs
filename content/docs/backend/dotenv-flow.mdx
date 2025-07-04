@@ -1,0 +1,75 @@
+## 🧪 `dotenv` vs `dotenv-flow`
+
+| Feature                        | `dotenv`                              | `dotenv-flow`                               |
+| ------------------------------ | ------------------------------------- | ------------------------------------------- |
+| **Basic support**              | ✅ Loads single `.env` file           | ✅ Loads `.env` + layered overrides         |
+| **Supports `NODE_ENV`**        | ❌ Not automatic (you do it manually) | ✅ Auto-detects and loads by `NODE_ENV`     |
+| **Multiple file layers**       | ❌ Manual only                        | ✅ `.env`, `.env.local`, `.env.development` |
+| **File priority/merging**      | ❌ Last one wins, no merging          | ✅ Merges in correct order                  |
+| **Support for local override** | ❌ Manual setup needed                | ✅ Built-in: `.env.local` for dev override  |
+| **Advanced flexibility**       | 🔧 Basic use cases                    | ⚙️ Great for staging, CI/CD pipelines       |
+| **Zero dependencies**          | ✅ Very lightweight                   | 🔧 Slightly more complex (but flexible)     |
+
+---
+
+## ✅ How `dotenv` Works
+
+```ts
+dotenv.config({ path: '.env' }); // Loads ONE file
+```
+
+You need to handle logic like:
+
+```ts
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+```
+
+> ❗ Doesn’t support automatic merging or override behavior.
+
+---
+
+## ✅ How `dotenv-flow` Works
+
+```ts
+dotenvFlow.config(); // Automatically loads and merges
+```
+
+It automatically loads and **merges** files in this order:
+
+```
+.env
+.env.local
+.env.[NODE_ENV]
+.env.[NODE_ENV].local
+```
+
+### Example when NODE_ENV = 'development':
+
+```
+✅ .env
+✅ .env.local
+✅ .env.development
+✅ .env.development.local
+```
+
+Later files override earlier ones.
+
+---
+
+## 🧠 When to Use Which?
+
+| Use `dotenv` if...                   | Use `dotenv-flow` if...                           |
+| ------------------------------------ | ------------------------------------------------- |
+| Simple, single `.env` project        | You have multiple environments (dev/stage/prod)   |
+| You manually control env loading     | You want automatic, layered config management     |
+| You don't need `.env.local` override | You want local overrides per developer or machine |
+| You want minimal setup               | You need structure in CI/CD & staging pipelines   |
+
+---
+
+## 🔧 Recommendation
+
+For production-ready applications or teams:
+
+> ✅ **Use `dotenv-flow`**
+> With a `zod` schema + fallback/default layer, it gives you clean config isolation per environment.

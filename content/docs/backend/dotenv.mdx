@@ -1,0 +1,123 @@
+## 📦 Advanced `.env` Configuration
+
+By default, [`dotenv`](https://www.npmjs.com/package/dotenv) loads `.env` from the project root.
+
+### ✅ You can customize:
+
+| Feature                | Example/Benefit                              |
+| ---------------------- | -------------------------------------------- |
+| Custom file path       | Load `.env.staging`, `.env.local`, etc.      |
+| Override loading logic | Load by `NODE_ENV`, CI config, or CLI flags  |
+| Multiple `.env` files  | Separate config for dev, test, staging, prod |
+
+---
+
+## 📁 Recommended Folder Structure
+
+```
+project-root/
+│
+├── src/
+│   └── config/
+│       └── env.ts          # central validated config
+│
+├── .env                   # local dev
+├── .env.production        # production server
+├── .env.staging           # staging environment
+├── .env.test              # test runner config
+├── .env.example           # shared reference (no secrets)
+```
+
+---
+
+## 🔧 Custom dotenv Configuration (Advanced)
+
+### 1. Load custom file based on `NODE_ENV`
+
+```ts
+import path from 'path';
+import dotenv from 'dotenv';
+
+// Resolve correct file
+const envFile = `.env.${process.env.NODE_ENV ?? 'development'}`;
+
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+```
+
+> ✅ Now `NODE_ENV=production` loads `.env.production` automatically.
+
+---
+
+### 2. Use `dotenv-flow` (Multi-stage override)
+
+```bash
+npm install dotenv-flow
+```
+
+```ts
+import dotenvFlow from 'dotenv-flow';
+
+dotenvFlow.config({
+  path: path.resolve(process.cwd()), // custom base folder
+  node_env: process.env.NODE_ENV, // e.g., development, test
+});
+```
+
+> ✅ This loads `.env`, then `.env.local`, and finally `.env.development.local`, merging them in order.
+
+---
+
+### 3. Manual file override (CLI or Docker)
+
+You can override dotenv completely:
+
+```bash
+dotenv -e .env.staging -- node dist/app.js
+```
+
+Or in Docker:
+
+```Dockerfile
+ENV DOTENV_CONFIG_PATH=./env/.env.production
+```
+
+---
+
+## 🧪 Validation After Custom Load
+
+Once `.env` is loaded, use `zod` to validate it as before:
+
+```ts
+const envSchema = z.object({
+  PORT: z.string().transform(Number),
+  NODE_ENV: z.enum(['development', 'production', 'test', 'staging']),
+  JWT_SECRET: z.string().min(16),
+});
+
+const parsed = envSchema.safeParse(process.env);
+if (!parsed.success) {
+  console.error('❌ Invalid environment variables:', parsed.error.format());
+  process.exit(1);
+}
+```
+
+---
+
+## 🚨 Common Mistakes to Avoid
+
+| Mistake                          | Why it's bad                       |
+| -------------------------------- | ---------------------------------- |
+| Hardcoding fallback secrets      | Prevents secure config enforcement |
+| Committing `.env` accidentally   | Risks leaking secrets              |
+| Skipping validation              | Can crash app in production        |
+| Modifying `process.env` directly | Makes debugging and testing harder |
+
+---
+
+## ✅ Best Practices Summary
+
+- ✅ Use `dotenv` or `dotenv-flow` for layered envs
+- ✅ Validate with `zod` on startup
+- ✅ Create `.env.example` for shared config contracts
+- ✅ Load files by environment (`.env.development`, `.env.test`)
+- ✅ Document required keys and types centrally (`env.ts`)

@@ -1,0 +1,245 @@
+## 📁 1. `node_modules/` — **Dependencies Folder**
+
+### ✅ What it is:
+
+- Auto-generated folder that contains all the **installed NPM packages**.
+- When you run `npm install`, all dependencies from `package.json` are downloaded here.
+
+### 🧠 How it works:
+
+- For example, if your app uses `express`, and express uses `debug`, you’ll find both here.
+- It’s **usually very large** and **should never be committed to Git**.
+
+### 🔒 Rule:
+
+- Always **add to `.gitignore`**.
+
+---
+
+## 📦 2. `package.json` — **Project Metadata & Dependencies**
+
+### ✅ What it is:
+
+- The **heart of your Node project**.
+- Describes project info, dependencies, scripts, entry points, and more.
+
+### 🧠 Sample:
+
+```json
+{
+  "name": "my-node-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "ts-node-dev src/index.ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
+```
+
+### 📌 You edit this file directly or let `npm install` update it.
+
+---
+
+## 📌 3. `package-lock.json` — **Dependency Snapshot**
+
+### ✅ What it is:
+
+- **Auto-generated** by npm to **lock the exact versions** of every installed package and sub-dependency.
+
+### 🧠 Why it matters:
+
+- Ensures consistent installs across teams/CI/CD
+- Keeps track of nested dependency trees
+- Helps in debugging production bugs caused by version drift
+
+> 🔒 Never delete this unless you want to reinstall everything fresh (`npm install` regenerates it).
+
+---
+
+## 📌 4. How `package.json`, `package_lock.json` and `node_modules` work together
+
+- You declare dependencies in package.json
+- You run npm install
+- npm resolves version (respecting version ranges from package.json)
+- It writes exact version to package_lock.json
+- It installs those packages to node_modules
+
+---
+
+## 📌 5. `Semantic Versioning` — Assigning version
+
+- **MAJOR**: Big changes that break old code. Example: 1.0.0 → 2.0.0
+- **MINOR**: New features that don’t break anything.Example: 1.2.0 → 1.3.0
+- **PATCH**:Small bug fixes that don’t change how anything works.1.3.2 → 1.3.3
+
+---
+
+## 📌 6. `^ and ~ in package.json` — Version Ranges
+
+- ^ (caret): Allow updates that don’t change the first number (MAJOR).This allows updates like 1.3.0, 1.4.5, but not 2.0.0
+- ~ (tilde): Allow only PATCH updates.This allows updates like 1.2.4, 1.2.5, but not 1.3.0
+- No symbol (exact version):Only this exact version will be installed — no updates allowed.
+
+---
+
+## ⚙️ 4. `.npmrc` — **NPM Configuration File**
+
+### ✅ What it is:
+
+- Optional config file that tells **NPM how to behave**.
+
+### 🧠 Example:
+
+```bash
+save-exact=true
+registry=https://registry.npmjs.org/
+```
+
+### 💡 Use cases:
+
+- Set registry URL (private NPM, GitHub)
+- Auto-save exact versions
+- Setup auth tokens for private packages
+
+---
+
+## ⚙️ 5. `.nvmrc` — **Node Version Manager Config**
+
+### ✅ What it is:
+
+- Tells tools like `nvm` or `volta` what Node.js version your project uses.
+
+### 🧠 Example:
+
+```
+18.16.0
+```
+
+### 🛠 Why it's useful:
+
+- Team-wide version consistency
+- CI/CD consistency
+- Works with `.nvm` and `nvm use`
+
+---
+
+## 🎨 6. `.prettierrc` or `.prettier.config.js` — **Prettier Code Formatter Config**
+
+### ✅ What it is:
+
+- Configuration for **Prettier**, the opinionated code formatter.
+
+### 🧠 Example:
+
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5"
+}
+```
+
+### 🛠 Optional files:
+
+- `.prettierrc`
+- `.prettierrc.json`
+- `.prettierrc.js`
+- `prettier.config.js`
+
+Use Prettier to auto-format on save with your IDE.
+
+---
+
+## 🧼 7. `.gitignore` — **Git Exclude File**
+
+### ✅ What it is:
+
+- Tells Git **what to ignore** when committing files.
+
+### 🧠 Common entries:
+
+```
+node_modules/
+dist/
+.env
+*.log
+```
+
+> Helps keep Git clean and avoid committing secrets or junk.
+
+---
+
+## 🧬 8. `.git/` — **Git Version Control Folder**
+
+### ✅ What it is:
+
+- Auto-created folder when you run `git init`
+- Contains the **entire history**, config, refs, branches, commits
+
+### ⚠️ Never touch this manually unless you're scripting advanced Git internals.
+
+---
+
+## ✅ Summary Table
+
+| File/Folder         | Purpose                             | Committed to Git? |
+| ------------------- | ----------------------------------- | ----------------- |
+| `node_modules/`     | Installed NPM packages              | ❌ No             |
+| `package.json`      | Project config, deps, scripts       | ✅ Yes            |
+| `package-lock.json` | Exact dependency versions           | ✅ Yes            |
+| `.npmrc`            | NPM behavior (e.g., registry, auth) | ✅ Optional       |
+| `.nvmrc`            | Node version pinning                | ✅ Optional       |
+| `.prettierrc`       | Code formatting rules               | ✅ Yes            |
+| `.gitignore`        | Git exclusion list                  | ✅ Yes            |
+| `.git/`             | Internal Git version control folder | ❌ Never          |
+
+<!-- yet to learn about -->
+
+## ⚙️ 4. `.npmrc` — **NPM Configuration File**
+
+### ✅ What it is:
+
+- Optional config file that tells **NPM how to behave**.
+
+### 🧠 Example:
+
+```bash
+save-exact=true
+registry=https://registry.npmjs.org/
+```
+
+### 💡 Use cases:
+
+- Set registry URL (private NPM, GitHub)
+- Auto-save exact versions
+- Setup auth tokens for private packages
+
+---
+
+## ⚙️ 5. `.nvmrc` — **Node Version Manager Config**
+
+### ✅ What it is:
+
+- Tells tools like `nvm` or `volta` what Node.js version your project uses.
+
+### 🧠 Example:
+
+```
+18.16.0
+```
+
+### 🛠 Why it's useful:
+
+- Team-wide version consistency
+- CI/CD consistency
+- Works with `.nvm` and `nvm use`
+
+---
