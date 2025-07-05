@@ -1,6 +1,11 @@
-# 🧱 Middleware System in Express (with TypeScript)
+---
+title: Middleware
+description: Learn how to implement and use middleware in your Express applications with TypeScript.
+---
 
-## ✅ What is Middleware?
+# Middleware System in Express (with TypeScript)
+
+## What is Middleware?
 
 Middleware is a **function** that has access to the request and response lifecycle and can:
 
@@ -14,21 +19,21 @@ Middleware is a **function** that has access to the request and response lifecyc
 
 ---
 
-## 🧭 Middleware Execution Flow
+## Middleware Execution Flow
 
 Middlewares are **executed in order** — top-down.
 
 ```ts
 app.use(middleware1);
 app.use(middleware2);
-app.get('/route', middleware3, controllerHandler);
+app.get("/route", middleware3, controllerHandler);
 ```
 
 If one of them doesn't call `next()`, the flow **stops there**.
 
 ---
 
-## 🧱 Types of Middleware
+## Types of Middleware
 
 | Type              | Use Case                             |
 | ----------------- | ------------------------------------ |
@@ -39,7 +44,7 @@ If one of them doesn't call `next()`, the flow **stops there**.
 
 ---
 
-## 🗂️ Recommended Folder Structure
+## Recommended Folder Structure
 
 ```
 src/
@@ -51,11 +56,11 @@ src/
 
 ---
 
-## 📦 Setting Up a Middleware (Example: Logger)
+## Setting Up a Middleware (Example: Logger)
 
 ```ts
 // src/middlewares/logger.middleware.ts
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
 export const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
   console.log(`[${req.method}] ${req.originalUrl}`);
@@ -66,8 +71,8 @@ export const loggerMiddleware = (req: Request, res: Response, next: NextFunction
 Usage:
 
 ```ts
-import express from 'express';
-import { loggerMiddleware } from './middlewares/logger.middleware';
+import express from "express";
+import { loggerMiddleware } from "./middlewares/logger.middleware";
 
 const app = express();
 app.use(loggerMiddleware);
@@ -75,15 +80,15 @@ app.use(loggerMiddleware);
 
 ---
 
-## 🚀 Route-Specific Middleware
+## Route-Specific Middleware
 
 ```ts
-app.get('/admin', isAdminMiddleware, adminController);
+app.get("/admin", isAdminMiddleware, adminController);
 ```
 
 ---
 
-## 🚨 Error-Handling Middleware
+## Error-Handling Middleware
 
 Special format with **4 args**:
 
@@ -100,7 +105,7 @@ Create a utility to group and reuse middleware chains across your app:
 ```ts
 // src/utils/compose.ts
 
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from "express";
 
 /**
  * Compose multiple middleware functions into a single RequestHandler.
@@ -135,7 +140,7 @@ export function compose(...middlewares: RequestHandler[]): RequestHandler {
 
 ---
 
-## 🛡️ Common Middleware You Should Implement
+## Common Middleware You Should Implement
 
 | Middleware            | Description                             |
 | --------------------- | --------------------------------------- |
@@ -147,7 +152,7 @@ export function compose(...middlewares: RequestHandler[]): RequestHandler {
 
 ---
 
-## ✅ Best Practices
+## Best Practices
 
 - Keep middlewares **pure** (no side effects unless intended)
 - Always call `next()` unless you’re sending a response

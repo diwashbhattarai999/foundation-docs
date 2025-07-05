@@ -1,8 +1,13 @@
-## 📦 Advanced `.env` Configuration
+---
+title: Dotenv
+description: Learn how to use dotenv for managing environment variables in Node.js applications.
+---
+
+## Advanced `.env` Configuration
 
 By default, [`dotenv`](https://www.npmjs.com/package/dotenv) loads `.env` from the project root.
 
-### ✅ You can customize:
+### You can customize:
 
 | Feature                | Example/Benefit                              |
 | ---------------------- | -------------------------------------------- |
@@ -12,7 +17,7 @@ By default, [`dotenv`](https://www.npmjs.com/package/dotenv) loads `.env` from t
 
 ---
 
-## 📁 Recommended Folder Structure
+## Recommended Folder Structure
 
 ```
 project-root/
@@ -30,21 +35,21 @@ project-root/
 
 ---
 
-## 🔧 Custom dotenv Configuration (Advanced)
+## Custom dotenv Configuration (Advanced)
 
 ### 1. Load custom file based on `NODE_ENV`
 
 ```ts
-import path from 'path';
-import dotenv from 'dotenv';
+import path from "path";
+import dotenv from "dotenv";
 
 // Resolve correct file
-const envFile = `.env.${process.env.NODE_ENV ?? 'development'}`;
+const envFile = `.env.${process.env.NODE_ENV ?? "development"}`;
 
 dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 ```
 
-> ✅ Now `NODE_ENV=production` loads `.env.production` automatically.
+> Now `NODE_ENV=production` loads `.env.production` automatically.
 
 ---
 
@@ -55,7 +60,7 @@ npm install dotenv-flow
 ```
 
 ```ts
-import dotenvFlow from 'dotenv-flow';
+import dotenvFlow from "dotenv-flow";
 
 dotenvFlow.config({
   path: path.resolve(process.cwd()), // custom base folder
@@ -63,7 +68,7 @@ dotenvFlow.config({
 });
 ```
 
-> ✅ This loads `.env`, then `.env.local`, and finally `.env.development.local`, merging them in order.
+> This loads `.env`, then `.env.local`, and finally `.env.development.local`, merging them in order.
 
 ---
 
@@ -77,33 +82,33 @@ dotenv -e .env.staging -- node dist/app.js
 
 Or in Docker:
 
-```Dockerfile
+```bash
 ENV DOTENV_CONFIG_PATH=./env/.env.production
 ```
 
 ---
 
-## 🧪 Validation After Custom Load
+## Validation After Custom Load
 
 Once `.env` is loaded, use `zod` to validate it as before:
 
 ```ts
 const envSchema = z.object({
   PORT: z.string().transform(Number),
-  NODE_ENV: z.enum(['development', 'production', 'test', 'staging']),
+  NODE_ENV: z.enum(["development", "production", "test", "staging"]),
   JWT_SECRET: z.string().min(16),
 });
 
 const parsed = envSchema.safeParse(process.env);
 if (!parsed.success) {
-  console.error('❌ Invalid environment variables:', parsed.error.format());
+  console.error("❌ Invalid environment variables:", parsed.error.format());
   process.exit(1);
 }
 ```
 
 ---
 
-## 🚨 Common Mistakes to Avoid
+## Common Mistakes to Avoid
 
 | Mistake                          | Why it's bad                       |
 | -------------------------------- | ---------------------------------- |
@@ -114,10 +119,10 @@ if (!parsed.success) {
 
 ---
 
-## ✅ Best Practices Summary
+## Best Practices Summary
 
-- ✅ Use `dotenv` or `dotenv-flow` for layered envs
-- ✅ Validate with `zod` on startup
-- ✅ Create `.env.example` for shared config contracts
-- ✅ Load files by environment (`.env.development`, `.env.test`)
-- ✅ Document required keys and types centrally (`env.ts`)
+- Use `dotenv` or `dotenv-flow` for layered envs
+- Validate with `zod` on startup
+- Create `.env.example` for shared config contracts
+- Load files by environment (`.env.development`, `.env.test`)
+- Document required keys and types centrally (`env.ts`)

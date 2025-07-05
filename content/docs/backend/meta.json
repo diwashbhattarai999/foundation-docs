@@ -1,0 +1,4 @@
+{
+  "title": "Backend Development",
+  "pages": ["setup", "core", "auth"]
+}

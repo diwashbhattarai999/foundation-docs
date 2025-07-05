@@ -1,6 +1,11 @@
-# 📚 Updated Logging & Request Tracing Layer
+---
+title: Logger
+description: Learn how to implement a robust logging and request tracing system in your Node.js applications using Winston, Morgan, and UUID.
+---
 
-## ✅ Tools Used
+# Updated Logging & Request Tracing Layer
+
+## Tools Used
 
 | Tool                | Purpose                        |
 | ------------------- | ------------------------------ |
@@ -11,7 +16,7 @@
 
 ---
 
-## 📦 1. Install Packages
+## 1. Install Packages
 
 ```bash
 npm install winston winston-daily-rotate-file morgan uuid
@@ -20,7 +25,7 @@ npm install --save-dev @types/winston @types/morgan
 
 ---
 
-## 🧱 Directory Structure
+## Directory Structure
 
 ```
 src/
@@ -34,14 +39,16 @@ src/
 
 ---
 
-## 🛠 2. Winston Logger – `logger/winston.logger.ts`
+## 2. Winston Logger – `logger/winston.logger.ts`
 
 ```ts
-import winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 
 const logFormat = winston.format.printf(({ level, message, timestamp, ...meta }) => {
-  return `${timestamp} [${level.toUpperCase()}] ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`;
+  return `${timestamp} [${level.toUpperCase()}] ${message} ${
+    Object.keys(meta).length ? JSON.stringify(meta) : ""
+  }`;
 });
 
 const transports = [
@@ -49,17 +56,17 @@ const transports = [
     format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
   }),
   new DailyRotateFile({
-    filename: 'logs/app-%DATE%.log',
-    datePattern: 'YYYY-MM-DD',
+    filename: "logs/app-%DATE%.log",
+    datePattern: "YYYY-MM-DD",
     zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d',
+    maxSize: "20m",
+    maxFiles: "14d",
     format: winston.format.combine(winston.format.timestamp(), logFormat),
   }),
 ];
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: "info",
   format: winston.format.combine(winston.format.timestamp(), logFormat),
   transports,
 });
@@ -69,16 +76,16 @@ export default logger;
 
 ---
 
-## 📋 3. Request Context Middleware – `logger/request-context.middleware.ts`
+## 3. Request Context Middleware – `logger/request-context.middleware.ts`
 
 ```ts
-import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { Request, Response, NextFunction } from "express";
+import { v4 as uuidv4 } from "uuid";
 
 export function requestContext(req: Request, _res: Response, next: NextFunction) {
   req.context = {
     requestId: uuidv4(),
-    ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
+    ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress || "",
     userId: null,
   };
 
@@ -88,11 +95,11 @@ export function requestContext(req: Request, _res: Response, next: NextFunction)
 
 ---
 
-## 🧾 4. Morgan Integration – `logger/morgan.middleware.ts`
+## 4. Morgan Integration – `logger/morgan.middleware.ts`
 
 ```ts
-import morgan from 'morgan';
-import logger from './winston.logger';
+import morgan from "morgan";
+import logger from "./winston.logger";
 
 // Create a stream object with a 'write' function that Winston uses
 const stream = {
@@ -101,9 +108,12 @@ const stream = {
   },
 };
 
-const skip = () => process.env.NODE_ENV === 'test';
+const skip = () => process.env.NODE_ENV === "test";
 
-export const morganMiddleware = morgan(':method :url :status :res[content-length] - :response-time ms :remote-addr', { stream, skip });
+export const morganMiddleware = morgan(
+  ":method :url :status :res[content-length] - :response-time ms :remote-addr",
+  { stream, skip }
+);
 ```
 
 > This logs each HTTP request like:
@@ -111,12 +121,12 @@ export const morganMiddleware = morgan(':method :url :status :res[content-length
 
 ---
 
-## 🧠 5. Extend Express Types – `types/express.d.ts`
+## 5. Extend Express Types – `types/express.d.ts`
 
 ```ts
-import 'express';
+import "express";
 
-declare module 'express' {
+declare module "express" {
   export interface Request {
     context: {
       requestId: string;
@@ -129,32 +139,32 @@ declare module 'express' {
 
 ---
 
-## 🚀 6. Use in Your App
+## 6. Use in Your App
 
 ```ts
-import express from 'express';
-import { requestContext } from './logger/request-context.middleware';
-import { morganMiddleware } from './logger/morgan.middleware';
-import logger from './logger/winston.logger';
+import express from "express";
+import { requestContext } from "./logger/request-context.middleware";
+import { morganMiddleware } from "./logger/morgan.middleware";
+import logger from "./logger/winston.logger";
 
 const app = express();
 
 app.use(requestContext); // Inject requestId + ip
 app.use(morganMiddleware); // Log HTTP requests
 
-app.get('/health', (req, res) => {
-  logger.info('Health check ping', {
+app.get("/health", (req, res) => {
+  logger.info("Health check ping", {
     requestId: req.context.requestId,
     ip: req.context.ip,
   });
 
-  res.send('OK');
+  res.send("OK");
 });
 ```
 
 ---
 
-## ✅ Benefits
+## Benefits
 
 | Feature                   | Benefit                                     |
 | ------------------------- | ------------------------------------------- |

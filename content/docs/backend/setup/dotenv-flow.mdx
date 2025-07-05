@@ -1,4 +1,9 @@
-## 🧪 `dotenv` vs `dotenv-flow`
+---
+title: Dotenv Flow
+description: Learn how to use dotenv-flow for managing environment variables in Node.js applications with multiple environments like development, staging, and production.
+---
+
+## `dotenv` vs `dotenv-flow`
 
 | Feature                        | `dotenv`                              | `dotenv-flow`                               |
 | ------------------------------ | ------------------------------------- | ------------------------------------------- |
@@ -12,10 +17,10 @@
 
 ---
 
-## ✅ How `dotenv` Works
+## How `dotenv` Works
 
 ```ts
-dotenv.config({ path: '.env' }); // Loads ONE file
+dotenv.config({ path: ".env" }); // Loads ONE file
 ```
 
 You need to handle logic like:
@@ -24,11 +29,11 @@ You need to handle logic like:
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 ```
 
-> ❗ Doesn’t support automatic merging or override behavior.
+> Doesn’t support automatic merging or override behavior.
 
 ---
 
-## ✅ How `dotenv-flow` Works
+## How `dotenv-flow` Works
 
 ```ts
 dotenvFlow.config(); // Automatically loads and merges
@@ -46,17 +51,17 @@ It automatically loads and **merges** files in this order:
 ### Example when NODE_ENV = 'development':
 
 ```
-✅ .env
-✅ .env.local
-✅ .env.development
-✅ .env.development.local
+.env
+.env.local
+.env.development
+.env.development.local
 ```
 
 Later files override earlier ones.
 
 ---
 
-## 🧠 When to Use Which?
+## When to Use Which?
 
 | Use `dotenv` if...                   | Use `dotenv-flow` if...                           |
 | ------------------------------------ | ------------------------------------------------- |
@@ -71,5 +76,5 @@ Later files override earlier ones.
 
 For production-ready applications or teams:
 
-> ✅ **Use `dotenv-flow`**
+> **Use `dotenv-flow`**
 > With a `zod` schema + fallback/default layer, it gives you clean config isolation per environment.

@@ -1,4 +1,9 @@
-## 🧠 1. **Authentication vs Authorization**
+---
+title: Authorization
+description: Learn how to implement robust authorization systems in your Node.js applications using Role-Based Access Control
+---
+
+## 1. **Authentication vs Authorization**
 
 | Concept        | Authentication                   | Authorization                         |
 | -------------- | -------------------------------- | ------------------------------------- |
@@ -9,9 +14,9 @@
 
 ---
 
-## 🔐 2. **Types of Authorization Systems**
+## 2. **Types of Authorization Systems**
 
-### ✅ Role-Based Access Control (RBAC)
+### Role-Based Access Control (RBAC)
 
 - Users are assigned **roles** (e.g., `admin`, `editor`, `user`)
 - Each role has permissions to perform certain actions
@@ -22,7 +27,7 @@ role: 'admin' → can manage users, update settings
 role: 'user' → can view profile only
 ```
 
-### ✅ Attribute-Based Access Control (ABAC)
+### Attribute-Based Access Control (ABAC)
 
 - Access is based on **attributes** of user or resource
 - More dynamic, fine-grained (e.g., `user.department === resource.department`)
@@ -33,16 +38,16 @@ if (user.department === document.ownerDepartment) {
 }
 ```
 
-### ✅ Access Control Lists (ACL)
+### Access Control Lists (ACL)
 
 - Permissions are defined **per object/resource**
 - Each resource defines who can access or modify it
 
 ```ts
-document.acl = ['user123', 'user789'];
+document.acl = ["user123", "user789"];
 ```
 
-### ✅ Ownership-Based Access
+### Ownership-Based Access
 
 - Users can only access **their own** resources
 
@@ -54,9 +59,9 @@ if (user.id === resource.ownerId) {
 
 ---
 
-## ⚙️ 3. **Authorization Methods in Code**
+## 3. **Authorization Methods in Code**
 
-### 🔑 1. Middleware Based on Roles (RBAC)
+### 1. Middleware Based on Roles (RBAC)
 
 ```ts
 // Role-based middleware
@@ -64,29 +69,29 @@ const authorizeRoles = (...allowedRoles: string[]) => {
   return (req, res, next) => {
     const role = req.user?.role;
     if (!role || !allowedRoles.includes(role)) {
-      return res.status(403).json({ message: 'Forbidden' });
+      return res.status(403).json({ message: "Forbidden" });
     }
     next();
   };
 };
 
 // Usage
-app.get('/admin', jwtMiddleware, authorizeRoles('admin'), (req, res) => {
-  res.json({ message: 'Welcome Admin' });
+app.get("/admin", jwtMiddleware, authorizeRoles("admin"), (req, res) => {
+  res.json({ message: "Welcome Admin" });
 });
 ```
 
 ---
 
-### 🔑 2. Ownership-Based Access
+### 2. Ownership-Based Access
 
 ```ts
-app.get('/documents/:id', jwtMiddleware, async (req, res) => {
+app.get("/documents/:id", jwtMiddleware, async (req, res) => {
   const doc = await Document.findById(req.params.id);
-  if (!doc) return res.status(404).json({ message: 'Not found' });
+  if (!doc) return res.status(404).json({ message: "Not found" });
 
   if (doc.ownerId !== req.user.id) {
-    return res.status(403).json({ message: 'Access denied' });
+    return res.status(403).json({ message: "Access denied" });
   }
 
   res.json(doc);
@@ -95,15 +100,15 @@ app.get('/documents/:id', jwtMiddleware, async (req, res) => {
 
 ---
 
-### 🔑 3. Attribute-Based Access (ABAC)
+### 3. Attribute-Based Access (ABAC)
 
 ```ts
-app.get('/projects/:id', jwtMiddleware, async (req, res) => {
+app.get("/projects/:id", jwtMiddleware, async (req, res) => {
   const project = await Project.findById(req.params.id);
-  if (!project) return res.status(404).json({ message: 'Not found' });
+  if (!project) return res.status(404).json({ message: "Not found" });
 
-  if (req.user.department !== project.department && req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied' });
+  if (req.user.department !== project.department && req.user.role !== "admin") {
+    return res.status(403).json({ message: "Access denied" });
   }
 
   res.json(project);
@@ -112,7 +117,7 @@ app.get('/projects/:id', jwtMiddleware, async (req, res) => {
 
 ---
 
-## 🧾 4. Summary Table
+## 4. Summary Table
 
 | Auth Type | Granularity       | Flexibility | Use Case                                  |
 | --------- | ----------------- | ----------- | ----------------------------------------- |
@@ -123,11 +128,11 @@ app.get('/projects/:id', jwtMiddleware, async (req, res) => {
 
 ---
 
-## 🧰 5. Best Practices
+## 5. Best Practices
 
-- 🔐 Always **authenticate before authorizing**
-- 🎭 Use **RBAC** for basic admin/user separation
-- 🧩 Use **ABAC or ACL** for fine-grained resource control
-- 🧾 Keep role/permissions in token payload for JWT
-- ⚠️ Avoid hardcoded role checks all over — centralize logic in **middleware**
-- ✅ Validate ownership where necessary
+- Always **authenticate before authorizing**
+- Use **RBAC** for basic admin/user separation
+- Use **ABAC or ACL** for fine-grained resource control
+- Keep role/permissions in token payload for JWT
+- Avoid hardcoded role checks all over — centralize logic in **middleware**
+- Validate ownership where necessary

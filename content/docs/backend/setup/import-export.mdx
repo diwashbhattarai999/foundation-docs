@@ -1,6 +1,11 @@
-# ✅ Node.js Module System Summary
+---
+title: Import/Export
+description: Learn how to use CommonJS and ESM modules in Node.js, including TypeScript configurations, directory resolution, and path aliases.
+---
 
-## 🧱 1. Module Types
+# Node.js Module System Summary
+
+## 1. Module Types
 
 | Type         | Import Syntax         | Export Syntax          | File Type                               | Node Default     |
 | ------------ | --------------------- | ---------------------- | --------------------------------------- | ---------------- |
@@ -9,9 +14,9 @@
 
 ---
 
-## ⚙️ 2. TypeScript + Modules
+## 2. TypeScript + Modules
 
-### ✅ CommonJS in TS
+### CommonJS in TS
 
 - `tsconfig.json`
 
@@ -28,7 +33,7 @@
 
 ---
 
-### ✅ ESM in TS (Modern Projects)
+### ESM in TS (Modern Projects)
 
 - `package.json`
 
@@ -52,15 +57,15 @@
 }
 ```
 
-- 📌 Must include `.js` in `import` path in source:
+- Must include `.js` in `import` path in source:
 
 ```ts
-import { add } from './math.js';
+import { add } from "./math.js";
 ```
 
 ---
 
-## 📦 3. Directory and Resolution Behavior
+## 3. Directory and Resolution Behavior
 
 | Case                  | Behavior                                             |
 | --------------------- | ---------------------------------------------------- |
@@ -71,9 +76,9 @@ import { add } from './math.js';
 
 ---
 
-## 🧬 4. Path Aliases with `@import`
+## 4. Path Aliases with `@import`
 
-### ✅ Enable in `tsconfig.json`
+### Enable in `tsconfig.json`
 
 ```json
 {
@@ -87,7 +92,7 @@ import { add } from './math.js';
 }
 ```
 
-### 📁 Folder Structure
+### Folder Structure
 
 ```
 src/
@@ -97,11 +102,11 @@ src/
     user.ts
 ```
 
-### ✅ Usage in Code:
+### Usage in Code:
 
 ```ts
-import { add } from '@utils/math';
-import { getUser } from '@controllers/user';
+import { add } from "@utils/math";
+import { getUser } from "@controllers/user";
 ```
 
 ### 🔧 Use with ESM?
@@ -111,7 +116,7 @@ import { getUser } from '@controllers/user';
 
 ---
 
-## ✅ Best Practices
+## Best Practices
 
 | Goal                       | Recommendation                                |
 | -------------------------- | --------------------------------------------- |
@@ -123,7 +128,7 @@ import { getUser } from '@controllers/user';
 
 ---
 
-## 🔚 Final Thoughts
+## Final Thoughts
 
 - **Use CommonJS** for small projects, scripts, and CLI tools.
 - **Use ESM** for modern apps, TypeScript, and anything long-term.
