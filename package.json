@@ -56,8 +56,8 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,mdx,md}": [
-      "pnpm run lint:fix",
-      "pnpm run format"
+      "pnpm lint:fix",
+      "pnpm format"
     ]
   },
   "engines": {
