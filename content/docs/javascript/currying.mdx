@@ -1,0 +1,118 @@
+---
+title: Currying
+description: Learn about currying in JavaScript, its benefits, and how to implement it using higher-order functions.
+---
+
+## What is Currying?
+
+**Currying** is a technique of **transforming a function** that takes **multiple arguments** into a sequence of functions that each take **a single argument**.
+
+### In simple terms:
+
+```js
+// Normal function
+function add(a, b) {
+  return a + b;
+}
+
+// Curried version
+function curriedAdd(a) {
+  return function (b) {
+    return a + b;
+  };
+}
+
+const add5 = curriedAdd(5);
+console.log(add5(3)); // 8
+```
+
+So instead of calling `add(5, 3)`, you do `curriedAdd(5)(3)`.
+
+---
+
+## Why Currying?
+
+- **Partial application**: You can create specialized functions by pre-filling some arguments.
+- **Code reusability**: Smaller, focused functions.
+- **Functional composition**: Works well with `.map()`, `.filter()` etc.
+- **Cleaner syntax** with modern JavaScript.
+
+---
+
+## 🛠️ Manual Currying Example
+
+```js
+function multiply(a) {
+  return function (b) {
+    return function (c) {
+      return a * b * c;
+    };
+  };
+}
+
+console.log(multiply(2)(3)(4)); // 24
+```
+
+---
+
+## Using Arrow Functions
+
+```js
+const multiply = (a) => (b) => (c) => a * b * c;
+console.log(multiply(2)(3)(4)); // 24
+```
+
+---
+
+## Currying vs Partial Application
+
+They’re similar but not the same:
+
+| Feature        | Currying                                     | Partial Application        |
+| -------------- | -------------------------------------------- | -------------------------- |
+| Transformation | Turns function into chain of 1-arg functions | Pre-fills some arguments   |
+| Execution      | `f(a)(b)(c)`                                 | `f(a, _, c)` or `f.bind()` |
+
+---
+
+## Real-world Use Case
+
+### Example: URL Builder
+
+```js
+const buildURL = (protocol) => (domain) => (path) => `${protocol}://${domain}/${path}`;
+
+const buildForGoogle = buildURL("https")("google.com");
+console.log(buildForGoogle("search?q=currying"));
+// https://google.com/search?q=currying
+```
+
+---
+
+## Currying Utility Function
+
+Let’s write a generic curry function:
+
+```js
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn(...args);
+    } else {
+      return function (...nextArgs) {
+        return curried(...args.concat(nextArgs));
+      };
+    }
+  };
+}
+
+// Original function
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+const curriedSum = curry(sum);
+console.log(curriedSum(1)(2)(3)); // 6
+console.log(curriedSum(1, 2)(3)); // 6
+console.log(curriedSum(1)(2, 3)); //
+```

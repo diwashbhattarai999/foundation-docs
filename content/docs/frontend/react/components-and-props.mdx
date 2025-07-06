@@ -1,0 +1,96 @@
+---
+title: Components and Props
+description: Learn how components and props work in React, the building blocks of React applications.
+---
+
+## What is a Component?
+
+In React, a **component** is a **reusable building block** of the UI.
+
+There are **two types**:
+
+1. **Function Components** (modern & preferred)
+2. **Class Components** (legacy, still important to understand)
+
+---
+
+### Function Component Example:
+
+```tsx
+function Welcome(props: { name: string }) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+
+OR using arrow function:
+
+```tsx
+const Welcome = ({ name }: { name: string }) => <h1>Hello, {name}</h1>;
+```
+
+---
+
+### What are Props?
+
+- **Props** = short for “**properties**”.
+- Used to **pass data** from parent → child.
+- Read-only (immutable).
+- Can be any type: string, number, object, function, JSX.
+
+---
+
+### Passing Props Example:
+
+```tsx
+const Profile = (props: { name: string; age: number }) => (
+  <p>
+    {props.name} is {props.age} years old.
+  </p>
+);
+
+const App = () => <Profile name="Diwash" age={23} />;
+```
+
+Or using destructuring:
+
+```tsx
+const Profile = ({ name, age }: { name: string; age: number }) => (
+  <p>
+    {name} is {age} years old.
+  </p>
+);
+```
+
+---
+
+### Default Props & Optional Props
+
+```tsx
+type ButtonProps = {
+  label: string;
+  color?: string; // optional
+};
+
+const Button = ({ label, color = "blue" }: ButtonProps) => (
+  <button style={{ backgroundColor: color }}>{label}</button>
+);
+```
+
+---
+
+### Props vs State (Preview)
+
+| Feature     | Props                | State                     |
+| ----------- | -------------------- | ------------------------- |
+| Passed from | Parent Component     | Inside the same component |
+| Modifiable? | ❌ Read-only         | ✅ Mutable (via setState) |
+| Purpose     | Configure components | Track internal data       |
+
+---
+
+### Summary
+
+- Components are reusable functions returning JSX.
+- Props let you customize component behavior.
+- Props are read-only and flow top-down.
+- Use TypeScript to type your props properly.

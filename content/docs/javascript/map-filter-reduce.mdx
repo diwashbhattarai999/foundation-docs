@@ -1,5 +1,200 @@
 ---
 title: Map, Filter & Reduce
+description: Learn how to use map, filter, and reduce in JavaScript to manipulate arrays effectively.
 ---
 
-# Coming Soon
+## 1. **`Array.prototype.map()`**
+
+### Purpose:
+
+Transforms each element of an array and returns a **new array** with the same length.
+
+### Syntax:
+
+```js
+const newArray = array.map((element, index, array) => {
+  // return new value
+});
+```
+
+### Example:
+
+```js
+const numbers = [1, 2, 3, 4];
+const squared = numbers.map((num) => num * num);
+console.log(squared); // [1, 4, 9, 16]
+```
+
+### Key Points:
+
+- Doesn’t mutate the original array.
+- Always returns a new array.
+- Common use: transform values (e.g., converting prices, formatting strings).
+
+---
+
+## 2. **`Array.prototype.filter()`**
+
+### Purpose:
+
+Filters out elements based on a **condition** and returns a **new array** with only those elements that **pass the test**.
+
+### Syntax:
+
+```js
+const filteredArray = array.filter((element, index, array) => {
+  return condition;
+});
+```
+
+### Example:
+
+```js
+const numbers = [1, 2, 3, 4, 5];
+const even = numbers.filter((num) => num % 2 === 0);
+console.log(even); // [2, 4]
+```
+
+### Key Points:
+
+- Doesn’t mutate the original array.
+- The result can be smaller (or empty).
+- Common use: filtering based on a condition (e.g., active users, completed tasks).
+
+---
+
+## 3. **`Array.prototype.reduce()`**
+
+### Purpose:
+
+Reduces an array to **a single value** (number, string, object, etc.) by applying a function cumulatively.
+
+
+
+The `reduce()` method executes a **reducer function** on each element of the array, resulting in **a single output value**.
+
+### Syntax:
+
+```js
+arr.reduce(callback, initialValue);
+```
+
+### **Callback function signature**:
+
+```js
+(accumulator, currentValue, currentIndex, array) => {...}
+```
+
+| Parameter      | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| `accumulator`  | the result of the previous callback execution            |
+| `currentValue` | the current element being processed                      |
+| `currentIndex` | index of the current element                             |
+| `array`        | the original array                                       |
+| `initialValue` | (optional) value to use as the first `accumulator` value |
+
+---
+
+## Simple Example
+
+```js
+const nums = [1, 2, 3, 4];
+
+const sum = nums.reduce((acc, curr) => acc + curr, 0);
+console.log(sum); // 10
+```
+
+### Behind the scenes:
+
+* Step 1: acc = 0, curr = 1 → acc = 1
+* Step 2: acc = 1, curr = 2 → acc = 3
+* Step 3: acc = 3, curr = 3 → acc = 6
+* Step 4: acc = 6, curr = 4 → acc = 10
+
+---
+
+## What if `initialValue` is not provided?
+
+If omitted, the **first element** of the array becomes the initial accumulator, and `reduce` starts from index `1`.
+
+```js
+const sum = [1, 2, 3].reduce((acc, curr) => acc + curr);
+// acc = 1 (first element), starts from index 1
+```
+
+> **Best practice:** Always provide `initialValue` to avoid edge-case bugs.
+
+
+### Key Points:
+
+- Can do **anything**: sum, flatten arrays, group by, etc.
+- The most powerful of the three, but also the trickiest.
+- Returns any data type (not necessarily an array).
+
+---
+
+## When to Use What?
+
+| Use Case                               | Method     |
+| -------------------------------------- | ---------- |
+| Transform every element                | `map()`    |
+| Filter elements conditionally          | `filter()` |
+| Accumulate a value (sum, object, etc.) | `reduce()` |
+
+---
+
+## Real-Life Example:
+
+### Given:
+
+```js
+const users = [
+  { name: "Diwash", age: 23, isActive: true },
+  { name: "Alex", age: 30, isActive: false },
+  { name: "Sam", age: 27, isActive: true },
+];
+```
+
+### 1. Get names of all users (map)
+
+```js
+const names = users.map((user) => user.name);
+// ["Diwash", "Alex", "Sam"]
+```
+
+### 2. Get active users (filter)
+
+```js
+const active = users.filter((user) => user.isActive);
+// [{ name: "Diwash", ... }, { name: "Sam", ... }]
+```
+
+### 3. Total age of users (reduce)
+
+```js
+const totalAge = users.reduce((sum, user) => sum + user.age, 0);
+// 80
+```
+
+---
+
+## Gotchas and Best Practices
+
+- **Don’t mutate inside**: Avoid mutating the original data within map/filter/reduce.
+- **Chaining is powerful**:
+
+  ```js
+  users.filter((u) => u.isActive).map((u) => u.name.toUpperCase());
+  ```
+
+- Use `reduce` when you can’t use `map` or `filter` alone.
+
+---
+
+## Summary
+
+| Method     | Returns          | Used For                 |
+| ---------- | ---------------- | ------------------------ |
+| `map()`    | New array        | Transform each item      |
+| `filter()` | Filtered array   | Remove unwanted items    |
+| `reduce()` | Any single value | Accumulate/combine items |

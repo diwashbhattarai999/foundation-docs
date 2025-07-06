@@ -2,4 +2,180 @@
 title: Promises
 ---
 
-# Coming Soon
+## What Is a Promise?
+
+A **Promise** is a **JavaScript object** that represents the **eventual completion or failure** of an asynchronous operation and its resulting value.
+
+> Think of it as a placeholder for a value that’s not available yet but will be resolved in the future.
+
+---
+
+## States of a Promise
+
+A Promise has **three states**:
+
+1. **Pending** – initial state, neither fulfilled nor rejected.
+2. **Fulfilled** – operation completed successfully.
+3. **Rejected** – operation failed.
+
+Once a promise is **settled** (fulfilled or rejected), it **cannot change states**.
+
+```js
+const promise = new Promise((resolve, reject) => {
+  // async operation here...
+});
+```
+
+---
+
+## Basic Example
+
+```js
+const myPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("✅ Data loaded!");
+    // reject("❌ Failed to load data");
+  }, 1000);
+});
+
+myPromise
+  .then((data) => console.log(data)) // ✅ success handler
+  .catch((error) => console.error(error)) // ❌ error handler
+  .finally(() => console.log("✨ Done!")); // 🧹 always runs
+```
+
+---
+
+## Chaining Promises
+
+You can **chain** `.then()` calls:
+
+```js
+fetchUser()
+  .then((user) => fetchProfile(user.id))
+  .then((profile) => updateUI(profile))
+  .catch((err) => handleError(err));
+```
+
+Each `.then()` returns a new promise, allowing composition and sequencing.
+
+---
+
+## Why Use Promises?
+
+| Reason                        | Benefit                                        |
+| ----------------------------- | ---------------------------------------------- |
+| Avoid Callback Hell           | Clean, flat structure using chaining           |
+| Better Error Handling         | Centralized via `.catch()`                     |
+| Composability                 | Chain and combine multiple async tasks         |
+| Integrated with `async/await` | Promises are the foundation of modern async JS |
+
+---
+
+## Promise Static Methods
+
+### 1. `Promise.resolve(value)`
+
+Returns a fulfilled promise with the given value.
+
+```js
+Promise.resolve("Hello").then(console.log);
+```
+
+### 2. `Promise.reject(reason)`
+
+Returns a rejected promise.
+
+```js
+Promise.reject("Error").catch(console.error);
+```
+
+### 3. `Promise.all([p1, p2, ...])`
+
+Waits for **all** promises to resolve. Rejects if **any one fails**.
+
+```js
+Promise.all([fetchUser(), fetchPosts()])
+  .then(([user, posts]) => { ... });
+```
+
+### 4. `Promise.race([p1, p2, ...])`
+
+Returns the result of the **first** promise to settle (fulfilled or rejected).
+
+```js
+Promise.race([slowPromise(), fastPromise()]).then(console.log).catch(console.error);
+```
+
+### 5. `Promise.allSettled([p1, p2, ...])`
+
+Waits for **all** promises and returns their result/status regardless of success/failure.
+
+```js
+Promise.allSettled([Promise.resolve("A"), Promise.reject("B")]).then(console.log);
+```
+
+### 6. `Promise.any([p1, p2, ...])`
+
+Returns the **first fulfilled** promise. Ignores rejections unless all fail.
+
+---
+
+## Promise Example with Error Handling
+
+```js
+const fetchData = (url) => {
+  return new Promise((resolve, reject) => {
+    if (!url.startsWith("https://")) {
+      reject("Invalid URL");
+    } else {
+      setTimeout(() => resolve(`Data from ${url}`), 1000);
+    }
+  });
+};
+
+fetchData("https://api.example.com")
+  .then((data) => {
+    console.log("Received:", data);
+    return "Processed!";
+  })
+  .then((processed) => console.log(processed))
+  .catch((err) => console.error("Error:", err))
+  .finally(() => console.log("Done."));
+```
+
+---
+
+## Under the Hood
+
+Every `.then()` returns a **new promise**, allowing chaining.
+
+```js
+const promise = Promise.resolve(5);
+
+const chained = promise.then((val) => {
+  return val * 2;
+});
+
+chained.then(console.log); // 10
+```
+
+---
+
+## Promises vs Callbacks
+
+| Feature        | Callback               | Promise                         |
+| -------------- | ---------------------- | ------------------------------- |
+| Error Handling | Hard to manage         | `.catch()` simplifies it        |
+| Nesting        | Leads to callback hell | Flattened with chaining         |
+| Composability  | Manual                 | Natural via `.then()` chaining  |
+| Debugging      | More difficult         | Easier with async/await + stack |
+
+---
+
+## Best Practices
+
+1. **Always handle errors** with `.catch()` or `try/catch` with `async/await`.
+2. Avoid mixing **callbacks with promises**.
+3. Chain `.then()` instead of nesting them.
+4. Prefer `async/await` for better readability.

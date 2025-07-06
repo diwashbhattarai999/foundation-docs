@@ -1,0 +1,131 @@
+---
+title: Higher Order Functions
+description: Learn about higher-order functions in JavaScript, their benefits, and common built-in examples like map, filter, and reduce.
+---
+
+## What is a Higher-Order Function?
+
+A **higher-order function** is:
+
+> A function that either **takes another function as an argument**, **returns a function**, or **does both**.
+
+---
+
+### 📌 Examples of Higher-Order Functions:
+
+```js
+function greet(name) {
+  return `Hello, ${name}`;
+}
+
+function processUserInput(callback) {
+  const name = "Diwash";
+  return callback(name);
+}
+
+console.log(processUserInput(greet)); // "Hello, Diwash"
+```
+
+- `processUserInput` is a higher-order function.
+- `greet` is a **callback**.
+
+---
+
+## Why Use Higher-Order Functions?
+
+- **Abstraction**: Hide repetitive logic.
+- **Reusability**: Extract general logic.
+- **Functional Programming**: Enables functional patterns like map/filter/reduce.
+- **Cleaner Code**: Reduces boilerplate.
+
+---
+
+## Common Built-in Higher-Order Functions in JS
+
+### 1. `map()`
+
+> Transforms each element of an array and returns a new array.
+
+```js
+const numbers = [1, 2, 3];
+const doubled = numbers.map((num) => num * 2);
+console.log(doubled); // [2, 4, 6]
+```
+
+### 2. `filter()`
+
+> Returns a new array with elements that pass a test.
+
+```js
+const ages = [12, 17, 21, 30];
+const adults = ages.filter((age) => age >= 18);
+console.log(adults); // [21, 30]
+```
+
+### 3. `reduce()`
+
+> Accumulates array values into a single result.
+
+```js
+const sum = [1, 2, 3, 4].reduce((acc, val) => acc + val, 0);
+console.log(sum); // 10
+```
+
+### 4. `forEach()`
+
+> Iterates through each element (like `for` loop), but doesn’t return anything.
+
+```js
+[1, 2, 3].forEach((num) => console.log(num));
+```
+
+---
+
+## Higher-Order Function Returning a Function
+
+```js
+function multiplier(factor) {
+  return function (num) {
+    return num * factor;
+  };
+}
+
+const double = multiplier(2);
+console.log(double(5)); // 10
+```
+
+Here:
+
+- `multiplier` returns another function.
+- It “remembers” `factor` via **closure**.
+
+---
+
+## HOFs + Closures = 🔥
+
+Higher-order functions often **create closures**:
+
+```js
+function greetUser(greeting) {
+  return function (name) {
+    console.log(`${greeting}, ${name}`);
+  };
+}
+
+const sayHi = greetUser("Hi");
+sayHi("Diwash"); // "Hi, Diwash"
+```
+
+This inner function “remembers” `greeting` because of closure.
+
+---
+
+## Summary
+
+| Concept               | Meaning                                         |
+| --------------------- | ----------------------------------------------- |
+| Higher-Order Function | Function that takes/returns a function          |
+| Common Built-ins      | `map`, `filter`, `reduce`, `forEach`            |
+| Benefits              | Abstract logic, code reuse, cleaner syntax      |
+| Related Concepts      | Closures, Currying, Callbacks                   |
+| Real-World Use        | Event handlers, middleware, function decorators |

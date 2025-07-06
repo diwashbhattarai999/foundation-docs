@@ -1,0 +1,212 @@
+---
+title: JSX and Rendering
+description: Learn how JSX works in React, how it compiles to JavaScript, and how React renders components to the DOM.
+---
+
+## What is JSX?
+
+### JSX (JavaScript XML)
+
+JSX is a **syntax extension for JavaScript** used with React to describe what the UI should look like.
+
+It lets you write HTML-like code inside JavaScript, making your code more readable and expressive.
+
+### Example:
+
+```jsx
+const element = <h1>Hello, world!</h1>;
+```
+
+This is **not valid JavaScript** — but **Babel** transpiles it into:
+
+```js
+const element = React.createElement("h1", null, "Hello, world!");
+```
+
+---
+
+### Why Use JSX?
+
+| Feature               | Benefit                                              |
+| --------------------- | ---------------------------------------------------- |
+| Declarative syntax    | Describes UI like a template                         |
+| JS power              | You can embed JavaScript expressions directly inside |
+| Tooling & type safety | Works well with linting, formatting, and TypeScript  |
+| Closer to HTML        | Easier to visualize what UI will look like           |
+
+---
+
+## JSX Rules (Do’s & Don’ts)
+
+### Must return **a single parent element**
+
+```jsx
+// Good
+return (
+  <div>
+    <h1>Title</h1>
+    <p>Content</p>
+  </div>
+);
+
+// Bad
+return (
+  <h1>Title</h1>
+  <p>Content</p>
+);
+```
+
+> Or use React Fragments:
+
+```jsx
+return (
+  <>
+    <h1>Title</h1>
+    <p>Content</p>
+  </>
+);
+```
+
+---
+
+### Use **camelCase** for attributes
+
+```jsx
+<input type="text" className="input" autoFocus />
+```
+
+> Note: `class` becomes `className`, `for` becomes `htmlFor`
+
+---
+
+### Embed JavaScript with `{}`
+
+```jsx
+const name = "Diwash";
+return <h1>Hello, {name}</h1>;
+```
+
+You can also use functions:
+
+```jsx
+const formatName = (user) => `${user.firstName} ${user.lastName}`;
+const user = { firstName: "Diwash", lastName: "Bhattarai" };
+
+const element = <h1>Hello, {formatName(user)}!</h1>;
+```
+
+---
+
+## How Rendering Works in React
+
+### What is Rendering?
+
+**Rendering** is the process of **converting your React components into actual DOM nodes** in the browser.
+
+### React Rendering Cycle
+
+1. You define a component (function or class).
+2. JSX describes the **UI structure**.
+3. React calls `React.createElement(...)` internally.
+4. Virtual DOM is updated.
+5. React diffs it with the previous tree (using **Reconciliation**).
+6. React applies **minimal DOM updates**.
+
+---
+
+### Initial Rendering
+
+When you first mount the component:
+
+```jsx
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+```
+
+- `App` gets rendered
+- Virtual DOM tree is built
+- Browser DOM is updated to match
+
+---
+
+### Re-rendering
+
+When **state or props** change:
+
+- The component re-renders (produces a new virtual DOM)
+- React **compares (diffs)** it with the old one
+- Only the changed parts are applied to the real DOM
+
+---
+
+## JSX is Just Syntactic Sugar
+
+### This:
+
+```jsx
+const element = <h1>Hello!</h1>;
+```
+
+Is equivalent to:
+
+```js
+const element = React.createElement("h1", null, "Hello!");
+```
+
+---
+
+## JSX Expression vs Statement
+
+- **You can embed** expressions inside JSX (`{}`).
+- **You cannot embed** statements like `if`, `for`, etc., directly.
+
+Valid:
+
+```jsx
+const isLoggedIn = true;
+return <div>{isLoggedIn ? "Welcome!" : "Please log in"}</div>;
+```
+
+Invalid:
+
+```jsx
+// You can't do this:
+return (
+  <div>
+    if (isLoggedIn) { return "Welcome"; }
+  </div>
+);
+```
+
+---
+
+## Things to Watch Out For
+
+| Mistake                 | Correct Form                     |
+| ----------------------- | -------------------------------- |
+| Using `class` in JSX    | Use `className`                  |
+| Inline styles as string | Use object syntax (`style={{}}`) |
+| Loops like `for`        | Use `map()` for rendering lists  |
+| `if` in JSX             | Use ternary or short-circuiting  |
+
+---
+
+## Conditional Rendering (Preview)
+
+```jsx
+{
+  isLoggedIn && <p>Welcome back!</p>;
+}
+{
+  isLoading ? <Spinner /> : <Content />;
+}
+```
+
+---
+
+## Summary
+
+- JSX lets you write HTML-like code inside JS — easy and declarative.
+- React uses Virtual DOM and rendering logic behind the scenes.
+- JSX is transpiled to `React.createElement(...)`.
+- Re-renders happen on **state/prop** change.
+- Use `{}` to embed logic inside JSX.

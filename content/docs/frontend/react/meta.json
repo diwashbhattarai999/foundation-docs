@@ -1,0 +1,34 @@
+{
+  "title": "React",
+  "pages": [
+    "how-react-works",
+    "jsx-and-rendering",
+    "components-and-props",
+    "reacting-to-input-with-state",
+    "conditional-rendering",
+    "lists-and-keys",
+
+    "state-as-snapshot",
+    "updating-objects-in-state",
+    "queing-state-updates",
+    "lifecycle-methods",
+    "render-commit",
+
+    "react-hooks",
+    "custom-hooks",
+
+    "context-api",
+    "pure-components",
+    "memoization",
+    "refs-and-dom",
+    "error-boundaries",
+
+    "code-splitting",
+    "lazy-loading",
+    "suspense-and-concurrent",
+
+    "component-architecture",
+    "react-folder-structure",
+    "state-management-options"
+  ]
+}

@@ -3,4 +3,170 @@ title: CommitLint
 description: Enforce commit message conventions with CommitLint to maintain a clean and understandable commit history.
 ---
 
-### Coming Soon
+## What is `commitlint`?
+
+`commitlint` is a tool that **checks your Git commit messages** against a set of defined rules (usually [Conventional Commits](https://www.conventionalcommits.org)).
+
+It helps ensure:
+
+- All commit messages follow a consistent format.
+- Automated changelogs (with tools like `semantic-release`) work correctly.
+- Your Git history remains clean and meaningful.
+
+---
+
+## Installation
+
+Install the required packages:
+
+```bash
+npm install --save-dev @commitlint/{config-conventional,cli}
+```
+
+---
+
+## Configuration
+
+You need to create a `commitlint.config.js` file in the root of your project:
+
+```js
+// commitlint.config.js
+module.exports = {
+  extends: ["@commitlint/config-conventional"],
+};
+```
+
+You can also use `.commitlintrc.js` or JSON/YAML formats.
+
+---
+
+## Add a Git Hook with Husky
+
+To run `commitlint` on every commit:
+
+1. Install Husky (if not already):
+
+```bash
+npx husky install
+npm pkg set scripts.prepare="husky install"
+```
+
+2. Add a commit-msg hook:
+
+```bash
+npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
+```
+
+---
+
+## What Are Conventional Commits?
+
+A conventional commit message has this format:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Examples:
+
+```bash
+feat(auth): add login with magic link
+fix(ui): handle alignment bug in footer
+docs(readme): update contributing guide
+```
+
+### Bad Examples:
+
+```bash
+updated code
+bug fixed
+final commit
+```
+
+---
+
+## Common Commit Types
+
+| Type       | Use For                                      |
+| ---------- | -------------------------------------------- |
+| `feat`     | A new feature                                |
+| `fix`      | A bug fix                                    |
+| `docs`     | Documentation only changes                   |
+| `style`    | Code style (formatting, missing semicolons…) |
+| `refactor` | Code change that neither fixes nor adds      |
+| `test`     | Adding or fixing tests                       |
+| `chore`    | Build process or auxiliary tools             |
+| `perf`     | Performance improvements                     |
+| `ci`       | Continuous Integration configs/scripts       |
+
+---
+
+## Why Use Imperative Mood?
+
+Using **imperative mood** (e.g., _add_, _fix_, _create_, not _added_, _fixed_, _created_) is a convention because:
+
+- Git messages become consistent with auto-generated messages.
+- It reads like a command: “If applied, this commit will \_\_\_”.
+- Tools like `semantic-release` and `commitizen` expect this.
+
+✅ Correct: `fix(auth): handle login bug`
+❌ Wrong: `fixed login bug in auth`
+
+---
+
+## Custom Rules (Optional)
+
+You can override or add rules:
+
+```js
+module.exports = {
+  extends: ["@commitlint/config-conventional"],
+  rules: {
+    "type-enum": [2, "always", ["feat", "fix", "docs", "style", "refactor", "test", "chore"]],
+    "subject-case": [2, "never", ["sentence-case", "start-case"]],
+  },
+};
+```
+
+---
+
+## Commitlint + Commitizen (Bonus)
+
+Use [Commitizen](https://github.com/commitizen/cz-cli) to **prompt commit messages** interactively.
+
+```bash
+npm install --save-dev commitizen
+npx commitizen init cz-conventional-changelog --save-dev --save-exact
+```
+
+Then commit using:
+
+```bash
+npx cz
+```
+
+---
+
+## Summary
+
+| Feature               | Description                                   |
+| --------------------- | --------------------------------------------- |
+| Enforces consistency  | Ensures all commits follow the same format    |
+| Useful for changelogs | Integrates with tools like `semantic-release` |
+| Works with Husky      | Hook into `commit-msg` easily                 |
+| Highly configurable   | Extend or override rules as needed            |
+| Supports Commitizen   | Adds an interactive CLI for writing commits   |
+
+---
+
+### Example Workflow Setup
+
+1. Configure ESLint/Prettier
+2. Set up Husky with pre-commit and commit-msg hooks
+3. Add `lint-staged` for staged files
+4. Add `commitlint` for commit message checks
+5. (Optional) Add Commitizen for interactive commits

@@ -1,5 +1,195 @@
 ---
 title: Async/Await
+description: Learn how to use async/await in JavaScript for cleaner, more readable asynchronous code.
 ---
 
-# Coming Soon
+## What Is `async/await`?
+
+`async/await` is **syntactic sugar** over Promises. It allows you to write **asynchronous code** that looks and behaves like **synchronous code**, improving **readability** and **error handling**.
+
+---
+
+## Key Concepts
+
+### 1. `async` Function
+
+Declares a function that **always returns a Promise**. Even if you return a value, it's wrapped in a resolved Promise.
+
+```js
+async function greet() {
+  return "Hello";
+}
+
+greet().then(console.log); // "Hello"
+```
+
+---
+
+### 2. `await` Keyword
+
+Used **inside `async` functions only**. It pauses the execution of the function until the Promise is settled (resolved or rejected).
+
+```js
+async function fetchData() {
+  const data = await fetch("https://api.example.com/data");
+  const json = await data.json();
+  console.log(json);
+}
+```
+
+> Under the hood: `await` converts `fetch(...)` into `.then(...)`.
+
+---
+
+## Converting Promise Chains to Async/Await
+
+### Before (Promise chaining):
+
+```js
+fetchUser()
+  .then((user) => fetchPosts(user.id))
+  .then((posts) => displayPosts(posts))
+  .catch((error) => handleError(error));
+```
+
+### After (Using async/await):
+
+```js
+async function loadData() {
+  try {
+    const user = await fetchUser();
+    const posts = await fetchPosts(user.id);
+    displayPosts(posts);
+  } catch (error) {
+    handleError(error);
+  }
+}
+```
+
+---
+
+## Why Use `async/await`?
+
+| Benefit        | Description                                               |
+| -------------- | --------------------------------------------------------- |
+| Readability    | Looks like synchronous code                               |
+| Error Handling | Easier with `try/catch`                                   |
+| Debugging      | Stack traces are more linear than nested `.then()` chains |
+| Flow Control   | Easier to reason about the flow of data                   |
+
+---
+
+## Important Rules & Gotchas
+
+### 1. Only use `await` inside `async` functions
+
+```js
+// ❌ SyntaxError
+const result = await somePromise();
+
+// ✅ Correct
+async function getData() {
+  const result = await somePromise();
+}
+```
+
+### 2. `await` waits for a **Promise** — if you `await` a non-promise, it's converted to a resolved promise.
+
+```js
+const value = await 42; // same as Promise.resolve(42)
+```
+
+### 3. `await` is **blocking** within its function, but **non-blocking** globally.
+
+```js
+console.log("A");
+
+(async () => {
+  await new Promise((res) => setTimeout(res, 1000));
+  console.log("B");
+})();
+
+console.log("C");
+
+// Output: A → C → B
+```
+
+---
+
+## Serial vs Parallel Execution
+
+### Serial (slower):
+
+```js
+async function loadAll() {
+  const user = await fetchUser(); // wait
+  const posts = await fetchPosts(); // wait
+  const comments = await fetchComments(); // wait
+}
+```
+
+### Parallel (faster):
+
+```js
+async function loadAll() {
+  const userPromise = fetchUser();
+  const postsPromise = fetchPosts();
+  const commentsPromise = fetchComments();
+
+  const [user, posts, comments] = await Promise.all([userPromise, postsPromise, commentsPromise]);
+}
+```
+
+---
+
+## Handling Errors
+
+### Using `try/catch`:
+
+```js
+async function load() {
+  try {
+    const data = await fetchData();
+    console.log(data);
+  } catch (error) {
+    console.error("Failed to fetch:", error);
+  }
+}
+```
+
+### With `Promise.all`:
+
+```js
+try {
+  const [u, p] = await Promise.all([fetchUser(), fetchPosts()]);
+} catch (err) {
+  console.error("One of them failed", err);
+}
+```
+
+---
+
+## Example – Real Use Case
+
+```js
+async function getWeather(city) {
+  const apiKey = "your_api_key";
+  try {
+    const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`);
+    const data = await res.json();
+    console.log(`${data.location.name}: ${data.current.temp_c}°C`);
+  } catch (err) {
+    console.error("Error fetching weather:", err.message);
+  }
+}
+```
+
+---
+
+## Summary
+
+- `async` functions always return a Promise.
+- Use `await` to pause and resume execution around asynchronous operations.
+- `try/catch` handles errors like synchronous code.
+- Improves readability compared to Promise chaining.
+- Use `Promise.all()` to **run async tasks in parallel**.

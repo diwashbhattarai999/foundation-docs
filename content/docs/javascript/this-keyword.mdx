@@ -1,5 +1,196 @@
 ---
 title: this keyword
+description: Learn how the `this` keyword works in JavaScript, its context, and common pitfalls.
 ---
 
-# Coming Soon
+## What is `this` in JavaScript?
+
+The `this` keyword refers to the **context** in which the current code is executing. It determines **which object is “calling” the code**.
+
+```js
+console.log(this); // In global scope
+```
+
+The value of `this` depends on **how** a function is called, not where it is defined.
+
+---
+
+## `this` in Different Contexts
+
+---
+
+### 1. Global Context
+
+- In **Browser**, `this` refers to the **global object** → `window`
+- In **Node.js**, it refers to **module.exports**, not the global object
+
+```js
+console.log(this); // window (in browser) | {} (in Node.js)
+```
+
+---
+
+### 2. Inside a Regular Function
+
+```js
+function showThis() {
+  console.log(this);
+}
+showThis(); // In non-strict mode: global object | strict mode: undefined
+```
+
+In strict mode (`'use strict'`), `this` will be `undefined` inside functions that are not methods of an object.
+
+---
+
+### 3. Inside an Object Method
+
+```js
+const person = {
+  name: "Diwash",
+  greet() {
+    console.log("Hello, " + this.name);
+  },
+};
+
+person.greet(); // "Hello, Diwash"
+```
+
+Here, `this` refers to the object that **owns the method**, i.e., `person`.
+
+---
+
+### 4. Assignment to Variable (Lost Context)
+
+```js
+const greet = person.greet;
+greet(); // undefined (or window.name in browsers)
+```
+
+The context is lost when you **extract the method**. `this` is now pointing to global, not `person`.
+
+---
+
+### 5. Arrow Functions
+
+Arrow functions **do not have their own `this`**. They inherit `this` from their **lexical scope** (where they were defined).
+
+```js
+const person = {
+  name: "Diwash",
+  greet: () => {
+    console.log(this.name);
+  },
+};
+
+person.greet(); // undefined (because arrow functions don’t bind `this`)
+```
+
+Contrast with:
+
+```js
+const person = {
+  name: "Diwash",
+  greet() {
+    const inner = () => {
+      console.log(this.name); // Inherits from greet() context
+    };
+    inner();
+  },
+};
+
+person.greet(); // "Diwash"
+```
+
+---
+
+### 6. Constructor Functions
+
+When using `new`, `this` refers to the **newly created object**.
+
+```js
+function Person(name) {
+  this.name = name;
+}
+
+const p1 = new Person("Diwash");
+console.log(p1.name); // "Diwash"
+```
+
+---
+
+### 7. Class Syntax
+
+Classes also bind `this` to the instance:
+
+```js
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    console.log("Hello, " + this.name);
+  }
+}
+
+const p = new Person("Diwash");
+p.greet(); // "Hello, Diwash"
+```
+
+---
+
+### 8. Explicit Binding: `call`, `apply`, and `bind`
+
+```js
+function greet() {
+  console.log("Hello, " + this.name);
+}
+
+const user = { name: "Diwash" };
+
+greet.call(user); // "Hello, Diwash"
+greet.apply(user); // "Hello, Diwash"
+
+const bound = greet.bind(user);
+bound(); // "Hello, Diwash"
+```
+
+- `call`: invokes immediately with `this` set to provided value
+- `apply`: same as call, but arguments are in array
+- `bind`: returns a new function with bound `this`
+
+---
+
+## Gotchas and Mistakes
+
+### ❌ Using arrow function in object methods
+
+```js
+const person = {
+  name: "Diwash",
+  greet: () => {
+    console.log("Hello, " + this.name); // undefined
+  },
+};
+
+person.greet();
+```
+
+- `this` is not `person`, it's the outer lexical context (likely global).
+
+---
+
+## Summary Table
+
+| Context                 | `this` Value                     |
+| ----------------------- | -------------------------------- |
+| Global scope (browser)  | `window`                         |
+| Function (non-strict)   | `window` (or global)             |
+| Function (strict)       | `undefined`                      |
+| Object method           | The object itself                |
+| Arrow function          | Inherits from lexical context    |
+| Constructor (`new`)     | New instance being created       |
+| `call`, `apply`, `bind` | Explicitly provided object       |
+| Event handler in DOM    | The element triggering the event |
+

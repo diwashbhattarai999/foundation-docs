@@ -1,0 +1,197 @@
+---
+title: How React Works
+description: Learn how React works internally, including the Virtual DOM, reconciliation, and performance optimizations
+---
+
+# How React Works Internally (with Virtual DOM)
+
+---
+
+## 1. React is a Declarative UI Library
+
+Instead of **manually updating the DOM**, in React you **describe** what the UI should look like.
+
+React takes care of:
+
+- Efficient DOM updates
+- UI consistency
+- Performance optimization
+
+```tsx
+// You tell React:
+<button onClick={() => setCount(count + 1)}>{count}</button>
+// React figures out: how to update the DOM to match this new state
+```
+
+---
+
+## 2. What is the Virtual DOM?
+
+### Definition
+
+The **Virtual DOM (VDOM)** is a **lightweight JavaScript object** that represents the actual DOM.
+
+> React uses the VDOM as an in-memory tree to track changes efficiently.
+
+---
+
+### Why Not Update the Real DOM Directly?
+
+- DOM operations are **slow**
+- Manual updates are **error-prone**
+- Performance degrades as app complexity grows
+
+React avoids this by:
+
+1. Creating a **VDOM**
+2. Re-rendering VDOM on state/prop change
+3. **Diffing** the new VDOM with the old one
+4. Updating **only** the changed part in the real DOM
+
+---
+
+## 3. Reconciliation & Diffing
+
+### What happens when `setState()` is called?
+
+1. React **re-renders** the component to produce a **new VDOM**
+2. React **compares (diffs)** the new VDOM with the previous one
+3. React **calculates the minimal number of changes**
+4. React **patches** the actual DOM
+
+> This process is called **Reconciliation**
+
+---
+
+### Efficient Diffing: Key Rules
+
+- React compares **type and key** of elements
+- React reuses DOM nodes if type is same
+- Use `key` in lists to help React track changes
+
+```tsx
+<ul>
+  {items.map((item) => (
+    <li key={item.id}>{item.name}</li>
+  ))}
+</ul>
+```
+
+---
+
+## 4. How React Updates the DOM Efficiently
+
+| Step               | Description                                                            |
+| ------------------ | ---------------------------------------------------------------------- |
+| Initial Render     | JSX is converted to Virtual DOM                                        |
+| State/Prop Change  | New Virtual DOM tree is generated                                      |
+| Diffing            | React compares new tree with old tree                                  |
+| Minimal DOM Update | Only the parts that changed are updated in the actual DOM              |
+| Batch Updates      | React batches multiple updates in a single render cycle for efficiency |
+
+---
+
+## 5. Component Lifecycle (Functional)
+
+> In **functional components**, lifecycle is handled using **hooks**
+
+| Lifecycle Phase | Hook Used                            | Use Case                       |
+| --------------- | ------------------------------------ | ------------------------------ |
+| Mount           | `useEffect(() => {}, [])`            | API calls, event subscriptions |
+| Update          | `useEffect(() => {}, [value])`       | Reacts to value/state changes  |
+| Unmount         | `return () => {}` inside `useEffect` | Cleanup (e.g., clear timers)   |
+
+---
+
+### Example: Functional Lifecycle
+
+```tsx
+useEffect(() => {
+  console.log("Mounted");
+
+  return () => {
+    console.log("Unmounted");
+  };
+}, []);
+```
+
+---
+
+## 6. JSX → React.createElement()
+
+> JSX is not HTML. It is **syntactic sugar** for `React.createElement`.
+
+```tsx
+// JSX
+<h1>Hello, world!</h1>;
+
+// Compiled
+React.createElement("h1", null, "Hello, world!");
+```
+
+You need a build tool (like Vite, Webpack, or Next.js) to transform JSX into valid JS.
+
+---
+
+## 7. What Triggers a Re-render in React?
+
+| Trigger                  | Causes re-render?   |
+| ------------------------ | ------------------- |
+| `useState` set           | ✅ Yes              |
+| `props` change           | ✅ Yes              |
+| `context` value change   | ✅ Yes              |
+| `useEffect` trigger      | ✅ Yes (indirectly) |
+| External variable change | ❌ No               |
+
+---
+
+## 8. React Fiber Architecture (Advanced)
+
+React uses **Fiber**: a reimplementation of the React core algorithm.
+
+### Fiber's Advantages:
+
+- **Interruptible rendering** (concurrent mode)
+- **Prioritized updates**
+- Enables features like **Suspense**, **Transitions**, and **Concurrent Rendering**
+
+> Fiber allows React to **pause and resume** work, making it faster and more responsive.
+
+---
+
+## 9. Best Practices to Keep React Efficient
+
+| Practice                         | Why?                             |
+| -------------------------------- | -------------------------------- |
+| Use keys in lists                | Helps diffing                    |
+| Use `React.memo`                 | Avoids unnecessary re-renders    |
+| Extract logic into hooks         | Keeps components clean           |
+| Avoid anonymous functions inline | Reduces re-creation of functions |
+| Keep state local where possible  | Reduces global re-renders        |
+
+---
+
+## Summary Diagram
+
+```plaintext
+JSX → Virtual DOM → Diff → Patch Real DOM
+         ↑
+     React Fiber
+         ↓
+Concurrent rendering, batching, prioritization
+```
+
+---
+
+## Summary
+
+- React builds UI using **declarative** component trees
+- Uses **Virtual DOM** to compare and apply efficient DOM updates
+- Re-renders are **triggered by state, props, or context**
+- Lifecycle and side effects handled via `useEffect`
+- Fiber enables **concurrent rendering and advanced performance features**
+
+## Resources
+
+- [React Official Documentation](https://reactjs.org/docs/getting-started.html)
+- [React Fiber Explained](https://github.com/acdlite/react-fiber-architecture)

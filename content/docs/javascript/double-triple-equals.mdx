@@ -1,0 +1,135 @@
+---
+title: Double vs Triple Equals
+description: Understand the differences between == and === in JavaScript, including type coercion and best practices.
+---
+
+## Overview
+
+| Operator | Name              | Type   | Performs Type Coercion? |
+| -------- | ----------------- | ------ | ----------------------- |
+| `==`     | Abstract Equality | Loose  | ✅ Yes                  |
+| `===`    | Strict Equality   | Strict | ❌ No                   |
+
+---
+
+## `===` (Strict Equality)
+
+- **No type conversion.**
+- **Both value and type must be the same.**
+
+```js
+1 === 1; // true
+"1" === 1; // false
+true === 1; // false
+null === undefined; // false
+```
+
+Use this for **most comparisons** — it’s safer and more predictable.
+
+---
+
+## `==` (Loose Equality)
+
+- **Performs type coercion** if operands are of different types.
+- Tries to convert one or both operands to a common type before comparing.
+
+```js
+"1" == 1; // true (string "1" converted to number)
+true == 1; // true (true is coerced to 1)
+false == 0; // true
+null == undefined; // true
+0 == ""; // true
+0 == "0"; // true
+[] == false; // true
+[] == 0; // true
+```
+
+---
+
+## Weird Coercion Examples
+
+```js
+[] == false        // true
+'' == false        // true
+null == undefined  // true
+[] == ''           // true
+[] == 0            // true
+[0] == 0           // true
+[1] == true        // true
+```
+
+### Why?
+
+The coercion steps are complex. Here's how JavaScript evaluates `[] == false`:
+
+1. `false` becomes `0`
+2. `[]` is an object → gets converted to primitive → `''`
+3. `''` becomes `0`
+4. `0 == 0` → `true`
+
+---
+
+## Use `===` Unless You Have a Very Good Reason
+
+Using `===` ensures:
+
+- No unexpected type coercion.
+- Safer and more predictable code.
+- Prevents bugs caused by implicit conversion.
+
+---
+
+## Common Bug Example
+
+```js
+const userInput = "";
+if (userInput == false) {
+  // This will run
+}
+```
+
+Even though `userInput` is an **empty string**, `== false` passes because:
+
+```js
+"" == false; // true
+```
+
+---
+
+## Type Comparison Summary
+
+| Comparison           | Result  | Why                         |
+| -------------------- | ------- | --------------------------- |
+| `'5' == 5`           | `true`  | String coerced to number    |
+| `'5' === 5`          | `false` | Different types             |
+| `false == 0`         | `true`  | `false → 0`                 |
+| `false === 0`        | `false` | Different types             |
+| `null == undefined`  | `true`  | Special case in JS          |
+| `null === undefined` | `false` | Different types             |
+| `[] == ''`           | `true`  | Both become empty strings   |
+| `[1] == true`        | `true`  | `[1] → '1' → 1`, `true → 1` |
+
+---
+
+## Golden Rule
+
+> Always use `===` unless you **fully understand** the coercion and it's **intentionally needed**.
+
+---
+
+## Bonus: Object Comparisons
+
+```js
+{} === {} // false
+[] === [] // false
+```
+
+Why? Because objects and arrays are compared by **reference**, not value.
+
+---
+
+## Best Practices
+
+1. **Always use `===` and `!==`**.
+2. Use `==` only if you deeply understand coercion.
+3. Use tools like **ESLint** to enforce strict equality.

@@ -1,0 +1,146 @@
+---
+title: DOM Manipulation
+description: Learn how to manipulate the DOM using JavaScript, including selecting elements, modifying content, and handling events.
+---
+
+## What is the DOM?
+
+> **DOM (Document Object Model)** is a **tree-like structure** that represents the contents of an HTML document as **objects** that JavaScript can interact with.
+
+- DOM = A programming interface for HTML/XML.
+- It represents elements (`<div>`, `<p>`, etc.) as **nodes and objects**.
+- JavaScript can **read**, **modify**, **add**, or **remove** elements via the DOM.
+
+---
+
+## DOM Tree Example
+
+Given this HTML:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Page</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+    <p>Welcome to JavaScript</p>
+  </body>
+</html>
+```
+
+This becomes a **DOM Tree** in memory:
+
+```
+Document
+ └── html
+      ├── head
+      │    └── title
+      └── body
+           ├── h1
+           └── p
+```
+
+Each tag becomes a **Node**, and everything is part of the tree.
+
+---
+
+## DOM in JavaScript
+
+JavaScript can interact with this DOM using the `document` object:
+
+### Selecting Elements
+
+```js
+document.getElementById("myId"); // Select by ID
+document.querySelector(".myClass"); // Select using CSS selectors
+document.querySelectorAll("p"); // All <p> elements
+```
+
+---
+
+### Modifying Content
+
+```js
+const el = document.querySelector("h1");
+el.textContent = "Updated Heading";
+el.innerHTML = "<span>Hello</span>";
+```
+
+---
+
+### Modifying Styles
+
+```js
+el.style.color = "blue";
+el.style.fontSize = "24px";
+```
+
+---
+
+### Creating and Appending Elements
+
+```js
+const newDiv = document.createElement("div");
+newDiv.textContent = "I’m new here!";
+document.body.appendChild(newDiv);
+```
+
+---
+
+### Removing Elements
+
+```js
+el.remove(); // Remove the element from the DOM
+```
+
+---
+
+### Adding Event Listeners
+
+```js
+const btn = document.querySelector("button");
+btn.addEventListener("click", () => {
+  alert("Clicked!");
+});
+```
+
+---
+
+## DOM vs Virtual DOM
+
+| Real DOM                      | Virtual DOM (React)              |
+| ----------------------------- | -------------------------------- |
+| Updates immediately           | Batches updates efficiently      |
+| Re-renders entire tree branch | Diffs and updates minimal nodes  |
+| Slower for large UI           | Much faster with React's diffing |
+
+---
+
+## Why DOM is Important in JS
+
+- All websites are rendered via HTML → DOM.
+- JavaScript manipulates the DOM to update UI dynamically.
+- Frameworks like React/Vue/Angular **abstract** direct DOM manipulation to make it more efficient.
+
+---
+
+## Common Use-Cases
+
+| Task                 | Code                             |
+| -------------------- | -------------------------------- |
+| Change text          | `el.textContent = "New Text"`    |
+| Add a class          | `el.classList.add("active")`     |
+| Toggle visibility    | `el.style.display = "none"`      |
+| Form input value     | `input.value`                    |
+| Listen for key press | `el.addEventListener("keydown")` |
+
+---
+
+## Summary
+
+- **DOM is the bridge between HTML and JavaScript.**
+- JavaScript accesses and manipulates DOM using the `document` object.
+- Real DOM is the browser’s internal representation of the HTML page.
+- **DOM manipulation is expensive** — which is why tools like **React** use **Virtual DOM** for performance.

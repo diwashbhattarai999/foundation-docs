@@ -1,0 +1,109 @@
+---
+title: Commitlint Configuration
+---
+
+## File: `commitlint.config.ts`
+
+```ts
+import { RuleConfigSeverity, type UserConfig } from "@commitlint/types";
+
+// Define valid scopes for modular control over commit areas
+const SCOPE_ENUM = ["client", "common", "config", "scripts", "deps", "ci", "docs", "test"];
+
+// Define valid types (based on Conventional Commits)
+const TYPE_ENUM = [
+  "feat", // New feature
+  "fix", // Bug fix
+  "docs", // Documentation change
+  "chore", // Routine tasks
+  "style", // Formatting (no logic change)
+  "refactor", // Code change without fixing or adding a feature
+  "ci", // CI-related changes
+  "test", // Test updates
+  "revert", // Revert a previous commit
+  "perf", // Performance improvements
+];
+
+const commitLintConfig: UserConfig = {
+  extends: ["@commitlint/config-conventional"],
+
+  rules: {
+    /** SCOPE rules */
+    "scope-enum": [RuleConfigSeverity.Error, "always", SCOPE_ENUM], // Only allow defined scopes
+
+    /** TYPE rules */
+    "type-enum": [RuleConfigSeverity.Error, "always", TYPE_ENUM], // Only allow defined types
+    "type-case": [RuleConfigSeverity.Error, "always", "lower-case"], // e.g., `feat`, not `Feat`
+    "type-empty": [RuleConfigSeverity.Error, "never"], // Type must not be empty
+
+    /** SUBJECT rules */
+    "subject-empty": [RuleConfigSeverity.Error, "never"], // Subject is mandatory
+    "subject-case": [
+      RuleConfigSeverity.Error,
+      "never",
+      ["start-case", "pascal-case", "upper-case"], // Enforce lower-case subject
+    ],
+    "subject-full-stop": [RuleConfigSeverity.Error, "never", "."], // No full stop at end
+
+    /** HEADER rules */
+    "header-max-length": [RuleConfigSeverity.Error, "always", 100], // Limit to 100 chars
+    "header-trim": [RuleConfigSeverity.Error, "always"], // No extra whitespace
+
+    /** BODY rules */
+    "body-leading-blank": [RuleConfigSeverity.Warning, "always"], // Blank line between header and body
+    "body-max-line-length": [RuleConfigSeverity.Error, "always", 100], // Keep lines readable
+
+    /** FOOTER rules */
+    "footer-leading-blank": [RuleConfigSeverity.Warning, "always"], // Blank line before footer
+    "footer-max-line-length": [RuleConfigSeverity.Error, "always", 100],
+  },
+
+  /**  Ignore common non-human commits */
+  ignores: [
+    (commit: string) =>
+      commit.startsWith("Merge") || commit === "Initial commit" || commit.includes("[skip ci]"),
+  ],
+};
+
+export default commitLintConfig;
+```
+
+---
+
+## Why This Configuration is Great
+
+| Area         | Benefit                                                                   |
+| ------------ | ------------------------------------------------------------------------- |
+| `type-enum`  | Prevents unexpected or meaningless types                                  |
+| `scope-enum` | Encourages modular code responsibility (`client`, `config`, `deps`, etc.) |
+| Readability  | Limits header/body/footer length to avoid long, unreadable commits        |
+| Formatting   | Prevents trailing dots, inconsistent casing, etc.                         |
+| Workflow     | Plays well with CI/CD, changelog automation, and team readability         |
+
+---
+
+## Example Commit Messages That Will Pass
+
+```bash
+feat(client): add support for dark mode toggle
+fix(ci): correct build script for dev env
+docs(test): update testing documentation
+style(common): format file headers
+```
+
+---
+
+## Tip: Add Commitizen
+
+- To enhance your commit workflow, consider using Commitizen for interactive commit messages. 
+- This helps maintain consistency and makes it easier to follow the defined rules.
+
+```bash
+npx commitizen init cz-conventional-changelog --save-dev --save-exact
+```
+
+Use:
+
+```bash
+npx cz
+```

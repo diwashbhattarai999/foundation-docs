@@ -3,4 +3,120 @@ title: Lint-Staged
 description: Use Lint-Staged to run linters on staged files, ensuring code quality before commits.
 ---
 
-### Coming Soon
+## What is `lint-staged`?
+
+`lint-staged` is a **command-line utility** that runs **linters or other scripts** on files **that are staged** for a Git commit. This ensures you **only run checks on code you're committing**, not the entire codebase.
+
+### Why use lint-staged?
+
+- Faster than running linters on the whole codebase.
+- Ensures you never commit broken or unformatted code.
+- Works great with `Husky`'s `pre-commit` hook.
+- Automates formatting/linting/testing without affecting unstaged files.
+
+---
+
+## How It Works
+
+1. You make changes to files.
+2. You run `git add` to stage files for commit.
+3. `lint-staged` runs **only on those staged files** before the commit.
+4. If checks pass, the commit continues.
+5. If checks fail, the commit is aborted.
+
+---
+
+## Installation
+
+```bash
+npm install --save-dev lint-staged
+```
+
+---
+
+## Configuration Options
+
+You can configure `lint-staged` in:
+
+- `package.json`
+- `.lintstagedrc` (JSON/YAML)
+- `lint-staged.config.js` (recommended for complex setups)
+
+---
+
+### Basic Example in `package.json`
+
+```json
+{
+  "lint-staged": {
+    "*.ts": ["eslint --fix", "prettier --write"],
+    "*.css": ["stylelint --fix"]
+  }
+}
+```
+
+This runs `eslint` and `prettier` on staged `.ts` files and `stylelint` on `.css`.
+
+---
+
+### Using with Husky (`pre-commit`)
+
+1. Install Husky:
+
+```bash
+npm install husky --save-dev
+npx husky install
+```
+
+2. Add prepare script in `package.json`:
+
+```json
+{
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
+```
+
+3. Add pre-commit hook:
+
+```bash
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+Now, every commit will:
+
+- Trigger Husky’s `pre-commit`
+- Run `lint-staged`
+- Lint & format only the staged files
+
+---
+
+## Common Use Cases
+
+| File Type   | Command Example                                |
+| ----------- | ---------------------------------------------- |
+| JS/TS files | `"*.ts": ["eslint --fix", "prettier --write"]` |
+| CSS/SCSS    | `"*.{css,scss}": ["stylelint --fix"]`          |
+| Markdown    | `"*.md": ["prettier --write"]`                 |
+| Tests       | `"*.ts": ["jest --findRelatedTests"]`          |
+
+---
+
+## Things to Keep in Mind
+
+- Only staged files are affected.
+- It modifies staged files and re-adds them automatically.
+- Make sure tools like ESLint and Prettier are configured correctly.
+- Works best with Git and modern JS workflows.
+
+---
+
+## Summary
+
+| Feature               | Benefit                            |
+| --------------------- | ---------------------------------- |
+| Runs on staged files  | Faster and more efficient          |
+| Auto re-adds files    | Simplifies commit flow             |
+| Prevents bad commits  | Enforces code quality consistently |
+| Pairs well with Husky | Complete pre-commit automation     |

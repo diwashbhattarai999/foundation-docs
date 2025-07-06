@@ -1,5 +1,145 @@
 ---
 title: Callback Hell
+description: Learn about callback hell in JavaScript, its problems, and how to avoid it using named functions, Promises, and async/await.
 ---
 
-# Coming Soon
+## What Is a Callback?
+
+A **callback** is a function passed as an argument to another function and is invoked after some operation completes — especially for async tasks like:
+
+```js
+setTimeout(() => {
+  console.log("Executed after 1 second");
+}, 1000);
+```
+
+---
+
+## What Is Callback Hell?
+
+**Callback Hell** happens when:
+
+- You nest **multiple callbacks** inside each other,
+- Creating deeply **indented, hard-to-read, and hard-to-maintain** code.
+
+### It starts like this:
+
+```js
+getUser(userId, (user) => {
+  getPosts(user.id, (posts) => {
+    getComments(posts[0].id, (comments) => {
+      console.log(comments);
+    });
+  });
+});
+```
+
+### But soon turns into this:
+
+```js
+doSomething(function (result1) {
+  doSomethingElse(result1, function (result2) {
+    doThirdThing(result2, function (result3) {
+      doFourthThing(result3, function (result4) {
+        // more nesting...
+      });
+    });
+  });
+});
+```
+
+This is often humorously referred to as:
+
+> “The Pyramid of Doom” ⛏️
+
+---
+
+## Why Callback Hell Is Bad
+
+| Problem               | Description                                                                   |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Difficult to Read     | Hard to follow the logic with deep nesting                                    |
+| Difficult to Maintain | One small change can affect multiple levels of nested code                    |
+| Error Handling        | Try/catch doesn’t work across async callbacks, so error propagation is tricky |
+| Scalability           | Hard to reuse logic, refactor, or debug                                       |
+
+---
+
+## How to Avoid Callback Hell
+
+### 1. **Use Named Functions**
+
+Instead of anonymous nested functions:
+
+```js
+login(user, function (err, data) {
+  if (err) return handleError(err);
+  getProfile(data, function (err, profile) {
+    if (err) return handleError(err);
+    showDashboard(profile);
+  });
+});
+```
+
+Refactor:
+
+```js
+function handleLogin(err, data) {
+  if (err) return handleError(err);
+  getProfile(data, handleProfile);
+}
+
+function handleProfile(err, profile) {
+  if (err) return handleError(err);
+  showDashboard(profile);
+}
+
+login(user, handleLogin);
+```
+
+---
+
+### 2. **Use Promises**
+
+Turn callback-based code into Promise-based code:
+
+```js
+login(user).then(getProfile).then(showDashboard).catch(handleError);
+```
+
+---
+
+### 3. **Use Async/Await**
+
+The most readable async pattern today:
+
+```js
+async function init() {
+  try {
+    const data = await login(user);
+    const profile = await getProfile(data);
+    showDashboard(profile);
+  } catch (err) {
+    handleError(err);
+  }
+}
+
+init();
+```
+
+---
+
+### 4. **Use Utility Libraries**
+
+Libraries like [Async.js](https://caolan.github.io/async/) were once popular for managing callback-heavy flows before Promises became mainstream.
+
+---
+
+## Summary
+
+| Concept       | Description                                               |
+| ------------- | --------------------------------------------------------- |
+| Callback      | A function passed to another to be executed later         |
+| Callback Hell | Deeply nested callbacks making code unreadable            |
+| Problems      | Readability, error handling, maintenance                  |
+| Solutions     | Named functions, Promises, `async/await`, async libraries |

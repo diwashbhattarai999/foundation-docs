@@ -3,4 +3,141 @@ title: Husky
 description: Automate Git hooks with Husky to ensure code quality and consistency.
 ---
 
-### Coming Soon
+## What is Husky?
+
+**Husky** is a tool that lets you easily manage **Git hooks** in your project. Git hooks are scripts that Git runs **automatically** before or after certain events, such as `commit`, `push`, etc.
+
+### Why Use Husky?
+
+- To **enforce rules** before code is committed or pushed.
+- Prevent committing broken code (run linting, tests).
+- Automate formatting with tools like Prettier.
+- Ensure consistent commit messages (e.g., using **commitlint**).
+- Improve code quality and team discipline.
+
+---
+
+## Git Hooks Basics
+
+Git provides various hooks like:
+
+| Git Hook     | When it runs                     |
+| ------------ | -------------------------------- |
+| `pre-commit` | Before `git commit` is finalized |
+| `commit-msg` | After entering commit message    |
+| `pre-push`   | Before pushing code to a remote  |
+| `post-merge` | After merging a branch           |
+
+Without Husky, you'd manually place shell scripts in `.git/hooks`, which isn’t easy to version control or maintain.
+
+---
+
+## What Husky Does
+
+- Makes it **easy to define hooks** inside your repo.
+- Hook definitions are versioned with your codebase.
+- Compatible with **Node scripts**, **shell commands**, etc.
+
+---
+
+## Installing & Using Husky
+
+### Step 1: Install Husky
+
+```bash
+npm install husky --save-dev
+```
+
+### Step 2: Enable Git Hooks
+
+```bash
+npx husky install
+```
+
+This creates a `.husky/` directory and sets up Git hooks.
+
+### Step 3: Add `prepare` script to `package.json`
+
+```json
+{
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
+```
+
+This ensures Husky gets re-installed when someone runs `npm install`.
+
+---
+
+## Adding Hooks
+
+### Example: Add a `pre-commit` hook to run linting
+
+```bash
+npx husky add .husky/pre-commit "npm run lint"
+```
+
+The above command will:
+
+- Create a `.husky/pre-commit` file
+- Add a script inside that file to run `npm run lint`
+
+You can now lint your code **automatically** before every commit!
+
+### Example: Enforce commit message format
+
+```bash
+npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
+```
+
+Combine this with tools like [commitlint](https://commitlint.js.org/) to enforce Conventional Commits.
+
+---
+
+## Common Use Cases
+
+| Hook         | Purpose                                       |
+| ------------ | --------------------------------------------- |
+| `pre-commit` | Run linter, formatter, type-check, unit tests |
+| `commit-msg` | Validate commit message format                |
+| `pre-push`   | Run test suite before pushing                 |
+| `post-merge` | Auto-install dependencies after branch merge  |
+
+---
+
+## Files Created
+
+When using Husky:
+
+```txt
+.husky/
+├── pre-commit
+├── commit-msg
+```
+
+Each file is a shell script that runs your commands.
+
+---
+
+## Best Practices
+
+- Keep hooks fast to avoid slowing down developers.
+- Use Husky **with tools like**:
+
+  - ESLint
+  - Prettier
+  - Commitlint
+  - Jest
+
+- Always add `prepare` in `package.json` so it works on CI and in other environments.
+
+---
+
+## Summary
+
+| Feature             | Husky Benefit                                |
+| ------------------- | -------------------------------------------- |
+| Git hook management | Easy with version-controlled config          |
+| Enforce standards   | Prevent bad code or incorrect commits        |
+| Automation          | Runs checks automatically before Git actions |

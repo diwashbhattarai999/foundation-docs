@@ -15,8 +15,10 @@
     "map-filter-reduce",
     "callback-hell",
     "promises",
-    "promise-chaining",
     "async-await",
-    "this-keyword"
+    "this-keyword",
+    "double-triple-equals",
+    "currying",
+    "dom-manipulation"
   ]
 }

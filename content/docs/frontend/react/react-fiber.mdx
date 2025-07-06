@@ -1,0 +1,101 @@
+---
+title: React Fiber Architecture
+description: Learn about React's Fiber architecture, its advantages, and how it improves rendering performance.
+---
+
+## What is React Fiber?
+
+**Fiber** is the modern **reconciliation engine** of React (since React 16). It replaces the old recursive stack-based reconciler with a **linked list** of “fibers”—lightweight units of work. Every component gets a fiber node, enabling:
+
+- **Pausing**, **yielding**, and **resuming** rendering
+- **Prioritization** of updates (e.g., user input > background fetch)
+- **Incremental (time-sliced)** rendering across frames
+- Support for **Concurrent Mode**, **Suspense**, **Transitions**, **Error Boundaries**, etc.
+
+---
+
+## Why It Matters
+
+- **Avoid UI jank**: Break large renders into smaller chunks
+- **Prioritize tasks**: High-priority updates (like clicks) interrupt low-priority ones
+- **Enable concurrency**: Smooth animations and user interaction during renders
+- **Resilience**: Enhanced error recovery per component
+- **Foundation for modern APIs**: `startTransition`, `Suspense`, `useDeferredValue`, etc.
+
+---
+
+## Core Architecture
+
+### Fiber Tree
+
+- A **linked list** representation: each fiber has pointers: `.child`, `.sibling`, and `.return` (its “parent”).
+- Each fiber represents one component in the tree.
+
+### Fiber Node Properties
+
+- `type`: component or DOM tag
+- `pendingProps`, `memoizedProps`: new vs last props
+- `memoizedState`: current state (hooks)
+- `effectTag`: mark as placement/update/delete
+- `alternate`: pointer to previous fiber, enabling reuse
+- `priority`: update urgency level
+
+---
+
+## Two-Phase Update Model
+
+1. **Render Phase (diff)**
+
+   - Builds or updates a **work-in-progress fiber tree**
+   - Is **interruptible and incremental**—tasks are sliced and paused using `shouldYield()`
+
+2. **Commit Phase**
+
+   - Once work is finished, React flushes changes to the **DOM/UI synchronously**, applying minimal updates and running lifecycle hooks.
+
+---
+
+## What’s New Post-Fiber?
+
+- **React 18+** introduces **Concurrent Mode**, `startTransition()`, and `useDeferredValue`
+- **React 19+** adds features like **server components**, **useOptimistic**, **useActionState**, and performance tweaks.
+
+---
+
+## Simplified Workflow
+
+```plaintext
+1. State update -> schedule work with priority
+2. React breaks into units (fibers)
+3. workLoopConcurrent:
+     while (workInProgress && !shouldYield())
+       performUnitOfWork(fiber)
+4. If paused, wait for next idle frame
+5. After finishing, enter commit:
+     apply all DOM updates in one go
+```
+
+- `performUnitOfWork()` traverses and begins work on each fiber
+- `shouldYield()` allows yielding to browser to keep UI responsive ([jser.dev][5])
+
+---
+
+## Analogy: Chef’s Task List
+
+- **Element tree** = menu order
+- **Fiber tree** = detailed prep list
+- **Render phase** = kitchen prep (interruptible)
+- **Commit phase** = serving dishes (final atomic updates)
+
+---
+
+## Why This Helps You
+
+- Write **responsive UIs**
+- Use **Concurrent features** properly (`startTransition`, `Suspense`)
+- Know when async rendering helps vs when to avoid complexity
+- Debug performance issues by understanding update priority
+
+## Resources
+
+- [React Fiber Explained](https://github.com/acdlite/react-fiber-architecture)
