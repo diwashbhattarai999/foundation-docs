@@ -11,7 +11,7 @@ description: A quick reference for essential Git commands and workflows.
 | `git config --global user.email "<email>"` | Sets your global Git email (used in commits).              | `git config --global user.email "diwashb999@gmail.com"` |
 | `git config --list`                        | Lists all Git configurations (user info, editor, aliases). | `git config --list`                                     |
 
-> 🔹 Always set your name and email before committing, especially if pushing to GitHub.
+> Always set your name and email before committing, especially if pushing to GitHub.
 
 ---
 
@@ -22,7 +22,7 @@ description: A quick reference for essential Git commands and workflows.
 | `git init`        | Initializes a new Git repo in the current folder.                        | `git init`                                      |
 | `git clone <url>` | Copies an existing Git repo (from GitHub, GitLab, etc.) to your machine. | `git clone https://github.com/user/project.git` |
 
-> 🔹 `init` is used for new projects. `clone` is used for downloading existing ones.
+> `init` is used for new projects. `clone` is used for downloading existing ones.
 
 ---
 
@@ -51,7 +51,7 @@ description: A quick reference for essential Git commands and workflows.
 | `git checkout -b <branch>` | Creates and switches to a new branch in one step. | `git checkout -b feature/auth` |
 | `git switch <branch>`      | A modern alternative to `checkout` for switching. | `git switch main`              |
 
-> 🔹 Use branches to isolate features, fixes, or experiments. Never commit directly to `main` in teams.
+> Use branches to isolate features, fixes, or experiments. Never commit directly to `main` in teams.
 
 ---
 
@@ -71,12 +71,15 @@ description: A quick reference for essential Git commands and workflows.
 
 ## Part 6: Undoing Mistakes
 
-| Command                  | Description                                           | Example                     |
-| ------------------------ | ----------------------------------------------------- | --------------------------- |
-| `git revert <commit>`    | Creates a new commit that reverses a specific commit. | `git revert 6f3a112`        |
-| `git reset <file>`       | Unstages the file (doesn’t delete changes).           | `git reset App.tsx`         |
-| `git reset --hard`       | Wipes all local changes to match the latest commit.   | `git reset --hard HEAD`     |
-| `git checkout -- <file>` | Restores a file to its last committed state.          | `git checkout -- index.tsx` |
+| Command                                | Description                                           | Example                                 |
+| -------------------------------------- | ----------------------------------------------------- | --------------------------------------- |
+| `git revert <commit>`                  | Creates a new commit that reverses a specific commit. | `git revert 6f3a112`                    |
+| `git reset <file>`                     | Unstages the file (doesn’t delete changes).           | `git reset App.tsx`                     |
+| `git reset --hard`                     | Wipes all local changes to match the latest commit.   | `git reset --hard HEAD`                 |
+| `git checkout -- <file>`               | Restores a file to its last committed state.          | `git checkout -- index.tsx`             |
+| `git restore <file>`                   | Restore a file to its last committed state.           | `git restore index.tsx`                 |
+| `git restore --staged <file>`          | Unstages a file (modern alternative to reset).        | `git restore --staged App.tsx`          |
+| `git restore --source <commit> <file>` | Restores a file from a specific commit.               | `git restore --source HEAD~1 index.tsx` |
 
 > Use `revert` on public branches; `reset`/`checkout` are for local-only corrections.
 
@@ -98,12 +101,16 @@ description: A quick reference for essential Git commands and workflows.
 
 ## Part 8: Viewing History
 
-| Command             | Description                                                    | Example                           |
-| ------------------- | -------------------------------------------------------------- | --------------------------------- |
-| `git log`           | Shows commit history (most recent at top).                     | `git log --oneline --graph --all` |
-| `git show <commit>` | Displays details of a specific commit.                         | `git show a1b2c3`                 |
-| `git reflog`        | Shows recent changes to `HEAD` (including rebases and resets). | `git reflog`                      |
-| `git blame <file>`  | Shows who last changed each line of a file.                    | `git blame index.tsx`             |
+| Command                   | Description                                                    | Example                           |
+| ------------------------- | -------------------------------------------------------------- | --------------------------------- |
+| `git log`                 | Shows commit history (most recent at top).                     | `git log --oneline --graph --all` |
+| `git log --oneline`       | Shows concise one-line commit history.                         | `git log --oneline`               |
+| `git log --graph`         | Shows commit history with ASCII graph.                         | `git log --graph`                 |
+| `git log -p`              | Shows commit history with file changes.                        | `git log -p`                      |
+| `git log --follow <file>` | Shows commit history for a specific file.                      | `git log --follow index.tsx`      |
+| `git show <commit>`       | Displays details of a specific commit.                         | `git show a1b2c3`                 |
+| `git reflog`              | Shows recent changes to `HEAD` (including rebases and resets). | `git reflog`                      |
+| `git blame <file>`        | Shows who last changed each line of a file.                    | `git blame index.tsx`             |
 
 > These commands help debug code history, authorship, and find regressions.
 
@@ -154,3 +161,23 @@ description: A quick reference for essential Git commands and workflows.
 | `git ac` | `add . && commit -m` | `git config --global alias.ac '!git add . && git commit -m'` |
 
 > Aliases save time. Create your own for repeated commands.
+
+## Part 13: Remote Repository Management
+
+| Command                             | Description                                    | Example                               |
+| ----------------------------------- | ---------------------------------------------- | ------------------------------------- |
+| `git remote -v`                     | Lists all remote repositories.                 | `git remote -v`                       |
+| `git remote add <name> <url>`       | Adds a new remote repository.                  | `git remote add upstream https://...` |
+| `git remote remove <name>`          | Removes a remote repository.                   | `git remote remove origin`            |
+| `git remote rename <old> <new>`     | Renames a remote repository.                   | `git remote rename origin upstream`   |
+| `git push --delete origin <branch>` | Deletes a remote branch.                       | `git push --delete origin feature-x`  |
+| `git fetch --prune`                 | Removes tracking branches for deleted remotes. | `git fetch --prune`                   |
+
+## Part 14: File Operations
+
+| Command                  | Description                                  | Example                      |
+| ------------------------ | -------------------------------------------- | ---------------------------- |
+| `git rm <file>`          | Removes file from Git and working directory. | `git rm old-file.txt`        |
+| `git rm --cached <file>` | Removes file from Git but keeps it locally.  | `git rm --cached secret.env` |
+| `git mv <old> <new>`     | Renames/moves a file in Git.                 | `git mv old.txt new.txt`     |
+| `git ls-files`           | Lists all files tracked by Git.              | `git ls-files`               |
