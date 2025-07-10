@@ -1,0 +1,152 @@
+---
+title: useMemo and useCallback
+description: Learn how to optimize performance in React using the `useMemo` and `useCallback` hooks to prevent unnecessary re-renders and computations.
+---
+
+## Why `useMemo` and `useCallback`?
+
+React **re-renders** components frequently. On every render:
+
+- New functions are re-created
+- Expensive calculations run again
+
+This is fine most of the time, **but** if:
+
+- A child component re-renders unnecessarily
+- A calculation is CPU-intensive
+
+→ Then you optimize using:
+
+| Hook          | Purpose                        |
+| ------------- | ------------------------------ |
+| `useMemo`     | Memoizes **calculated values** |
+| `useCallback` | Memoizes **functions**         |
+
+---
+
+## `useMemo` Deep Dive
+
+### What is `useMemo`?
+
+```ts
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+- It **caches** the result of a function.
+- Only recalculates if dependencies `[a, b]` change.
+
+---
+
+### Example – Expensive Calculation
+
+```tsx
+import { useMemo, useState } from "react";
+
+function ExpensiveComponent({ num }: { num: number }) {
+  const expensiveValue = useMemo(() => {
+    console.log("Calculating...");
+    let result = 0;
+    for (let i = 0; i < 1e7; i++) result += i;
+    return result + num;
+  }, [num]);
+
+  return <div>Result: {expensiveValue}</div>;
+}
+```
+
+- Without `useMemo`, the calculation runs on **every re-render**.
+- With `useMemo`, it only runs when `num` changes.
+
+---
+
+## `useCallback` Deep Dive
+
+### What is `useCallback`?
+
+```ts
+const memoizedFn = useCallback(() => doSomething(a, b), [a, b]);
+```
+
+- Returns a **memoized version** of the function
+- Useful when you **pass callbacks to children** (especially memoized ones)
+
+---
+
+### Example – Prevent Re-renders
+
+```tsx
+const Child = React.memo(({ onClick }: { onClick: () => void }) => {
+  console.log("Child Rendered");
+  return <button onClick={onClick}>Click me</button>;
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    console.log("Clicked!");
+  }, []);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increment {count}</button>
+      <Child onClick={handleClick} />
+    </div>
+  );
+}
+```
+
+- Without `useCallback`, `handleClick` would be a new function on each render → causes `Child` to re-render.
+- With `useCallback`, `handleClick` is memoized → `Child` won’t re-render unless `handleClick` changes.
+
+---
+
+## Common Pitfalls
+
+1.  Overuse
+    Don't use `useMemo`/`useCallback` unless you **measure** a performance issue.
+
+2.  Wrong dependency array
+    Missing deps can lead to **stale closures**.
+
+3.  Misunderstanding memoization
+    These don’t **prevent** re-renders directly — they just provide **stable references**.
+
+---
+
+## Under the Hood
+
+- `useMemo(fn, deps)` stores result of `fn` across renders.
+- `useCallback(fn, deps)` is equivalent to `useMemo(() => fn, deps)`.
+- React compares dependency arrays with previous render to determine whether to reuse.
+
+---
+
+## useMemo vs React.memo
+
+| Concept      | Purpose                                                                  |
+| ------------ | ------------------------------------------------------------------------ |
+| `React.memo` | Memoizes **entire component** (prevents re-render if props don't change) |
+| `useMemo`    | Memoizes **computed value** inside a component                           |
+
+---
+
+## Summary
+
+| Hook          | What it Memoizes | Use Case                                   |
+| ------------- | ---------------- | ------------------------------------------ |
+| `useMemo`     | Value / Result   | Expensive computation (sorting, filtering) |
+| `useCallback` | Function         | Passing callback to memoized child         |
+
+---
+
+### Should You Use Them?
+
+Ask yourself:
+
+- Is a calculation **really expensive**?
+- Is a function **causing child re-renders**?
+- Have you measured a performance bottleneck?
+
+If yes → use them.
+Otherwise → React is fast enough.

@@ -10,26 +10,13 @@
     "lists-and-keys",
     "controlled-uncontrolled-components",
     "react-core-hooks",
+    "react-hooks-useContext",
+    "useMemo-useCallback",
     "custom-hooks",
 
-    "state-as-snapshot",
-    "updating-objects-in-state",
-    "queing-state-updates",
-    "lifecycle-methods",
-    "render-commit",
-
-    "context-api",
-    "pure-components",
-    "memoization",
-    "refs-and-dom",
     "error-boundaries",
-
     "code-splitting",
     "lazy-loading",
-    "suspense-and-concurrent",
-
-    "component-architecture",
-
-    "state-management-options"
+    "suspense-and-concurrent"
   ]
 }

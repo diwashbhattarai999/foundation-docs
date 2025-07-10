@@ -1,0 +1,174 @@
+---
+title: Custom Hooks
+description: Learn how to create and use custom hooks in React to encapsulate reusable logic and improve code organization.
+---
+
+## What Are Custom Hooks?
+
+A **Custom Hook** is a **JavaScript function** that:
+
+- Starts with the word `use`
+- Can **call other hooks** (`useState`, `useEffect`, etc.)
+- Encapsulates reusable logic (e.g., form handling, fetching, toggling state)
+
+> ✅ A Custom Hook is **not** a React component
+> ❌ It doesn’t return JSX
+
+---
+
+## Why Use Custom Hooks?
+
+They help:
+
+- **Extract reusable logic** from components
+- Make code **cleaner** and **more modular**
+- Avoid **code duplication**
+
+---
+
+## Syntax
+
+```tsx
+function useCustomHook() {
+  // useState, useEffect, etc.
+  return something;
+}
+```
+
+### Rule:
+
+Custom hooks **must** follow the [Rules of Hooks](https://reactjs.org/docs/hooks-rules.html) (called only at top-level and not inside loops/conditions).
+
+---
+
+## Example 1 – Toggle Hook
+
+```tsx
+// useToggle.ts
+import { useState } from "react";
+
+export function useToggle(initial = false): [boolean, () => void] {
+  const [value, setValue] = useState(initial);
+  const toggle = () => setValue((v) => !v);
+  return [value, toggle];
+}
+```
+
+**Usage:**
+
+```tsx
+function ToggleComponent() {
+  const [isOn, toggle] = useToggle();
+
+  return <button onClick={toggle}>{isOn ? "ON" : "OFF"}</button>;
+}
+```
+
+---
+
+## Example 2 – useFetch Hook
+
+```tsx
+// useFetch.ts
+import { useEffect, useState } from "react";
+
+export function useFetch<T>(url: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted) {
+          setData(data);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [url]);
+
+  return { data, loading };
+}
+```
+
+**Usage:**
+
+```tsx
+function PostList() {
+  const { data, loading } = useFetch<Post[]>("https://jsonplaceholder.typicode.com/posts");
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <ul>
+      {data?.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+---
+
+## Best Practices for Custom Hooks
+
+| Practice                       | Why it Matters                                         |
+| ------------------------------ | ------------------------------------------------------ |
+| Prefix with `use`              | Ensures correct linter behavior & React convention     |
+| Return minimal, necessary data | Prevents leaking internal logic                        |
+| Keep them **pure**             | No side effects outside React’s lifecycle methods      |
+| Abstract only what's reusable  | Don’t over-abstract — premature abstraction hurts more |
+
+---
+
+## Composing Custom Hooks
+
+Custom Hooks can **compose** other hooks — even other custom hooks!
+
+```tsx
+function useAuth() {
+  const user = useUser(); // Custom hook
+  const token = useToken(); // Custom hook
+  return { user, token };
+}
+```
+
+This leads to clean separation of concerns.
+
+---
+
+## What Not to Do
+
+- Don’t use inside loops, conditions, or nested functions
+- Don’t mutate state inside hooks outside lifecycle methods
+- Don’t forget dependency arrays inside `useEffect`/`useCallback` etc.
+
+---
+
+## Summary
+
+| Feature           | Description                                          |
+| ----------------- | ---------------------------------------------------- |
+| Purpose           | Encapsulate & reuse stateful logic                   |
+| Starts with `use` | To follow React’s rules of hooks                     |
+| Can call hooks    | Yes (like `useState`, `useEffect`, `useMemo`, etc.)  |
+| Returns           | State, functions, or anything reusable               |
+| Best for          | Fetching, forms, toggling, auth, media queries, etc. |
+
+---
+
+## Examples You Can Build:
+
+- `useDebounce`
+- `useLocalStorage`
+- `useMediaQuery`
+- `usePrevious`
+- `useForm` for form state
+- `useClickOutside`
