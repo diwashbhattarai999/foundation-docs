@@ -1,0 +1,243 @@
+---
+title: Clean Code Practices
+description: Writing clean, maintainable code is a core skill for every developer. It ensures your codebase is easy to understand, scalable, and bug-free in the long term.
+---
+
+## Key Clean Code Principles
+
+### DRY (Don't Repeat Yourself)
+
+Avoid duplicating logic. Abstract reusable logic into hooks, utils, or services.
+
+```ts
+// ❌ Bad: Repeating email validation everywhere
+if (!email.includes("@")) throw new Error("Invalid Email");
+
+// ✅ Good: Reuse logic
+import { validateEmail } from "@/utils/validateEmail";
+validateEmail(email);
+```
+
+---
+
+### Follow SOLID principles
+
+| Principle                 | Summary                               | Example in React       |
+| ------------------------- | ------------------------------------- | ---------------------- |
+| S (Single Responsibility) | 1 component = 1 purpose               | Form vs Logic          |
+| O (Open/Closed)           | Components extendable, not modifiable | Use props or HOCs      |
+| L (Liskov Substitution)   | Components work when substituted      | Replaceable props      |
+| I (Interface Segregation) | Keep props interfaces minimal         | `PropsA`, `PropsB`     |
+| D (Dependency Inversion)  | Rely on abstractions                  | Custom hooks for logic |
+
+### SRP (Single Responsibility Principle)
+
+A file/function/component should do **one thing only**.
+
+```tsx
+// ❌ Bad: Component handles UI + API call + validation
+const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const handleSubmit = async () => {
+    if (!email.includes("@")) return;
+    await axios.post("/login", { email });
+  };
+};
+
+// ✅ Good: UI, validation, and API are separated
+// useLogin.ts (handles logic)
+export const useLogin = () => {
+  const login = (data: LoginData) => axios.post("/login", data);
+  return { login };
+};
+
+// LoginForm.tsx (only UI)
+const LoginForm = () => {
+  const { login } = useLogin();
+  const { register, handleSubmit } = useForm();
+  return (
+    <form onSubmit={handleSubmit(login)}>
+      <input {...register("email")} />
+    </form>
+  );
+};
+```
+
+---
+
+### OCP (Open/Closed Principle)
+
+Code should be **open for extension** but **closed for modification**.
+
+```ts
+// ❌ Bad: You must modify function to add a new role
+function getDashboard(role: "admin" | "user") {
+  if (role === "admin") return "Admin Dashboard";
+  if (role === "user") return "User Dashboard";
+}
+
+// ✅ Good: Extend without modifying core logic
+const dashboards = {
+  admin: "Admin Dashboard",
+  user: "User Dashboard",
+  doctor: "Doctor Dashboard", // Add here, no function change needed
+} as const;
+
+function getDashboard(role: keyof typeof dashboards) {
+  return dashboards[role];
+}
+```
+
+---
+
+### LSP (Liskov Substitution Principle)
+
+Components should be **replaceable** with instances of their subtypes without affecting correctness.
+
+```tsx
+// ❌ Bad: Component expects specific props
+const UserProfile = ({ user }: { user: User }) => {
+  return <div>{user.name}</div>;
+};
+
+// ✅ Good: Accepts any user-like object
+const UserProfile = ({ user }: { user: Partial<User> }) => {
+  return <div>{user.name}</div>;
+};
+```
+
+---
+
+### ISP (Interface Segregation Principle)
+
+Interfaces should be **small and specific**. Avoid large interfaces that force components to implement unused methods.
+
+```ts
+// ❌ Bad: Large interface with unused methods
+interface UserActions {
+  login(): void;
+  logout(): void;
+  updateProfile(): void; // Not all components need this
+}
+// ✅ Good: Split into smaller interfaces
+interface LoginActions {
+  login(): void;
+}
+interface ProfileActions {
+  updateProfile(): void;
+}
+interface LogoutActions {
+  logout(): void;
+}
+```
+
+---
+
+### DIP (Dependency Inversion Principle)
+
+High-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+```ts
+// ❌ Bad: Component directly depends on axios
+import axios from "axios";
+const fetchData = async () => {
+  const response = await axios.get("/api/data");
+  return response.data;
+};
+
+// ✅ Good: Use a custom hook or service
+import { useApi } from "@/hooks/useApi";
+const fetchData = async () => {
+  const data = await useApi("/api/data");
+  return data;
+};
+```
+
+---
+
+### KISS (Keep It Simple, Stupid)
+
+Don't over-engineer or complicate logic unnecessarily.
+
+```ts
+// ❌ Bad: Nested logic and unreadable code
+if (user && user.role && user.role === 'admin' && !isBanned) {}
+
+// ✅ Good: Use clear variables and conditions
+const isAdmin = user?.role === 'admin'
+if (isAdmin && !isBanned) { ... }
+```
+
+---
+
+### YAGNI (You Aren't Gonna Need It)
+
+Don’t add features or abstractions **until you need them**.
+
+```ts
+// ❌ Bad: Abstracting for the future unnecessarily
+function useAPI(method, url, body) { ... }
+
+// ✅ Good: Write what you need now
+function login(data: LoginData) {
+  return axios.post('/login', data)
+}
+```
+
+---
+
+## Bonus Best Practices
+
+### 1. Use Meaningful Names
+
+```ts
+// ❌ Bad
+const fn = (a: number) => a * 2;
+
+// ✅ Good
+const calculateTax = (amount: number) => amount * 0.2;
+```
+
+---
+
+### 2. Keep Functions Small
+
+Each function should do **one thing**, ideally under 10–15 lines.
+
+---
+
+### 3. Avoid Magic Strings/Numbers
+
+```ts
+// ❌ Bad
+if (status === 'success') { ... }
+
+// ✅ Good
+const STATUS_SUCCESS = 'success'
+if (status === STATUS_SUCCESS) { ... }
+```
+
+---
+
+### 4. Use TypeScript Types
+
+```ts
+// ✅ Good
+interface User {
+  id: string;
+  name: string;
+  role: "admin" | "user";
+}
+```
+
+---
+
+## Summary
+
+| Principle | Meaning                                   |
+| --------- | ----------------------------------------- |
+| DRY       | Don’t Repeat Yourself                     |
+| SRP       | Each file/component does one thing        |
+| OCP       | Code should be extendable, not modifiable |
+| KISS      | Keep it simple and readable               |
+| YAGNI     | Don’t build things you don’t need yet     |

@@ -1,0 +1,99 @@
+---
+title: Thinking in React
+description: Thinking in React is a mindset that helps you build UIs by breaking them into components, managing state effectively, and ensuring unidirectional data flow. This guide walks you through the 5-step process to master this approach.
+---
+
+## Why Is "Thinking in React" Important?
+
+React encourages **component-driven development** and **unidirectional data flow**.
+You should **build your UI by breaking it into components**, structuring your data, and handling interactions thoughtfully.
+
+---
+
+## The 5-Step Process to Think in React
+
+---
+
+### **Step 1: Break the UI into a Component Hierarchy**
+
+1. **Draw or inspect your UI** — visually identify reusable pieces.
+2. Identify components and their **parent-child relationships**.
+3. Each component should ideally do **one thing well** (Single Responsibility Principle).
+
+**Example: Product List**
+
+```plaintext
+App
+ └── ProductTable
+     ├── SearchBar
+     └── ProductList
+         └── ProductRow
+```
+
+Use [Separation of Concerns](https://reactjs.org/docs/thinking-in-react.html#step-1-break-the-ui-into-a-component-hierarchy) based on UI responsibility, not file size or lines of code.
+
+---
+
+### **Step 2: Build a Static Version in React**
+
+- Don’t add interactivity yet.
+- Use **props to pass data down**.
+- Build **dumb components** that render UI using static data.
+
+Use `useState` or other hooks **later** — only when needed.
+
+---
+
+### **Step 3: Identify the Minimal Representation of UI State**
+
+- Think: **What changes over time?**
+- For example:
+
+  - Search text
+  - Checked boxes
+  - User inputs
+
+- Avoid duplicating state:
+
+  - Derive anything you can from props/state instead of storing it separately.
+
+> The most important principle for structuring state is to keep it DRY (Don’t Repeat Yourself).
+
+---
+
+### **Step 4: Identify Where Your State Should Live**
+
+The right place for your state is:
+
+1. The component **that owns all the data**.
+2. Or the **closest common ancestor** of components that need it.
+
+You may need to **lift state up** to the parent, or **move it down** as props.
+
+---
+
+### **Step 5: Add Inverse Data Flow (Callbacks)**
+
+- Now handle user interactions.
+- Use **callbacks** (e.g., `onChange`, `onClick`) passed via props.
+- These trigger `setState` in the parent, and **re-render flows down**.
+
+> This is how you implement controlled components, filtering lists, toggling flags, etc.
+
+---
+
+## Best Practices When Thinking in React
+
+1. **Design from top-down or feature-based**
+2. Keep components **small and single-responsibility**
+3. Prefer **props over state** when possible
+4. Share state via **lifting or global store** (if needed)
+5. Think in **data flow** — top-down
+
+---
+
+## Want a Visual Summary?
+
+```plaintext
+Design UI → Break into Components → Build Static → Identify State → Lift State → Add Handlers
+```

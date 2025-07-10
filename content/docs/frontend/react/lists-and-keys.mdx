@@ -1,0 +1,144 @@
+---
+title: Lists and Keys
+description: Learn how to render lists in React using the map function and understand the importance of keys for efficient updates and rendering.
+---
+
+## **Rendering Lists in React**
+
+React makes it easy to render lists using `Array.map()`. This is how you typically render a list of items dynamically:
+
+```tsx
+const fruits = ["Apple", "Banana", "Cherry"];
+
+export function FruitList() {
+  return (
+    <ul>
+      {fruits.map((fruit, index) => (
+        <li key={index}>{fruit}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+---
+
+## **Why Use `key` Prop in Lists?**
+
+### A `key` is a special string attribute you **must** include when creating lists of elements.
+
+**React uses `key` to:**
+
+- Identify which items changed, were added, or removed.
+- Optimize re-renders by efficiently reconciling DOM changes.
+
+---
+
+### Without a Key – What Happens?
+
+React has no reliable way to identify list items. This may lead to:
+
+- Reordering bugs
+- Input losing focus
+- Unnecessary DOM re-renders
+
+---
+
+## Avoid Using Index as Key (When to Use & Not Use Index)
+
+### Okay to use index:
+
+- The list is **static** and never changes.
+- Items don’t have a unique ID or state.
+- Performance isn’t critical.
+
+```tsx
+items.map((item, index) => <li key={index}>{item}</li>);
+```
+
+### Avoid using index when:
+
+- List items can **change order**.
+- Items can be **added/removed** dynamically.
+- The item has **local state** (like form inputs).
+
+**Bad Example:**
+
+```tsx
+const todos = [{ task: "Learn" }, { task: "Build" }];
+
+todos.map((todo, index) => <input key={index} defaultValue={todo.task} />);
+```
+
+If one item is removed from the middle, React might keep the wrong input state for the remaining ones.
+
+---
+
+## Best Practice: Use Unique & Stable IDs as Keys
+
+```tsx
+const users = [
+  { id: 101, name: "Alice" },
+  { id: 102, name: "Bob" },
+];
+
+users.map((user) => <li key={user.id}>{user.name}</li>);
+```
+
+- Ensures React can properly track changes even if list is modified.
+
+---
+
+## Lists of Components
+
+You can also render lists of **custom components**:
+
+```tsx
+function TodoItem({ task }: { task: string }) {
+  return <li>{task}</li>;
+}
+
+export function TodoList() {
+  const tasks = ["Write", "Refactor", "Test"];
+  return (
+    <ul>
+      {tasks.map((task) => (
+        <TodoItem key={task} task={task} />
+      ))}
+    </ul>
+  );
+}
+```
+
+---
+
+## Keys Don’t Get Passed as Props
+
+- Keys are only used **internally by React**.
+- They are **not accessible** inside child components.
+
+If you need an ID inside the component, you must pass it explicitly:
+
+```tsx
+<TodoItem key={task.id} id={task.id} task={task.task} />
+```
+
+---
+
+## Summary
+
+| Concept        | Controlled With Key? | Why It Matters? |
+| -------------- | -------------------- | --------------- |
+| Performance    | ✅ Yes               | Faster updates  |
+| Predictability | ✅ Yes               | Avoid bugs      |
+| Correctness    | ✅ Yes               | Proper DOM sync |
+| Index as Key   | ❌ Not ideal         | Leads to bugs   |
+
+---
+
+## Quick Takeaways
+
+- Always use a `key` when rendering lists.
+- Prefer unique, **stable identifiers** over index.
+- Never rely on index if the list is dynamic.
+- Keys are used internally by React — not passed to components.

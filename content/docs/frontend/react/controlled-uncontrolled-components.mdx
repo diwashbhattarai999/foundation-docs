@@ -1,0 +1,101 @@
+---
+title: Controlled vs Uncontrolled Components
+description: Understanding the difference between controlled and uncontrolled components in React is crucial for managing form inputs effectively. This guide explains both concepts, their use cases, and when to choose one over the other.
+---
+
+## What Are Controlled vs Uncontrolled Components?
+
+### Controlled Components
+
+- A form input whose **value is controlled by React state**.
+- You manage the value using `useState` (or a state management solution).
+- React becomes the **single source of truth**.
+
+```tsx
+import { useState } from "react";
+
+function ControlledInput() {
+  const [name, setName] = useState("");
+
+  return (
+    <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" />
+  );
+}
+```
+
+- Here, the input value is **bound to the state `name`**, and React controls it completely.
+
+---
+
+### Uncontrolled Components
+
+- The form input **manages its own internal state** — like traditional HTML.
+- You **use a ref** to access its current value instead of relying on React state.
+
+```tsx
+import { useRef } from "react";
+
+function UncontrolledInput() {
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = () => {
+    alert(`Name: ${nameRef.current?.value}`);
+  };
+
+  return (
+    <>
+      <input ref={nameRef} placeholder="Enter your name" />
+      <button onClick={handleSubmit}>Submit</button>
+    </>
+  );
+}
+```
+
+- The input element is **not bound** to any React state — its value is read when needed via `ref`.
+
+---
+
+## Key Differences
+
+| Feature                    | Controlled Component                  | Uncontrolled Component |
+| -------------------------- | ------------------------------------- | ---------------------- |
+| Value Source               | React State                           | DOM (input element)    |
+| Read/Write                 | via props/state (`value`, `onChange`) | via `ref`              |
+| Real-time Validation       | Easy                                  | Difficult              |
+| React DevTools Debugging   | Fully visible                         | Not visible            |
+| Boilerplate Code           | More (state + handlers)               | Less                   |
+| Performance in Large Forms | Slightly slower if overused           | Slightly faster        |
+
+---
+
+## When to Use What?
+
+### Use **Controlled Components** when:
+
+- You need **form validation** or logic based on value.
+- You want to **conditionally enable/disable inputs or buttons**.
+- You need **real-time value tracking**.
+- You want better testability and state debugging.
+
+### Use **Uncontrolled Components** when:
+
+- You only need the value **on submit** or final interaction.
+- You want **less re-rendering**, especially for large or performance-sensitive forms.
+- Migrating legacy HTML/jQuery-like code.
+
+---
+
+## Tip: Controlled inputs must have `value` and `onChange`, otherwise React throws a warning like:
+
+> A component is changing an uncontrolled input of type text to be controlled.
+
+This happens if you start with an undefined `value`.
+
+---
+
+## Summary
+
+- Controlled = managed by React state.
+- Uncontrolled = managed by DOM.
+- Controlled gives you better **control, validation, and testing**.
+- Uncontrolled is **simpler** and good for non-reactive or quick forms.

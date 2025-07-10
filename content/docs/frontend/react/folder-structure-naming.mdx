@@ -1,0 +1,160 @@
+---
+title: Folder Structure & Naming Conventions
+description: A scalable React application begins with a solid folder structure and consistent naming conventions. This ensures the codebase is maintainable, readable, and follows industry standards.
+---
+
+## Recommended Folder Structure
+
+```plaintext
+├── .github                            # GitHub Actions workflows
+├── .husky                             # Husky Git hooks
+├── .vscode                            # VS Code settings and extensions
+├── public                             # Static files (images, fonts, etc.)
+   ├── favicon.ico                     # Favicon for the app
+├── src
+│   ├── app                            # All Next.js pages and API routes
+│       ├── router                     # Router configuration for the app
+│           ├── router.tsx             # Main router file
+│           ├── auth.router.tsx        # Authentication routes
+│           ├── dashboard.router.tsx   # Dashboard routes
+│           └── ...
+|       ├── error-fallback.tsx         # Global Error handling fallback component
+|       ├── page-loader.tsx            # Page loader for the app
+│       ├── not-found.tsx              # 404 page
+│       ├── index.tsx                  # Main entry point for the app with providers(theme, i18n, etc.)
+│       └── ...
+│   ├── assets                         # Static assets like images, fonts
+│   ├── components                     # Reusable UI components
+|       ├── ui                         # UI components (buttons, inputs, etc.)
+│       ├── common                     # Common components (modals, notifications, etc.)
+│       ├── layouts                    # Layout components (header, footer, etc.)
+│       ├── guards                     # Route guards and authentication components
+│       ├── providers                  # Context providers (AuthProvider, ThemeProvider, etc.)
+│       └── ...
+│   ├── configs                        # Configuration files
+|       ├── env.ts                     # Environment variables configuration
+│       ├── routes.ts                  # Constants for all routes in the app
+│       └── ...
+│   ├── constants                      # Constants and enums
+|   ├── features                       # Feature-based modules
+|       ├── auth                       # Authentication feature
+│           ├── components             # Auth-specific components
+│           ├── pages                  # Auth-specific pages (login, register)
+│           ├── hooks                  # Auth-specific hooks
+│           ├── services               # Auth API services
+│           ├── types                  # Auth-specific types and interfaces
+│           └── utils                  # Auth-specific utility functions
+│       ├── dashboard                  # Dashboard feature
+│           ├── components             # Dashboard-specific components
+│           ├── pages                  # Dashboard-specific pages
+│           ├── hooks                  # Dashboard-specific hooks
+│           ├── services               # Dashboard API services
+│           ├── types                  # Dashboard-specific types and interfaces
+│           └── utils                  # Dashboard-specific utility functions
+│       └── ...
+│   ├── hooks                          # Custom React hooks
+│   ├── i18n                           # Internationalization utilities
+│   ├── lib                            # Utility functions and classes
+│   ├── locales                        # Internationalization files (en.json, ne.json, i18n.ts)
+│   ├── styles                         # Tailwind CSS and global styles
+│   ├── tests                          # Unit and integration tests
+│   ├── types                          # TypeScript types and interfaces
+│   ├── utils                          # Utility functions
+│   ├── main.tsx                       # App entry point for router configuration, strict mode, css, etc.
+│   └── ...
+├── .env.example                       # Environment variables example
+├── .env.development                   # Development environment variables
+├── .env.production                    # Production environment variables
+├── .gitignore                         # Git ignore rules
+├── .prettierrc                        # Prettier configuration
+├── .commitlintrc.config.ts            # Commitlint configuration
+├── .eslintrc.config.mjs               # ESLint configuration
+├── index.html                         # Vite root HTML file
+├── LICENSE                            # License information
+├── package.json                       # NPM package configuration
+├── pnpm-lock.yaml                     # pnpm lockfile
+├── README.md                          # Project README
+├── tsconfig.json                      # TypeScript configuration
+├── vite.config.ts                     # Vite configuration
+└── ...
+```
+
+---
+
+## Naming Conventions
+
+| Item             | Convention                            | Example                                                        |
+| ---------------- | ------------------------------------- | -------------------------------------------------------------- |
+| Folders          | kebab-case or camelCase               | `user-profile/`                                                |
+| Components       | PascalCase or kebab-case              | `UserCard.tsx`, `button.tsx`, `user-card.tsx`                  |
+| Utils/Hooks      | camelCase or kebab-case               | `useAuth.ts`, `formatDate.ts`, `use-auth.ts`, `format-date.ts` |
+| Interfaces/Types | PascalCase (with optional `I` prefix) | `User`, `AuthResponse`, `IUser`, `TUser`                       |
+| Constants        | UPPER_SNAKE_CASE                      | `MAX_UPLOAD_SIZE`                                              |
+
+---
+
+## Example 1: `use-auth.ts`
+
+```ts
+// features/auth/hooks/use-auth.ts
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
+/**
+ * Hook to access authentication context.
+ */
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+
+  return context;
+};
+```
+
+---
+
+## Example 2: Reusable Button Component
+
+```tsx
+// components/ui/button.tsx
+import clsx from "clsx";
+
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: "primary" | "secondary";
+  onClick?: () => void;
+}
+
+export const Button = ({ children, variant = "primary", onClick }: ButtonProps) => {
+  const className = clsx(
+    "px-4 py-2 rounded",
+    variant === "primary" && "bg-blue-600 text-white",
+    variant === "secondary" && "bg-gray-200 text-black"
+  );
+
+  return (
+    <button onClick={onClick} className={className}>
+      {children}
+    </button>
+  );
+};
+```
+
+## Why It Matters
+
+| Benefit            | Explanation                                  |
+| ------------------ | -------------------------------------------- |
+| Scalability        | Easier to add new features without confusion |
+| Team Collaboration | SOLID, DRY, and SRP by design                |
+| Clean Code         | SOLID, DRY, and SRP by design                |
+| Productivity       | Faster navigation and development            |
+
+## Tips
+
+- Avoid dumping everything into components/ or pages/.
+- Structure features modularly inside features/feature-name/.
+- Add index.ts files for re-exports to simplify imports.
+- Use PascalCase for components and camelCase for everything else.

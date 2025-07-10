@@ -1,0 +1,207 @@
+---
+title: React Core Hooks
+description: A comprehensive guide to the core hooks provided by React, including useState, useEffect, and custom hooks.
+---
+
+## 1. `useState` — _Add Local State to Components_
+
+### Purpose:
+
+To declare a **state variable** in a functional component.
+
+### Syntax:
+
+```tsx
+const [count, setCount] = useState<number>(0);
+```
+
+- `count` is the current value.
+- `setCount` is a function to update `count`.
+- Component re-renders when state changes.
+
+### Key Concepts:
+
+- You **must not mutate** state directly (e.g. `count++ ❌`).
+- Updating state is **asynchronous**.
+- Updating triggers re-render.
+
+### Example:
+
+```tsx
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  return <button onClick={() => setCount(count + 1)}>Clicked {count} times</button>;
+};
+```
+
+---
+
+## 2. `useEffect` — _Side Effects in React_
+
+### Purpose:
+
+To perform side effects such as:
+
+- Fetching data
+- Subscribing/unsubscribing
+- Direct DOM manipulation
+- Setting timeouts/intervals
+
+### Syntax:
+
+```tsx
+useEffect(() => {
+  // Side effect logic here
+
+  return () => {
+    // Cleanup logic here (optional)
+  };
+}, [dependencies]);
+```
+
+### Key Concepts:
+
+- Runs **after render**.
+- `[]`: runs once after mount (like `componentDidMount`)
+- `[dep]`: runs when `dep` changes.
+- No deps: runs after **every render**.
+- Cleanup runs on unmount or before effect re-runs.
+
+### Example:
+
+```tsx
+useEffect(() => {
+  document.title = `Count: ${count}`;
+}, [count]);
+```
+
+---
+
+## 3. `useRef` — _Persistent Mutable Values_
+
+### Purpose:
+
+- To persist **mutable values** across renders **without causing re-renders**.
+- To **reference DOM elements**.
+
+### Syntax:
+
+```tsx
+const inputRef = useRef<HTMLInputElement | null>(null);
+```
+
+### Key Concepts:
+
+- `useRef()` returns a `.current` object.
+- Updating `ref.current` **does not re-render** the component.
+- Commonly used for DOM access or to hold instance values.
+
+### Example 1: DOM access
+
+```tsx
+const InputFocus = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    inputRef.current?.focus();
+  };
+
+  return (
+    <>
+      <input ref={inputRef} />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+};
+```
+
+### Example 2: Persisting values
+
+```tsx
+const Timer = () => {
+  const count = useRef(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      count.current++;
+      console.log("Count:", count.current);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <p>Open console to see count</p>;
+};
+```
+
+---
+
+## 4. `useReducer` — _Alternative to useState for Complex State_
+
+### Purpose:
+
+To manage **complex state** logic in a centralized reducer pattern (like Redux in React components).
+
+### Syntax:
+
+```tsx
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+- `reducer` is a function `(state, action) => newState`
+- `dispatch()` sends actions
+
+### Key Concepts:
+
+- Great for state with **multiple sub-values**.
+- Predictable and testable updates.
+- Scales better than nested `useState` calls.
+
+### Example:
+
+```tsx
+type Action = { type: "increment" } | { type: "decrement" };
+const reducer = (state: number, action: Action): number => {
+  switch (action.type) {
+    case "increment":
+      return state + 1;
+    case "decrement":
+      return state - 1;
+    default:
+      return state;
+  }
+};
+
+const Counter = () => {
+  const [count, dispatch] = useReducer(reducer, 0);
+
+  return (
+    <>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+      {count}
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+    </>
+  );
+};
+```
+
+---
+
+## When to Use What?
+
+| Hook         | Use Case                                          |
+| ------------ | ------------------------------------------------- |
+| `useState`   | Simple state (counters, forms)                    |
+| `useEffect`  | Side effects (fetching data, subscriptions)       |
+| `useRef`     | DOM refs, instance variables                      |
+| `useReducer` | Complex state logic or multiple state transitions |
+
+---
+
+## Summary
+
+- `useState`: for simple state and reactivity.
+- `useEffect`: for managing side effects and lifecycle.
+- `useRef`: for persistent, mutable non-state values.
+- `useReducer`: for advanced state logic and decoupled updates.

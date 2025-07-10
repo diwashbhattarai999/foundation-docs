@@ -1,21 +1,22 @@
 {
   "title": "React",
   "pages": [
+    "folder-structure-naming",
+    "thinking-in-react",
     "how-react-works",
     "jsx-and-rendering",
     "components-and-props",
-    "reacting-to-input-with-state",
     "conditional-rendering",
     "lists-and-keys",
+    "controlled-uncontrolled-components",
+    "react-core-hooks",
+    "custom-hooks",
 
     "state-as-snapshot",
     "updating-objects-in-state",
     "queing-state-updates",
     "lifecycle-methods",
     "render-commit",
-
-    "react-hooks",
-    "custom-hooks",
 
     "context-api",
     "pure-components",
@@ -28,7 +29,7 @@
     "suspense-and-concurrent",
 
     "component-architecture",
-    "react-folder-structure",
+
     "state-management-options"
   ]
 }

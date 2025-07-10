@@ -1,0 +1,173 @@
+---
+title: Conditional Rendering
+description: Conditional Rendering in React allows you to display different UI elements based on certain conditions, using techniques like if/else, ternary operators, and logical AND.
+---
+
+## What is Conditional Rendering?
+
+Conditional Rendering means displaying **different UI elements** based on **certain conditions** (like `if/else` logic) — just like control flow in JavaScript, but done within JSX.
+
+In React, **everything is just JavaScript**, so we can use `if`, `ternary`, `&&`, `switch`, etc. directly in JSX to conditionally render content.
+
+---
+
+## Common Conditional Rendering Techniques
+
+---
+
+### **1. Using if/else Before Return**
+
+```tsx
+function Greeting({ isLoggedIn }: { isLoggedIn: boolean }) {
+  if (isLoggedIn) {
+    return <h1>Welcome back!</h1>;
+  } else {
+    return <h1>Please log in</h1>;
+  }
+}
+```
+
+Good when the condition is simple and one component is returned.
+
+---
+
+### **2. Using Ternary Operator in JSX**
+
+```tsx
+function Greeting({ isLoggedIn }: { isLoggedIn: boolean }) {
+  return <h1>{isLoggedIn ? "Welcome back!" : "Please log in"}</h1>;
+}
+```
+
+Great for simple inline content like text or elements.
+
+---
+
+### **3. Using Logical AND (`&&`)**
+
+```tsx
+function Dashboard({ isAdmin }: { isAdmin: boolean }) {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      {isAdmin && <button>Delete User</button>}
+    </div>
+  );
+}
+```
+
+Renders the component only when the condition is truthy.
+
+Be cautious with falsy values like `0`, `''`, `null`, `undefined`.
+
+---
+
+### **4. Using Conditional Blocks with Variables**
+
+```tsx
+function Profile({ user }: { user: TUser | null }) {
+  let content;
+
+  if (!user) {
+    content = <p>Please login</p>;
+  } else if (user.isAdmin) {
+    content = <p>Welcome Admin {user.name}</p>;
+  } else {
+    content = <p>Hello {user.name}</p>;
+  }
+
+  return <div>{content}</div>;
+}
+```
+
+This keeps JSX clean by preparing content outside the return block.
+
+---
+
+### **5. Using `switch-case` for Multiple Conditions**
+
+```tsx
+function StatusMessage({ status }: { status: "loading" | "success" | "error" }) {
+  switch (status) {
+    case "loading":
+      return <p>Loading...</p>;
+    case "success":
+      return <p>Data fetched!</p>;
+    case "error":
+      return <p>Something went wrong.</p>;
+    default:
+      return null;
+  }
+}
+```
+
+Great when multiple exclusive states exist.
+
+---
+
+## Real-World Use Cases
+
+| **Use Case**                | **Condition**                         | **UI Behavior**                   |
+| --------------------------- | ------------------------------------- | --------------------------------- |
+| Show loading spinner        | `isLoading === true`                  | Show `<Loader />`                 |
+| Toggle component visibility | `isVisible === true`                  | Show/hide a modal                 |
+| Authenticated user access   | `user?.isAuthenticated`               | Show private routes or user panel |
+| Role-based content          | `user.role === 'admin'`               | Show admin tools                  |
+| Render fallback data        | `data ? <Component /> : <Fallback />` | Show placeholder or error message |
+
+---
+
+## Best Practices
+
+1.  Prefer **ternaries** or `&&` for short expressions.
+2.  Use **early returns** to simplify nested conditions.
+3.  Avoid deeply nested ternaries – it hurts readability.
+4.  Abstract logic into **helper functions** or **components** when complex.
+5.  Always handle **null or undefined** cases safely to avoid runtime crashes.
+
+---
+
+## Advanced Pattern: Conditional Component Rendering
+
+```tsx
+function AdminPanel({ user }: { user: TUser }) {
+  if (!user.isAdmin) return null;
+  return <div>Welcome, Admin!</div>;
+}
+```
+
+This approach cleanly prevents rendering an entire component if not needed.
+
+---
+
+## Conditional Rendering + Animations
+
+You can pair conditional rendering with animations:
+
+```tsx
+{
+  isOpen && (
+    <FadeIn>
+      <Modal />
+    </FadeIn>
+  );
+}
+```
+
+React doesn’t animate on `unmount`, so use animation libraries like:
+
+- `Framer Motion`
+- `React Spring`
+- `React Transition Group`
+
+---
+
+## Summary
+
+| **Pattern**        | **Use When**                      |
+| ------------------ | --------------------------------- |
+| if/else            | Multiple branches, outside return |
+| ternary (`? :`)    | Short inline content differences  |
+| logical AND (`&&`) | Show something when true only     |
+| switch-case        | Multiple state possibilities      |
+| early return       | Avoid nesting and simplify logic  |
