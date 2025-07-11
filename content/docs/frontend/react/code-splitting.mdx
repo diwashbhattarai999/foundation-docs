@@ -3,4 +3,175 @@ title: Code Splitting
 description: Learn how to implement code splitting in React applications to optimize performance by loading only the necessary code for each page.
 ---
 
-# Coming Soon
+Let's **deep dive into Code Splitting** in React, why it’s important, how it works, and the tools React provides to implement it efficiently — including `React.lazy`, `Suspense`, and dynamic imports.
+
+---
+
+## What is Code Splitting?
+
+**Code Splitting** is a technique to **split your JavaScript bundle** into smaller chunks that can be **loaded on demand**.
+
+### Why?
+
+- Speeds up initial page load
+- Reduces the amount of JavaScript parsed/executed initially
+- Improves performance especially in large applications
+
+---
+
+## Without Code Splitting
+
+Imagine a single JS file (`bundle.js`) that includes:
+
+- Homepage
+- Admin Dashboard
+- User Profile
+- All components, libraries, utils
+
+Even if the user only visits the homepage, **the entire app** is downloaded & parsed.
+
+---
+
+## With Code Splitting
+
+You break that bundle:
+
+```text
+- homepage.chunk.js
+- dashboard.chunk.js
+- profile.chunk.js
+```
+
+Only the **needed code is loaded** when that part of the app is accessed.
+
+---
+
+## How React Supports Code Splitting
+
+### 1. **Dynamic `import()`**
+
+This is a **native JavaScript feature**:
+
+```ts
+import("./Dashboard").then((module) => {
+  const Dashboard = module.default;
+});
+```
+
+This splits `Dashboard` into its own JS chunk automatically in tools like **Webpack**, **Vite**, or **Parcel**.
+
+---
+
+### 2. **React.lazy() + Suspense**
+
+React provides a built-in way to lazy load components:
+
+```tsx
+import { lazy, Suspense } from "react";
+
+const Dashboard = lazy(() => import("./Dashboard"));
+
+function App() {
+  return (
+    <div>
+      <Suspense fallback={<p>Loading...</p>}>
+        <Dashboard />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+- `React.lazy()` **defers loading** the module until it’s needed.
+- `Suspense` **renders fallback UI** while the component is being loaded.
+
+> Only supports **default exports**.
+
+---
+
+### 3. **Code Splitting by Routes (Best Practice)**
+
+```tsx
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+
+function Router() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+```
+
+Now, Home and About are only loaded **when the user visits them**.
+
+---
+
+## Code Splitting with Vite or Webpack
+
+**Vite** automatically splits code for dynamic imports.
+
+**Webpack** creates separate chunks automatically for each dynamic import.
+
+Optional: You can name your chunks using Webpack magic comments:
+
+```tsx
+const Dashboard = lazy(() => import(/* webpackChunkName: "dashboard" */ "./Dashboard"));
+```
+
+---
+
+## Common Pitfalls
+
+| Issue                | Solution                                 |
+| -------------------- | ---------------------------------------- |
+| No fallback          | Always use `<Suspense fallback={...}>`   |
+| Not supported in SSR | Use libraries like `loadable-components` |
+| Only default exports | Wrap named exports or re-export          |
+
+---
+
+## Tips for Effective Code Splitting
+
+1. **Split by route** using `React.lazy()` – biggest performance gain.
+2. Avoid splitting too deep (e.g., every small component).
+3. Lazy load heavy libraries (charts, maps, editors).
+4. Use **preload** hints for important routes/components.
+5. Cache busting is automatic with most bundlers.
+6. Keep fallbacks meaningful (skeleton UI, spinners, placeholders).
+
+---
+
+## Real World Use Case
+
+Lazy load a chart library only when it's needed:
+
+```tsx
+const Chart = lazy(() => import("react-chartjs-2"));
+
+function AnalyticsPage() {
+  return (
+    <Suspense fallback={<div>Loading Chart...</div>}>
+      <Chart />
+    </Suspense>
+  );
+}
+```
+
+---
+
+## Summary
+
+| Concept        | Description                                         |
+| -------------- | --------------------------------------------------- |
+| Code Splitting | Load parts of code on demand to improve performance |
+| `import()`     | Native way to split code                            |
+| `React.lazy()` | Load components lazily                              |
+| `Suspense`     | Show fallback during load                           |
+| Best usage     | Route-level and heavy third-party components        |

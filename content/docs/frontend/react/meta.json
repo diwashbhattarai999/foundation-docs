@@ -10,13 +10,12 @@
     "lists-and-keys",
     "controlled-uncontrolled-components",
     "react-core-hooks",
-    "react-hooks-useContext",
+    "useContext-hook",
     "useMemo-useCallback",
     "custom-hooks",
-
     "error-boundaries",
     "code-splitting",
     "lazy-loading",
-    "suspense-and-concurrent"
+    "suspense"
   ]
 }

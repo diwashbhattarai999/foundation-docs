@@ -3,4 +3,174 @@ title: Error Boundaries
 description: Learn how to handle errors in React applications using Error Boundaries to gracefully catch and display errors in the UI.
 ---
 
-# Coming Soon
+## What is an Error Boundary?
+
+In React, an **Error Boundary** is a component that **catches JavaScript errors** in its child component tree, logs those errors, and displays a fallback UI **instead of crashing the whole app**.
+
+> Error Boundaries catch **rendering**, **lifecycle**, and **constructor errors** in **class** components or **components below them** — but **not** in event handlers or async code.
+
+---
+
+## Problem Without Error Boundaries
+
+```tsx
+function BrokenComponent() {
+  throw new Error("Something went wrong!");
+  return <div>Hello</div>;
+}
+
+function App() {
+  return (
+    <div>
+      <BrokenComponent /> {/* This will crash the app */}
+    </div>
+  );
+}
+```
+
+The app will crash completely without error boundaries.
+
+---
+
+## Native Error Boundaries in React (Class-Based)
+
+```tsx
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("Caught an error:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) return <h2>Something went wrong.</h2>;
+    return this.props.children;
+  }
+}
+```
+
+Then wrap components:
+
+```tsx
+<ErrorBoundary>
+  <BrokenComponent />
+</ErrorBoundary>
+```
+
+But this is class-based. Let’s now look at a better DX using the **`react-error-boundary`** package.
+
+---
+
+## 🛠 What is `react-error-boundary`?
+
+A lightweight wrapper around error boundaries using **function components**, created by **Kent C. Dodds**.
+
+Install it:
+
+```bash
+npm install react-error-boundary
+```
+
+---
+
+## Basic Usage
+
+```tsx
+import { ErrorBoundary } from "react-error-boundary";
+
+function ErrorFallback({
+  error,
+  resetErrorBoundary,
+}: {
+  error: Error;
+  resetErrorBoundary: () => void;
+}) {
+  return (
+    <div role="alert">
+      <p>Something went wrong: </p>
+      <pre>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
+}
+
+function MyComponent() {
+  throw new Error("Boom 💥");
+}
+
+function App() {
+  return (
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // Optionally reset state or routing here
+      }}
+    >
+      <MyComponent />
+    </ErrorBoundary>
+  );
+}
+```
+
+---
+
+## Props You Can Use
+
+| Prop                | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `FallbackComponent` | Component to show when error is caught                  |
+| `onError`           | Called when error is caught                             |
+| `onReset`           | Called when resetErrorBoundary is called                |
+| `resetKeys`         | Triggers reset if any key changes (like route or state) |
+
+### Example: `resetKeys`
+
+```tsx
+<ErrorBoundary
+  FallbackComponent={ErrorFallback}
+  onReset={() => setUserId(null)}
+  resetKeys={[userId]} // Will reset if userId changes
+>
+  <UserProfile userId={userId} />
+</ErrorBoundary>
+```
+
+---
+
+## Error in Async Handlers (Not Caught by Error Boundaries)
+
+```tsx
+function Button() {
+  const handleClick = () => {
+    throw new Error("Crash in event handler"); // ❌ won't be caught
+  };
+  return <button onClick={handleClick}>Crash</button>;
+}
+```
+
+> Instead, handle async errors manually (e.g., try-catch or error states).
+
+---
+
+## Best Practices
+
+- Wrap **critical parts** (routes, feature components) in boundaries.
+- Provide **clear fallback UI** and reset mechanisms.
+- Combine with **logging** (e.g., Sentry, LogRocket).
+- Avoid wrapping **the whole app** unless you absolutely need to.
+
+---
+
+## Summary
+
+| Feature                | Explanation                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| Error boundaries       | Catch **render-time** and **lifecycle errors**                |
+| `react-error-boundary` | Functional, flexible, composable                              |
+| `FallbackComponent`    | Custom UI for failure                                         |
+| `resetKeys`            | Useful to retry on prop/state changes                         |
+| Doesn’t catch          | Errors in `setTimeout`, event handlers, or async ops directly |

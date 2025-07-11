@@ -3,4 +3,115 @@ title: Lazy Loading
 description: Learn how to implement lazy loading in React applications to optimize performance by loading components only when needed.
 ---
 
-# Coming Soon
+### What is Lazy Loading?
+
+**Lazy loading** means **deferring the loading of a resource** (component, image, data, etc.) **until it's needed** — improving the **initial load performance** of your app.
+
+> It's a **runtime behavior** that often uses **code splitting** behind the scenes (especially for React components).
+
+---
+
+### Why Lazy Load?
+
+- Reduce **initial bundle size**
+- Load heavy or less-critical features only when necessary
+- Improve **time to interactive** (TTI) and **core web vitals**
+
+---
+
+### Lazy Loading in React: Components
+
+You’ve already seen this with `React.lazy()` and `Suspense`:
+
+```tsx
+const SettingsPanel = React.lazy(() => import("./SettingsPanel"));
+
+<Suspense fallback={<div>Loading Settings...</div>}>
+  <SettingsPanel />
+</Suspense>;
+```
+
+This works thanks to **dynamic imports**:
+
+- `import()` tells your bundler (webpack/Vite) to create a **separate JS chunk**
+- It is downloaded **only when rendered**
+
+---
+
+### Lazy Loading Images
+
+React doesn't lazy-load images by default — but browsers support it **natively**:
+
+```html
+<img src="/large-image.jpg" loading="lazy" alt="Lazy loaded image" />
+```
+
+Or with a React wrapper:
+
+```tsx
+function LazyImage() {
+  return (
+    <img
+      src="https://example.com/heavy.jpg"
+      loading="lazy"
+      width="600"
+      height="400"
+      alt="Heavy Image"
+    />
+  );
+}
+```
+
+Works in all modern browsers
+
+---
+
+### Lazy Loading Routes (React Router v6)
+
+React Router + `React.lazy`:
+
+```tsx
+const Profile = React.lazy(() => import("./pages/Profile"));
+
+<Route
+  path="/profile"
+  element={
+    <Suspense fallback={<div>Loading profile...</div>}>
+      <Profile />
+    </Suspense>
+  }
+/>;
+```
+
+---
+
+### Lazy Loading vs Code Splitting
+
+| Concept        | What it does                     | Example                         |
+| -------------- | -------------------------------- | ------------------------------- |
+| Code Splitting | Breaks bundle into chunks        | `import('./HeavyComponent')`    |
+| Lazy Loading   | Loads chunk **when** it's needed | `React.lazy(() => import(...))` |
+
+> Code splitting = pre-bundling strategy
+> Lazy loading = run-time loading strategy
+
+---
+
+### Summary
+
+| Feature                      | Supported |
+| ---------------------------- | --------- |
+| Lazy load React components   | ✅        |
+| Lazy load images (native)    | ✅        |
+| Route-based lazy loading     | ✅        |
+| Custom lazy logic (observer) | ✅        |
+| Reduces initial bundle size  | ✅        |
+
+---
+
+### Best Practices
+
+- Lazy load **non-critical** components (like modals, dashboards, maps, etc.)
+- Use **fallbacks** with `<Suspense>` or custom placeholders
+- Lazy load **routes and images** for performance
+- Combine with **IntersectionObserver** for progressive rendering

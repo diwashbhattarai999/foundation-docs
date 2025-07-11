@@ -1,0 +1,170 @@
+---
+title: Suspense
+description: Learn how to use React's Suspense to handle lazy loading of components and data fetching, improving user experience with fallback UIs.
+---
+
+## What is `React.Suspense`?
+
+**`Suspense`** is a built-in React component that allows you to **pause rendering** while waiting for something (like a lazy component or data) and **show a fallback UI** in the meantime.
+
+```tsx
+<Suspense fallback={<Loading />}>
+  <LazyComponent />
+</Suspense>
+```
+
+---
+
+## Why `Suspense`?
+
+React’s default behavior is **synchronous rendering** — but what if a component takes time to load (e.g., network fetch, lazy-loaded component)? You don’t want to block the whole app — that’s where `Suspense` comes in.
+
+---
+
+## Primary Use Cases
+
+1. **Lazy loading components** (with `React.lazy()`)
+2. **Concurrent UI rendering** (React 18+)
+3. **Data fetching** (via third-party libs like `React Query`, Relay, or `@tanstack/react-query`)
+
+---
+
+## How Suspense Works (Conceptually)
+
+- When React encounters a `Suspense` boundary and the child is **not yet ready**, it **pauses rendering** of that subtree.
+- React then renders the `fallback`.
+- When the child is ready, React continues rendering it **without re-rendering the entire tree**.
+
+---
+
+## Basic Syntax
+
+```tsx
+import { lazy, Suspense } from "react";
+
+const Dashboard = lazy(() => import("./Dashboard"));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Dashboard />
+    </Suspense>
+  );
+}
+```
+
+> The `fallback` prop is **required** — it's what shows during loading.
+
+---
+
+## Requirements
+
+- You **must** use `React.lazy()` with `Suspense`. No other way to lazy load components natively.
+- `React.lazy()` **only supports default exports**.
+- Works **only in the client**, not directly with SSR (you need extra libraries like `loadable-components` for SSR).
+
+---
+
+## Nested Suspense
+
+You can nest `Suspense` components to control loading boundaries better:
+
+```tsx
+<Suspense fallback={<p>Loading layout...</p>}>
+  <Layout>
+    <Suspense fallback={<p>Loading dashboard...</p>}>
+      <Dashboard />
+    </Suspense>
+  </Layout>
+</Suspense>
+```
+
+---
+
+## Real World Example – Code Splitting
+
+```tsx
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+
+function App() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+---
+
+## `Suspense` for Data Fetching (React 18+)
+
+React 18 brings **Concurrent Features**, and you can use `Suspense` to pause rendering while **data loads**.
+
+However, it **requires** a data fetching library that integrates with Suspense, such as:
+
+- [`React Relay`](https://relay.dev/)
+- [`@tanstack/react-query`](https://tanstack.com/query/v5)
+- [`SWR`](https://swr.vercel.app/) (experimental support)
+
+```tsx
+<Suspense fallback={<Loading />}>
+  <Profile />
+</Suspense>
+```
+
+In this case, the `Profile` component will **throw a Promise** internally (using a custom hook) and Suspense will **catch it** and show the fallback until it's resolved.
+
+---
+
+## Suspense with `useTransition` (Concurrent Rendering)
+
+React 18 also introduced `useTransition`:
+
+```tsx
+const [isPending, startTransition] = useTransition();
+
+startTransition(() => {
+  setTab("profile");
+});
+```
+
+Here, `Suspense` can be used with transitions to avoid jank during slow UI updates.
+
+---
+
+## Tooling Notes
+
+| Feature                   | Supported           |
+| ------------------------- | ------------------- |
+| Client-side lazy loading  | ✅ Built-in         |
+| Data fetching             | ⚠️ Needs library    |
+| SSR support               | ❌ Needs extra libs |
+| Works with `React.lazy()` | ✅ Yes              |
+| Fallback control          | ✅ Yes              |
+
+---
+
+## Best Practices
+
+1. **Use Suspense for route-level boundaries.**
+2. Nest Suspense for **fine-grained control** (e.g., image gallery, dashboard widgets).
+3. Use meaningful fallback UIs — not just "Loading…"
+4. Combine with **lazy-loaded components and code splitting**.
+5. For data fetching, use **React Query, Relay, or SWR** with `Suspense`.
+
+---
+
+## Summary
+
+| Concept    | Description                                                                   |
+| ---------- | ----------------------------------------------------------------------------- |
+| `Suspense` | A component that pauses rendering and shows fallback until children are ready |
+| Works with | `React.lazy()` and some data-fetching libs                                    |
+| Fallback   | A required prop for showing UI while loading                                  |
+| Benefits   | Smoother UX, less jank, faster initial load                                   |
+| React 18   | Enables concurrent rendering and data streaming                               |
