@@ -1,0 +1,192 @@
+---
+title: Portals and Modals
+description: Learn how to create modals using React Portals, a powerful feature for rendering components outside the main DOM hierarchy.
+---
+
+## What Are React Portals?
+
+**Portals** allow you to **render children into a DOM node that exists outside the parent component hierarchy**.
+
+### Example Use Case:
+
+- **Modals**
+- **Tooltips**
+- **Dropdowns**
+- **Sidebars**
+- **Floating UI components**
+
+> React normally renders components inside the root DOM tree (`#root`), but sometimes you want a component to **escape** this DOM structure — that's what **portals** solve.
+
+---
+
+## Why Not Just Use Normal Rendering?
+
+Without portals:
+
+- Your modal might be affected by the parent’s **CSS overflow, z-index, flexbox, or position**.
+- It's **harder to make it full-screen or fixed** if it's nested inside deeply scoped components.
+
+Portals **solve that problem** by rendering in a separate part of the DOM, **but keeping the React context** (state, props, etc.).
+
+---
+
+## Syntax of React Portal
+
+```tsx
+import { createPortal } from "react-dom";
+
+createPortal(child, container);
+```
+
+### Parameters:
+
+- `child`: React component or JSX element.
+- `container`: The target DOM node outside the root DOM tree.
+
+---
+
+## Basic Example
+
+### `index.html`
+
+```html
+<div id="root"></div>
+<div id="modal-root"></div>
+<!-- Portal target -->
+```
+
+### `Modal.tsx`
+
+```tsx
+import { createPortal } from "react-dom";
+
+const modalRoot = document.getElementById("modal-root") as HTMLElement;
+
+export const Modal = ({ children }: { children: React.ReactNode }) => {
+  return createPortal(
+    <div className="modal-overlay">
+      <div className="modal-content">{children}</div>
+    </div>,
+    modalRoot
+  );
+};
+```
+
+### Usage:
+
+```tsx
+<Modal>
+  <h1>This is a modal!</h1>
+</Modal>
+```
+
+This content will render **outside** the `#root` but still behave like a React component.
+
+---
+
+## Real-World Modal Example with Open/Close
+
+```tsx
+const App = () => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open Modal</button>
+      {open && (
+        <Modal>
+          <div className="modal">
+            <p>This is a modal!</p>
+            <button onClick={() => setOpen(false)}>Close</button>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+};
+```
+
+---
+
+## CSS Example (modal.css)
+
+```css
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 400px;
+}
+```
+
+---
+
+## Modals and React Context
+
+Even though the modal is rendered **outside the parent DOM tree**, it still:
+
+- Has access to **React context**
+- Can use hooks like `useContext`, `useReducer`, etc.
+- Can access parent state via props
+
+> This is what makes portals **powerful and seamless**.
+
+---
+
+## Common Pitfalls
+
+| Issue                       | Cause / Fix                               |
+| --------------------------- | ----------------------------------------- |
+| Scroll locking not working  | Use `overflow: hidden` on `body` manually |
+| z-index layering issues     | Ensure `#modal-root` has higher z-index   |
+| Modal not closing on click  | Use `onClick` on overlay or use refs      |
+| Server-Side Rendering (SSR) | Check for `document` availability         |
+
+---
+
+## Best Practices
+
+1. **Create `modal-root` in HTML**, outside `#root`
+2. **Always unmount modals** (don't keep them hidden via `display: none`)
+3. **Close modals via keyboard (ESC)** and click outside — for accessibility
+4. **Use `focus-trap`** or libraries like `@headlessui/react` for better UX
+5. **Reuse Modal** using props (`title`, `onClose`, etc.)
+6. Keep modal logic **outside deeply nested components** (avoid prop drilling)
+
+---
+
+## Popular Libraries for Modals
+
+If you want accessibility, animations, and interactions out-of-the-box:
+
+| Library                  | Features                         |
+| ------------------------ | -------------------------------- |
+| `@radix-ui/react-dialog` | Accessible, headless, composable |
+| `@headlessui/react`      | Tailwind-friendly modal/dialog   |
+| `react-modal`            | Portal, accessibility included   |
+| `react-focus-lock`       | Lock focus inside modals         |
+
+---
+
+## Summary
+
+| Concept       | Description                                                             |
+| ------------- | ----------------------------------------------------------------------- |
+| React Portal  | Renders elements outside the DOM tree but within React tree             |
+| Use Case      | Modals, tooltips, floating UIs, dropdowns                               |
+| Benefits      | Avoids layout issues, better control over DOM hierarchy and positioning |
+| Syntax        | `createPortal(child, container)`                                        |
+| Best Practice | Use clean unmounting, accessibility, ESC key, focus traps, etc.         |

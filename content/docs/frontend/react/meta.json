@@ -16,6 +16,7 @@
     "error-boundaries",
     "code-splitting",
     "lazy-loading",
-    "suspense"
+    "suspense",
+    "portals-modals"
   ]
 }
