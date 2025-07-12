@@ -38,11 +38,12 @@ export async function loader({ params }: Route.LoaderArgs) {
     page,
     compiled: compiled.toString(),
     tree: source.pageTree,
+    time: page.data.lastUpdated ? new Date(page.data.lastUpdated) : undefined,
   };
 }
 
 export default function Page(props: Route.ComponentProps) {
-  const { page, compiled, tree } = props.loaderData;
+  const { page, compiled, tree, time } = props.loaderData;
   const { default: Mdx, toc } = executeMdxSync(compiled);
 
   return (
@@ -60,13 +61,18 @@ export default function Page(props: Route.ComponentProps) {
             Foundation
           </div>
         ),
+        url: "/docs",
       }}
       githubUrl="https://github.com/diwashbhattarai999/foundation-docs"
       tree={tree as PageTree.Root}
+      sidebar={{}}
     >
       <DocsPage
         toc={toc}
-        // lastUpdate={new Date(page.data.)}
+        tableOfContent={{
+          style: "clerk",
+        }}
+        lastUpdate={time}
       >
         <DocsTitle>{page.data.title}</DocsTitle>
         <DocsDescription>{page.data.description}</DocsDescription>
