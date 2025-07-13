@@ -101,7 +101,7 @@ export default function AnimatedIcons() {
           return (
             <div key={id} className="relative w-20 h-full overflow-hidden">
               <div
-                className="absolute flex flex-col gap-6"
+                className="absolute flex flex-col gap-3 sm:gap-6"
                 style={{
                   animation: `${animationName} ${animationDuration} linear infinite`,
                   animationDelay: animationDelay,
@@ -112,7 +112,7 @@ export default function AnimatedIcons() {
                   return (
                     <div
                       key={`${id}-${item.icon.name}-${itemIndex}`}
-                      className="bg-fd-foreground/5 border rounded-2xl p-4 shadow-lg hover:shadow-xl transition-shadow duration-300 group flex-shrink-0"
+                      className="bg-fd-foreground/5 border rounded-2xl p-2 sm:p-4 shadow-lg hover:shadow-xl transition-shadow duration-300 group flex-shrink-0"
                     >
                       <IconComponent
                         size={24}

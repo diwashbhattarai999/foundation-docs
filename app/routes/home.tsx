@@ -32,7 +32,7 @@ export default function Home() {
       githubUrl="https://github.com/diwashbhattarai999/foundation-docs"
     >
       {/* Background Glow */}
-      <BackgroundGlow className="bg-[radial-gradient(ellipse_50%_100%_at_50%_-10%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+      <BackgroundGlow className="bg-[radial-gradient(ellipse_50%_100%_at_50%_-5%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_50%_100%_at_50%_-5%,rgba(120,119,198,0.4),rgba(255,255,255,0))]" />
 
       {/* Background Grid */}
       <BackgroundGrid />
@@ -44,7 +44,7 @@ export default function Home() {
             <h1 className="group mx-auto w-fit rounded-3xl border-[2px] bg-gradient-to-tr from-fd-card/20 via-fd-card/60 to-fd-card/20 px-5 py-2 text-sm text-fd-muted-foreground transition-colors font-geist duration-300 hover:text-fd-foreground">
               <Link to="/docs" className="flex items-center gap-2">
                 Explore the Foundation Docs – JavaScript, TypeScript, Tooling, and More
-                <ArrowRight className="inline h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="shrink-0 inline h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </h1>
 

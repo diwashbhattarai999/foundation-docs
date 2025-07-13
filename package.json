@@ -19,6 +19,7 @@
     "@react-router/serve": "^7.6.2",
     "@tabler/icons-react": "^3.34.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.3",
     "fumadocs-core": "15.5.4",
     "fumadocs-ui": "15.5.4",
     "gray-matter": "^4.0.3",
